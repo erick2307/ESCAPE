@@ -198,20 +198,8 @@ void nodeDestino::plotearTotalEvacuadosXSimulacion(fileIO* const file) {
             std::vector<int> tiempo;
             std::vector<int> totalEvacuados;
         }; 
-        // simulation elements to print
-        std::vector<int> tiempoSimulacion;
-        auto it1 = dictionary::get()->getControlDict().find("totalEvacuadosVsSimulacionAt");
-        //atsimulation
-        if (it1 != dictionary::get()->getControlDict().end()) {
-            // Key found, proceed with the operation
-            static std::string valoresNumeroSimulacion = std::get<std::string>(it1->second);
-            tiempoSimulacion = stringToVector(valoresNumeroSimulacion);
-        }
-        // default values
-        else {
-            tiempoSimulacion = {1,2,3};
-        }
-        // const std::vector<int> tiempoSimulacion = {1, 2, 3};
+        // simulation numbers to record: keyword evacuatedVsTimeAt (default 1,2,3 from the dictionary)
+        static const std::vector<int> tiempoSimulacion = stringToVector(std::get<std::string>(dictionary::get()->lookupDefault("evacuatedVsTimeAt")));
         static std::vector<totalPersonasEvacuadasXSimulacion> data(tiempoSimulacion.size());
         auto it = std::find(tiempoSimulacion.begin(), tiempoSimulacion.end(), tiempo::get()->getINumberSimulation());
         // only enters at the simulation number that tiempoSimulacion asks for
@@ -262,19 +250,8 @@ void nodeDestino::plotearTotalEvacuadosXSimulacion(fileIO* const file) {
 void nodeDestino::imprimirTotalEvacuadosXSimulacion(fileIO* const file) {
     // checks the dictionary whether the option is enabled, enabled by default
     if (std::get<bool>(dictionary::get()->lookupDefault(file->getFileName())) == true) {
-        // simulation elements to print
-        std::vector<int> tiempoSimulacion;
-        auto it1 = dictionary::get()->getControlDict().find("totalEvacuadosVsSimulacionAt");
-        if (it1 != dictionary::get()->getControlDict().end()) {
-            // Key found, proceed with the operation
-            static std::string valoresNumeroSimulacion = std::get<std::string>(it1->second);
-            tiempoSimulacion = stringToVector(valoresNumeroSimulacion);
-        }
-        // default values
-        else {
-            tiempoSimulacion = {1,2,3};
-        }
-        // const std::vector<int> tiempoSimulacion = {1, 2, 3};
+        // simulation numbers to record: keyword evacuatedVsTimeAt (default 1,2,3 from the dictionary)
+        static const std::vector<int> tiempoSimulacion = stringToVector(std::get<std::string>(dictionary::get()->lookupDefault("evacuatedVsTimeAt")));
         auto it = std::find(tiempoSimulacion.begin(), tiempoSimulacion.end(), tiempo::get()->getINumberSimulation());
         // only enters at the simulation number that tiempoSimulacion asks for
         if (it != tiempoSimulacion.end()) {
