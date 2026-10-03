@@ -5,7 +5,7 @@ import os
 from matplotlib.animation import FuncAnimation
 from screeninfo import get_monitors
 
-pathMeshLink = "../mesh/poliLinks"
+pathMeshLink = "../mesh/polyLinks"
 x1_values = []
 x2_values = []
 y1_values = []
@@ -20,15 +20,15 @@ with open(pathMeshLink, 'r') as csv_file:
         x2_values.append(float(row[2]))
         y2_values.append(float(row[3]))
 
-directorio_principal = '../data/time/'
-elementos = os.listdir(directorio_principal)
-carpetas_numericas = [elemento
-                      for elemento
-                      in elementos
-                      if os.path.isdir(os.path.join(directorio_principal,
-                                                    elemento))
-                      and elemento.isdigit()]
-carpetas_numericas_ordenadas = sorted(carpetas_numericas, key=int)
+main_directory = '../data/time/'
+entries = os.listdir(main_directory)
+numeric_folders = [entry
+                      for entry
+                      in entries
+                      if os.path.isdir(os.path.join(main_directory,
+                                                    entry))
+                      and entry.isdigit()]
+sorted_numeric_folders = sorted(numeric_folders, key=int)
 width = 12
 height = 5
 # figure size
@@ -38,21 +38,21 @@ width = screen_width/100
 height = screen_height/100
 
 fig, ax = plt.subplots(1, 1, figsize=(width, height))
-i_inicial = int(carpetas_numericas_ordenadas[0])
+i_initial = int(sorted_numeric_folders[0])
 
 
-def actualizar(i):
+def update(i):
     """Loop each timestep."""
     ax.clear()
-    # i = i_inicial + i
-    print(carpetas_numericas_ordenadas[i])
-    fileName = directorio_principal + carpetas_numericas_ordenadas[i] + "/xy"
-    fileName2 = directorio_principal + carpetas_numericas_ordenadas[i] + "/U"
-    fileName3 = directorio_principal + carpetas_numericas_ordenadas[i] + "/cantPedestrianEvacuated"
+    # i = i_initial + i
+    print(sorted_numeric_folders[i])
+    fileName = main_directory + sorted_numeric_folders[i] + "/xy"
+    fileName2 = main_directory + sorted_numeric_folders[i] + "/U"
+    fileName3 = main_directory + sorted_numeric_folders[i] + "/evacuatedPedestrianCount"
     x_values = []
     y_values = []
-    magnitud = []
-    cantPedestrianEvacuated = []
+    magnitude = []
+    evacuatedPedestrianCount = []
 
     with open(fileName, 'r') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=' ')
@@ -63,28 +63,28 @@ def actualizar(i):
     with open(fileName2, 'r') as csv_file2:
         csv_reader = csv.reader(csv_file2, delimiter=' ')
         for row in csv_reader:
-            magnitud.append(float(row[0]))
+            magnitude.append(float(row[0]))
 
     with open(fileName3, 'r') as csv_file3:
         csv_reader = csv.reader(csv_file3, delimiter=' ')
         for row in csv_reader:
-            cantPedestrianEvacuated.append(float(row[0]))
+            evacuatedPedestrianCount.append(float(row[0]))
 
     # lines or streets
     ax.plot([x1_values, x2_values], [y1_values, y2_values], c="k", lw=1)
     vmin, vmax = 0.0, 1.3
     # points or pedestrians
-    scatter = ax.scatter(x_values, y_values, c=magnitud,
+    scatter = ax.scatter(x_values, y_values, c=magnitude,
                          cmap="jet_r", marker='o', edgecolors="none",
                          vmin=vmin, vmax=vmax)
     # text
-    cantPeEv = str(int(cantPedestrianEvacuated[0]))
-    text1 = "t = " + str(i) + " sec; evacuated: " + cantPeEv
+    evacuated_count = str(int(evacuatedPedestrianCount[0]))
+    text1 = "t = " + str(i) + " sec; evacuated: " + evacuated_count
     ax.text(0.05, 0.03, text1, fontsize=12, fontweight='normal',
             transform=ax.transAxes)
 
     ax.xaxis.set_label_coords(0, -0.06)
-    if i == i_inicial:
+    if i == i_initial:
         cax = fig.add_axes([0.93, 0.1, 0.02, 0.8])
         plt.colorbar(scatter, cax=cax)
     # ax.set_axis_off()
@@ -96,6 +96,6 @@ def actualizar(i):
     #     ax.set_ylim(ylim_auto)
 
 
-ani = FuncAnimation(fig, actualizar, len(carpetas_numericas_ordenadas)-1,
+ani = FuncAnimation(fig, update, len(sorted_numeric_folders)-1,
                     interval=400, repeat_delay=900)
 ani.save('animation.mp4')

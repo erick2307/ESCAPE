@@ -38,7 +38,7 @@ links* links::linksInstance = nullptr;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 links::links() {
     (*this).fileName = std::get<std::string>(dictionary::get()->lookupDefault("linksFile"));
-    leerLinks(fileName);
+    readLinks(fileName);
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,7 +65,7 @@ links* links::get() {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void links::leerLinks(std::string fileName){
+void links::readLinks(std::string fileName){
     /* Reading of links file */
     std::fstream file;
     file.open(fileName, std::ios::in);
@@ -108,32 +108,32 @@ void links::leerLinks(std::string fileName){
         // getting node1 and node2
         node* node1 =nodes::get()->getDbNodeTotal().at(idNode1).get();
         node* node2 =nodes::get()->getDbNodeTotal().at(idNode2).get();
-        std::unique_ptr<link> linkNuevo = std::make_unique<link>(idLink, node1, node2, lengthLink, widthLink);
-        dbLinkTotal.push_back(std::move(linkNuevo));
+        std::unique_ptr<link> newLink = std::make_unique<link>(idLink, node1, node2, lengthLink, widthLink);
+        dbLinkTotal.push_back(std::move(newLink));
         // add link to each node
         node1->addLink(dbLinkTotal.back().get());
         node2->addLink(dbLinkTotal.back().get());
     }
     file.close(); 
 }
-void links::contarPedestrians() {
+void links::countPedestrians() {
     /* calculates the density level on the streets*/
-    if(tiempo::get()->verificarPedestrianCountPeriod()){
+    if(simulationTime::get()->checkPedestrianCountPeriod()){
         // goes through all the streets
         for (auto it = dbLinkTotal.begin(); it != dbLinkTotal.end(); ++it) {
             // calculates the density level of all the streets with the previous data
-            it->get()->calcularDensityGeneral();
+            it->get()->calculateDensityGeneral();
         }
     }
 }
 void links::resetSublinks() {
     /* resets the counting values of sublink*/
     // checks how often it is counting
-    if (tiempo::get()->getPedestrianCountPeriod()) {
+    if (simulationTime::get()->getPedestrianCountPeriod()) {
         // goes through all the streets
         for (auto it = dbLinkTotal.begin(); it != dbLinkTotal.end(); ++it) {
             // goes through each sublink and resets it
-            for (auto y = it->get()->getSubdiviones().begin(); y != it->get()->getSubdiviones().end(); ++y) {
+            for (auto y = it->get()->getSubdivisions().begin(); y != it->get()->getSubdivisions().end(); ++y) {
                 // only clears if it is not empty
                 if (!y->getPedestriansInSublink().empty()) {
                     y->getPedestriansInSublink().clear();
@@ -145,21 +145,21 @@ void links::resetSublinks() {
 void links::resetLinks() {
     /* resets the values of the pedestriansLink*/  
     for (auto it = dbLinkTotal.begin(); it != dbLinkTotal.end(); ++it) {
-        it->get()->reiniciarSubdivisiones();
+        it->get()->resetSubdivisions();
     }
 }
-void links::mostrarDbLinksTotal(){
+void links::showDbLinksTotal(){
     for (int i = 0; i < dbLinkTotal.size(); i++) {
-        dbLinkTotal.at(i)->mostrarLink();
+        dbLinkTotal.at(i)->showLink();
     }
 }
-void links::mostrarSublink() {
+void links::showSublink() {
     for (int i = 0; i < dbLinkTotal.size(); i++) {
-        dbLinkTotal.at(i)->mostrarSubdivisiones();
+        dbLinkTotal.at(i)->showSubdivisions();
         std::cout << std::endl;
     }
 }
-void links::imprimirMeshLinks() {
+void links::printMeshLinks() {
     /* prints data for the street mesh, where I store information
         about streets and intersections.*/
     std::fstream file;
@@ -168,9 +168,9 @@ void links::imprimirMeshLinks() {
     // Create the mesh folder
     mkdir(folderName, S_IRWXU | S_IRWXG | S_IRWXO);
     // opens the file in the file object
-    file.open(std::string(folderName) + "/poliLinks",std::ios::out);
+    file.open(std::string(folderName) + "/polyLinks",std::ios::out);
     // goes through the whole street database.
     for (int i=0; i < links::dbLinkTotal.size(); i++) {
-        dbLinkTotal.at(i)->imprimirLink(file);
+        dbLinkTotal.at(i)->printLink(file);
     }
 }

@@ -43,11 +43,11 @@ private:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // idSubLink                 |-->| ID OF THE SUBLINK 
     // pedestrianIdsInSubLink    |-->| PEOPLE IN SUBLINK
-    // densidad                  |-->| DENSITY IN THE SUBLINK
+    // density                  |-->| DENSITY IN THE SUBLINK
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    const link* calle;
+    const link* street;
     std::vector<pedestrian*> pedestriansInSublink;
-    double densidadSublink;
+    double sublinkDensity;
     
 public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,31 +56,31 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // constructor
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    subLink(const link* const calle);
+    subLink(const link* const street);
     
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // setters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     void setIdSublink(int idSublink);
-    void setDensidadSublink(double densidadSublink);
+    void setSublinkDensity(double sublinkDensity);
     void setPedestriansInSublink(std::vector<pedestrian*> pedestriansInSublink);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // getters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     std::vector<pedestrian*>& getPedestriansInSublink();
-    double getDensidadSublink() const;
+    double getSublinkDensity() const;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    void actualizarVelocidadPedestrianInSublink(double& velocidad);
-    double calcularDensidadSubdivision() const;
-    double calcularCantidadPedestrians() const;
-    void agregarPedestrian(pedestrian* const persona);
-    void quitarPedestrian(pedestrian* const persona);
-    void reiniciar();
-    void mostrarsubdivision() const;
+    void updatePedestrianVelocityInSublink(double& velocity);
+    double calculateSubdivisionDensity() const;
+    double calculatePedestrianCount() const;
+    void addPedestrian(pedestrian* const person);
+    void removePedestrian(pedestrian* const person);
+    void reset();
+    void showSubdivision() const;
     
 };
 #endif

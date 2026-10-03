@@ -52,30 +52,30 @@
 
 class node;
 class link;
-enum estado { pasivo, evacuando, evacuado, muerto };
+enum pedestrianStatus { passive, evacuating, evacuated, dead };
 
 class pedestrian {
 public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // idPedestrian        |-->| ID OF THE INTERSECTION
-    // edad                |-->| X COORDINATE OF THE NODE 
+    // age                |-->| X COORDINATE OF THE NODE 
     // gender              |-->| Y COORDINATE OF THE NODE
     // hhType              |-->| 
     // hhId                |-->| 
     // position            |-->| POSITION OF THE PERSON
-    // nodeArranque        |-->| STARTING INTERSECTION WHEN STARTING SIMULATION  
-    // tiempoInicial       |-->| START TIME FOR THE PERSON TO START WALKING 
+    // originNode        |-->| STARTING INTERSECTION WHEN STARTING SIMULATION  
+    // initialTime       |-->| START TIME FOR THE PERSON TO START WALKING 
     // position            |-->| POSITION OF THE PERSON 
-    // nodeInicio          |-->| INTERSECTION OF A STREET 
-    // nodeFinal           |-->| OTHER INTERSECTION OF THE SAME STREET
-    // nodeInicioAnterior  |-->| INITIAL INTERSECTION OF THE PREVIOUS STREET
-    // linkActual          |-->| STREET WHERE THE PERSON CURRENTLY IS 
-    // linkPasado          |-->| PREVIOUS STREET THROUGH WHICH IT PASSED
-    // direccionPedestrian |-->| DIRECTION OF THE PERSON
-    // velocidad           |-->| SPEED OF THE PERSON
-    // evacuado            |-->| THE PERSON WHO REACHED AN EVACUATION POINT
-    // retorno             |-->| COULD BE LIKE THE TOTAL GAIN 
-    // tiempoProximaInterseccion |-->| TIME OF NEXT ARRIVAL AT A NODE
+    // startNode          |-->| INTERSECTION OF A STREET 
+    // endNode           |-->| OTHER INTERSECTION OF THE SAME STREET
+    // previousStartNode  |-->| INITIAL INTERSECTION OF THE PREVIOUS STREET
+    // currentLink          |-->| STREET WHERE THE PERSON CURRENTLY IS 
+    // previousLink          |-->| PREVIOUS STREET THROUGH WHICH IT PASSED
+    // pedestrianDirection |-->| DIRECTION OF THE PERSON
+    // velocity           |-->| SPEED OF THE PERSON
+    // evacuated            |-->| THE PERSON WHO REACHED AN EVACUATION POINT
+    // totalReturn             |-->| COULD BE LIKE THE TOTAL GAIN 
+    // nextIntersectionTime |-->| TIME OF NEXT ARRIVAL AT A NODE
 
     // stateMatrixCurrent  |-->| POINTER TO STATEMATRIX BEING EXPERIENCED 
     // stateMatrixPrevious |-->| POINTER TO PREVIOUSLY EXPERIENCED STATEMATRIX
@@ -86,21 +86,21 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 private:
     const int idPedestrian;
-    const int edad;
+    const int age;
     const int gender;
     const int hhType;
     const int hhId;
-    const node* nodeArranque;
-    const int tiempoInicial;
+    const node* originNode;
+    const int initialTime;
     vector2D position;
-    node* nodeInicioPtr;
-    node* nodeFinalPtr;
-    vector2D direccionPedestrian;
-    velocidad velocidadPedestrian;
-    estado estadoPedestrian;
+    node* startNodePtr;
+    node* endNodePtr;
+    vector2D pedestrianDirection;
+    velocity pedestrianVelocity;
+    pedestrianStatus pedestrianState;
     int reward;
-    int tiempoAnteriorInterseccion;
-    bool interseccion;
+    int previousIntersectionTime;
+    bool intersection;
     stateMatrix* stateMatrixCurrentPtr;
     Q* QCurrentPtr;
     Q* QPreviousPtr;
@@ -112,7 +112,7 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // static member
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    static int contador;
+    static int counter;
     static const int meanRayleigh;
     const static int surviveReward;
     const static int deadReward;
@@ -121,41 +121,41 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // constructor
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    pedestrian(const int edad, const int gender, const int hhType, const int hhId, node* nodeArranque);
+    pedestrian(const int age, const int gender, const int hhType, const int hhId, node* originNode);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // setters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     void setPosition(vector2D position);
-    void setNodeInicio(node* nodeInicio);
-    void setNodeFinal(node* nodeFinal);
-    void setNodeInicioAnterior(node* nodeInicioAnterior);
-    void setLinkActual(link* linkActual);
-    void setDireccionPedestrian(vector2D direccionPedestrian);
-    void setVelocidadPedestrian(double velocidadPedestrian);
-    void setEstadoPedestrian(estado estadoPedestrian);
+    void setStartNode(node* startNode);
+    void setEndNode(node* endNode);
+    void setPreviousStartNode(node* previousStartNode);
+    void setCurrentLink(link* currentLink);
+    void setPedestrianDirection(vector2D pedestrianDirection);
+    void setPedestrianVelocity(double pedestrianVelocity);
+    void setPedestrianState(pedestrianStatus pedestrianState);
     void setReward(int reward);
-    void setInterseccion(bool interseccion);
+    void setIntersection(bool intersection);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // getters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     const int getIdPedestrian() const;
-    const int getEdad() const;
+    const int getAge() const;
     const int getGender() const;
     const int getHHType() const;
     const int getHHId() const;
-    const node* getNodeArranque() const;
-    const int getTiempoInicial() const;
+    const node* getOriginNode() const;
+    const int getInitialTime() const;
     vector2D getPosition() const;
-    node* getNodeInicio() const;
-    node* getNodeFinal() const;
-    vector2D getDireccionPedestrian() const;
-    velocidad &getVelocidadPedestrian();
-    estado& getEstadoPedestrian();
+    node* getStartNode() const;
+    node* getEndNode() const;
+    vector2D getPedestrianDirection() const;
+    velocity &getPedestrianVelocity();
+    pedestrianStatus& getPedestrianState();
     int getReward() const;
-    int getTiempoAnteriorInterseccion() const;
-    bool getInterseccion() const;
+    int getPreviousIntersectionTime() const;
+    bool getIntersection() const;
     stateMatrix* getStateMatrixCurrent() const;
     double* getQCurrent() const;
     double* getQPrevious() const;
@@ -165,35 +165,35 @@ public:
     // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     bool operator==(const pedestrian& pedestrian2) const;
-    void modelamientoPedestrian();
-    void caminar();
-    link* eleccionGeneralLink() const;
-    link* eleccionRandomLink() const;
-    link* eleccionSarsaLink() const;
-    bool verificarNodoLLeno() const;
-    bool verificarEndLink() const;
-    int calcularIdEndSublink() const;
-    double calcularIdSublink();
-    int calcularReward() const;
-    int calcularTiempoDesplazamiento() const;
-    void contarPedestrianInSublink();
-    void calcularDensityInSublink();
-    void eleccionDosCallesContinuas();
-    void calcularDireccionPedestrian();
-    vector2D calcularSignoDireccion();
-    int calcularSignoNumero(double numero);
-    void reiniciar();
-    void mostrarMovimientoPedestrian() const;
-    void mostrarPedestrian() const;
-    void imprimirPedestrianPosition(fileIO* file) const;
-    void imprimirPedestrianVelocity(fileIO* file) const;
+    void modelPedestrian();
+    void walk();
+    link* generalLinkChoice() const;
+    link* randomLinkChoice() const;
+    link* sarsaLinkChoice() const;
+    bool checkNodeFull() const;
+    bool checkEndLink() const;
+    int calculateIdEndSublink() const;
+    double calculateIdSublink();
+    int calculateReward() const;
+    int calculateTravelTime() const;
+    void countPedestrianInSublink();
+    void calculateDensityInSublink();
+    void twoConsecutiveStreetsChoice();
+    void calculatePedestrianDirection();
+    vector2D calculateDirectionSign();
+    int calculateNumberSign(double number);
+    void reset();
+    void showMovementPedestrian() const;
+    void showPedestrian() const;
+    void printPedestrianPosition(fileIO* file) const;
+    void printPedestrianVelocity(fileIO* file) const;
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // static metods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    static const double calcularScaleRayleigh();
-    static double calcularRayleighDistribution(const double sigma);
-    static void plotearPedestrians(fileIO* const file);
+    static const double calculateScaleRayleigh();
+    static double calculateRayleighDistribution(const double sigma);
+    static void plotPedestrians(fileIO* const file);
     
-    // static double calcularOptimalChoiceRate();
+    // static double calculateOptimalChoiceRate();
 };
 #endif

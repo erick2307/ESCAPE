@@ -54,8 +54,8 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    void mostrarPedestrianMassStateVector() const;
-    void imprimirPedestrianMassStateVector(std::fstream& file) const;
+    void showPedestrianMassStateVector() const;
+    void printPedestrianMassStateVector(std::fstream& file) const;
     
 };
 #endif

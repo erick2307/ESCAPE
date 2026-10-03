@@ -56,7 +56,7 @@ private:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     std::string fileName;
     std::vector<std::shared_ptr<node>> dbNodeTotal;
-    std::vector<nodeDestino*> dbNodeEvacuation;
+    std::vector<nodeEvacuation*> dbNodeEvacuation;
 
 
 
@@ -72,7 +72,7 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     std::string getFileName();
     std::vector<std::shared_ptr<node>> getDbNodeTotal();
-    std::vector<nodeDestino*> getDbNodeEvacuation();
+    std::vector<nodeEvacuation*> getDbNodeEvacuation();
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // static getters
@@ -82,14 +82,14 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    void leerNodes(std::string fileName);
-    void usarlink();
-    void reiniciarNodesEvacuations();
-    // void mostrarNodes() const;
-    void mostrardbNodeTotal() const;
-    void imprimirActionsDb(std::fstream& file) const;
-    void imprimirTransitionsDb(std::fstream& file) const;
-    // void imprimirCantPedestrianEvacuted(std::string folderName);
+    void readNodes(std::string fileName);
+    void useLink();
+    void resetNodesEvacuations();
+    // void showNodes() const;
+    void showDbNodeTotal() const;
+    void printActionsDb(std::fstream& file) const;
+    void printTransitionsDb(std::fstream& file) const;
+    // void printEvacuatedPedestrianCount(std::string folderName);
     
 };
 #endif

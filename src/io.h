@@ -61,8 +61,8 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // metods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    void crearDir();
-    bool verificarDirExists() const;
+    void createDir();
+    bool checkDirExists() const;
     
 
 };
@@ -96,7 +96,7 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // metods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    void crearFile();
+    void createFile();
     void openFile(const std::ios_base::openmode& inout);
     std::ios_base::openmode inoutFile(const std::string& inout);
 
@@ -128,7 +128,7 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // static
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    static size_t tamanoElementosIO;
+    static size_t ioElementSize;
     static dirIO directoryData;
     static dirIO directoryTime;
     static dirIO directoryPostprocessing;
@@ -139,10 +139,10 @@ public:
     static fileIO fileEvacuatedCount;
     static fileIO fileActionsDb;
     static fileIO fileTranstionsDb;
-    static fileIO figureTotalEvacuadosVsSimulacion;
-    static fileIO figureEvacuadosVsTiempo;
-    static fileIO tableTotalEvacuadosVsSimulacion;
-    static fileIO tableEvacuadosVsTiempo;
+    static fileIO figureEvacuatedVsTime;
+    static fileIO figureTotalEvacuatedVsSimulation;
+    static fileIO tableEvacuatedVsTime;
+    static fileIO tableTotalEvacuatedVsSimulation;
     static fileIO figurePedestrians;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -163,7 +163,7 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // metods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    dirIO* crearCarpetaTiempo();
-    void imprimirOutput();
+    dirIO* createTimeFolder();
+    void printOutput();
 };
 #endif

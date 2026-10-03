@@ -37,27 +37,27 @@
 
 int main() {
     // print street mesh.
-    links::get()->imprimirMeshLinks();
+    links::get()->printMeshLinks();
     // Reading of past simulations.
-    stateMatrixs::get()->leerDbStateMatrixs();
+    stateMatrixs::get()->readDbStateMatrixs();
     // according to the number of simulations
-    while (tiempo::get()->getINumberSimulation() <= tiempo::get()->getEndNumberSimulation()) {
+    while (simulationTime::get()->getINumberSimulation() <= simulationTime::get()->getEndNumberSimulation()) {
         // computes the value of the randomChoiceRate
-        tiempo::get()->calcularRandomChoiceRate();
+        simulationTime::get()->calculateRandomChoiceRate();
         // loop for one evacuation
-        while (tiempo::get()->running()) {
-            tiempo::get()->aumentarTiempo();
+        while (simulationTime::get()->running()) {
+            simulationTime::get()->increaseTime();
            // pedestrian modeling.
-            pedestrians::get()->modelamientoPedestrians();
+            pedestrians::get()->modelPedestrians();
             // pedestrian counter one time step behind the modeling function
-            links::get()->contarPedestrians();
-            io::get()->imprimirOutput();
+            links::get()->countPedestrians();
+            io::get()->printOutput();
             // sets the sublink value elements to 0            
             links::get()->resetSublinks();
         }
         // show simulation results
-        tiempo::get()->mostrarIResultadosSimulacion();
+        simulationTime::get()->showSimulationResults();
         // increase the simulation number and reset values
-        tiempo::get()->aumentarINumberSimulation();
+        simulationTime::get()->increaseINumberSimulation();
     }
 }

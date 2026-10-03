@@ -42,8 +42,8 @@ dirIO::dirIO(const std::string& dirName) :
     directory(nullptr),
     fullPath(dirName + '/')
 {
-    if (!verificarDirExists()) {
-        crearDir();
+    if (!checkDirExists()) {
+        createDir();
     }
 }
 dirIO::dirIO(const std::string& dirName, const dirIO* directory) :
@@ -51,8 +51,8 @@ dirIO::dirIO(const std::string& dirName, const dirIO* directory) :
     directory(directory),
     fullPath(directory->getFullPath() + dirName + '/')
 {
-    if (!verificarDirExists()) {
-        crearDir();
+    if (!checkDirExists()) {
+        createDir();
     }
 }
 dirIO::dirIO(const std::string& dirName, const dirIO* directory, const bool checkCreation) :
@@ -61,8 +61,8 @@ dirIO::dirIO(const std::string& dirName, const dirIO* directory, const bool chec
     fullPath(directory->getFullPath() + dirName + '/')
 {
     if (checkCreation) {
-        if (!verificarDirExists()) {
-            crearDir();
+        if (!checkDirExists()) {
+            createDir();
         }
     }
 }
@@ -80,7 +80,7 @@ const std::string dirIO::getFullPath() const {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void dirIO::crearDir() {
+void dirIO::createDir() {
     // directory permissions S_ to execute, read and write
     if (directory == nullptr) {
         mkdir(dirName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -90,7 +90,7 @@ void dirIO::crearDir() {
         mkdir(dir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     }
 }
-bool dirIO::verificarDirExists() const{
+bool dirIO::checkDirExists() const{
     struct stat info;
     if (stat(dirName.c_str(), &info) != 0) {
         // Could not access the directory (it may not exist)
@@ -117,7 +117,7 @@ fileIO::fileIO(const std::string& fileName) :
     fullPath(fileName),
     directory(nullptr)
 {
-    crearFile();
+    createFile();
 }
 fileIO::fileIO(const std::string& fileName, const bool checkFile) :
     fileName(fileName),
@@ -126,7 +126,7 @@ fileIO::fileIO(const std::string& fileName, const bool checkFile) :
 {
     // only create if checkFile is true
     if (checkFile) {
-        crearFile();
+        createFile();
     }
 }
 fileIO::fileIO(const std::string& fileName, const std::string extension,const bool checkFile) :
@@ -136,7 +136,7 @@ fileIO::fileIO(const std::string& fileName, const std::string extension,const bo
 {
     // only create if checkFile is true
     if (checkFile) {
-        crearFile();
+        createFile();
     }
 }
 fileIO::fileIO(const std::string& fileName,  const std::string extension, const std::string& inoutStr, const bool checkFile) :
@@ -154,14 +154,14 @@ fileIO::fileIO(const std::string& fileName,const dirIO* directory) :
     directory(directory),
     fullPath(directory->getFullPath() + fileName)
 {
-    crearFile();
+    createFile();
 }
 fileIO::fileIO(const std::string& fileName,const std::string extension, const dirIO* directory) :
     fileName(fileName),
     directory(directory),
     fullPath(directory->getFullPath() + fileName + "." + extension)
 {
-    crearFile();
+    createFile();
 }
 fileIO::fileIO(const std::string& fileName,  const std::string extension, const std::string& inoutStr, const bool checkFile, const dirIO* directory) :
     fileName(fileName),
@@ -196,7 +196,7 @@ const dirIO* const fileIO::getDirectory() const {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void fileIO::crearFile() {
+void fileIO::createFile() {
     fileFstream.open(fullPath, std::ios::out);
 }
 void fileIO::openFile(const std::ios_base::openmode& inout) {
@@ -223,7 +223,7 @@ std::ios_base::openmode fileIO::inoutFile(const std::string& inout) {
 // static member
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 io* io::ioInstance = nullptr;
-size_t io::tamanoElementosIO = 10;
+size_t io::ioElementSize = 10;
 dirIO io::directoryData("data");
 dirIO io::directoryTime("time", &directoryData, std::get<std::string>(dictionary::get()->lookupDefault("process"))=="trained");
 dirIO io::directoryPostprocessing("postprocessing");
@@ -234,10 +234,10 @@ fileIO io::fileTotalEvacuatedCount("totalEvacuatedCount", "csv", "out", std::get
 fileIO io::fileEvacuatedCount("evacuatedCount", "csv", "out", std::get<std::string>(dictionary::get()->lookupDefault("process"))=="trained", &directoryData);
 fileIO io::fileActionsDb("actionsdb", "csv", std::get<std::string>(dictionary::get()->lookupDefault("pythonOption")), std::get<bool>(dictionary::get()->lookupDefault("pythonVersion")));
 fileIO io::fileTranstionsDb("transitionsdb", "csv", std::get<std::string>(dictionary::get()->lookupDefault("pythonOption")) == "out");
-fileIO io::figureTotalEvacuadosVsSimulacion("figureTotalEvacuadosVsSimulacion", "png", "out", std::get<std::string>(dictionary::get()->lookupDefault("process"))=="calibration", &directoryData);
-fileIO io::figureEvacuadosVsTiempo("figureEvacuadosVsTiempo", "png", "out", std::get<std::string>(dictionary::get()->lookupDefault("process"))=="calibration", &directoryData);
-fileIO io::tableTotalEvacuadosVsSimulacion("tableTotalEvacuadosVsSimulacion", "csv", "out", std::get<std::string>(dictionary::get()->lookupDefault("process"))=="calibration", &directoryData);
-fileIO io::tableEvacuadosVsTiempo("tableEvacuadosVsTiempo", "csv", "out", std::get<std::string>(dictionary::get()->lookupDefault("process"))=="calibration", &directoryData);
+fileIO io::figureEvacuatedVsTime("figureEvacuatedVsTime", "png", "out", std::get<std::string>(dictionary::get()->lookupDefault("process"))=="calibration", &directoryData);
+fileIO io::figureTotalEvacuatedVsSimulation("figureTotalEvacuatedVsSimulation", "png", "out", std::get<std::string>(dictionary::get()->lookupDefault("process"))=="calibration", &directoryData);
+fileIO io::tableEvacuatedVsTime("tableEvacuatedVsTime", "csv", "out", std::get<std::string>(dictionary::get()->lookupDefault("process"))=="calibration", &directoryData);
+fileIO io::tableTotalEvacuatedVsSimulation("tableTotalEvacuatedVsSimulation", "csv", "out", std::get<std::string>(dictionary::get()->lookupDefault("process"))=="calibration", &directoryData);
 fileIO io::figurePedestrians("figurePedestrians", "png", "out", std::get<std::string>(dictionary::get()->lookupDefault("process"))=="trained", &directoryData);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -261,67 +261,67 @@ io* io::get() {
 // getters
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // std::fstream& io::getFileEvacuatedCount() {
-//     return fileTotalPersonasEvacuadas;
+//     return fileTotalEvacuatedPeople;
 // }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // metods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-dirIO* io::crearCarpetaTiempo() {
+dirIO* io::createTimeFolder() {
     /* Create folders for each evacuation time*/
-    dirIO* dirTime = new dirIO(std::to_string(tiempo::get()->getValorTiempo()), &directoryTime);
+    dirIO* dirTime = new dirIO(std::to_string(simulationTime::get()->getTimeValue()), &directoryTime);
     // create folder for the times in seconds to store information
     mkdir(dirTime->getFullPath().c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     return dirTime;
 }
-void io::imprimirOutput() {
+void io::printOutput() {
     /* handling of the outputs*/
     // export when trained
     if (std::get<std::string>(dictionary::get()->lookupDefault("process")) == "trained") {
-        if (tiempo::get()->verificarGraphicPrintoutPeriod()) {
+        if (simulationTime::get()->checkGraphicPrintoutPeriod()) {
             // create time folders
-            dirIO* dirTiempo = crearCarpetaTiempo();
+            dirIO* timeDir = createTimeFolder();
             // print pedestrian data: position and velocity
-            fileIO xy("xy", dirTiempo);
-            fileIO U("U", dirTiempo);
-            pedestrians::get()->imprimirPedestrians(&xy, &U);
+            fileIO xy("xy", timeDir);
+            fileIO U("U", timeDir);
+            pedestrians::get()->printPedestrians(&xy, &U);
             // print pedestrian data: number of evacuated pedestrians
-            fileIO cantPedestrianEvacuated("cantPedestrianEvacuated", dirTiempo);
-            nodeDestino::imprimirVariableTotalPersonasEvacuadas(&cantPedestrianEvacuated);
-            delete dirTiempo;
-            dirTiempo = nullptr; 
+            fileIO evacuatedPedestrianCount("evacuatedPedestrianCount", timeDir);
+            nodeEvacuation::printTotalEvacuatedPeopleVariable(&evacuatedPedestrianCount);
+            delete timeDir;
+            timeDir = nullptr; 
             // export table files
             // prints total evacuated pedestrians
-            nodeDestino::imprimirTotalPersonasEvacuadas(&fileTotalEvacuatedCount);
+            nodeEvacuation::printTotalEvacuatedPeople(&fileTotalEvacuatedCount);
             // prints pedestrians evacuated per evacuation point
-            nodeDestino::imprimirNodeEvacuation(&fileEvacuatedCount);
+            nodeEvacuation::printNodeEvacuation(&fileEvacuatedCount);
             // print pedestrians on the streets
-            std::string nombreArchivo = "Figure-" + std::to_string(tiempo::get()->getValorTiempo()); // or the format you want
-            fileIO figure(nombreArchivo, "png", &directoryFigure);
-            pedestrian::plotearPedestrians(&figure);
+            std::string figureName = "Figure-" + std::to_string(simulationTime::get()->getTimeValue()); // or the format you want
+            fileIO figure(figureName, "png", &directoryFigure);
+            pedestrian::plotPedestrians(&figure);
         }
     }
     // export during calibration
     else if (std::get<std::string>(dictionary::get()->lookupDefault("process")) == "calibration") {
         // prints statematrix data at the end of each simulation
         // only prints it at the end of the evacuation
-        if (tiempo::get()->getValorTiempo() == tiempo::get()->getEndTime()) {
-            fileIO stateMatrice(stateMatrixs::get()->creacionFileStateMatrix(), &directoryStateMatrices);
-            stateMatrixs::get()->imprimirDbStateMatrixs(&stateMatrice);
+        if (simulationTime::get()->getTimeValue() == simulationTime::get()->getEndTime()) {
+            fileIO stateMatrice(stateMatrixs::get()->createStateMatrixFile(), &directoryStateMatrices);
+            stateMatrixs::get()->printDbStateMatrixs(&stateMatrice);
             // plot mortality per simulation
-            nodeDestino::plotearEvacuadosVsTiempo(&figureEvacuadosVsTiempo);
-            nodeDestino::imprimirEvacuadosVsTiempo(&tableEvacuadosVsTiempo);
+            nodeEvacuation::plotTotalEvacuatedVsSimulation(&figureTotalEvacuatedVsSimulation);
+            nodeEvacuation::printTotalEvacuatedVsSimulation(&tableTotalEvacuatedVsSimulation);
         }
         // plot total evacuated pedestrians per simulation
-        nodeDestino::plotearTotalEvacuadosXSimulacion(&figureTotalEvacuadosVsSimulacion);
-        nodeDestino::imprimirTotalEvacuadosXSimulacion(&tableTotalEvacuadosVsSimulacion);
+        nodeEvacuation::plotEvacuatedVsTime(&figureEvacuatedVsTime);
+        nodeEvacuation::printEvacuatedVsTime(&tableEvacuatedVsTime);
         // print actionDb
         if (std::get<bool>(dictionary::get()->lookupDefault("pythonVersion")) == true and std::get<std::string>(dictionary::get()->lookupDefault("pythonOption")) == "out") {
             // when the simulation number is 1 and it is the end of the evacuation
-            if (tiempo::get()->getINumberSimulation() == tiempo::get()->getStartNumberSimulation()
-            and tiempo::get()->getValorTiempo() == tiempo::get()->getEndTime()) {
-                nodes::get()->imprimirActionsDb(fileActionsDb.getFileFstream());
-                nodes::get()->imprimirTransitionsDb(fileTranstionsDb.getFileFstream());
+            if (simulationTime::get()->getINumberSimulation() == simulationTime::get()->getStartNumberSimulation()
+            and simulationTime::get()->getTimeValue() == simulationTime::get()->getEndTime()) {
+                nodes::get()->printActionsDb(fileActionsDb.getFileFstream());
+                nodes::get()->printTransitionsDb(fileTranstionsDb.getFileFstream());
             }
         }
     }

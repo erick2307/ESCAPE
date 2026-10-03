@@ -84,13 +84,13 @@ vector2D vector2D::operator+=(vector2D vector2) {
     Y += vector2.getY();
     return *this;
 }
-double vector2D::distanciaA(const vector2D &coordenada2) const {
+double vector2D::distanceTo(const vector2D &coordinate2) const {
     /* distance between two coordinates*/
-    double dx = X - coordenada2.getX();
-    double dy = Y - coordenada2.getY();
+    double dx = X - coordinate2.getX();
+    double dy = Y - coordinate2.getY();
     return std::sqrt(dx * dx + dy * dy);
 }
-void vector2D::mostrarVector() const {
+void vector2D::showVector() const {
     /* Shows in the terminal in vector format*/
     std::cout << "(" << std::setprecision(3) << X << ",";
     std::cout << std::setprecision(3) << Y << ")" << std::endl;

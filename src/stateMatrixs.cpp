@@ -36,10 +36,10 @@ stateMatrixs* stateMatrixs::stateMatrixsInstance = nullptr;
 // constructor
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 stateMatrixs::stateMatrixs() {
-    // setINumeroSimulacion(1);
-    // leerDbStateMatrixs();
+    // setINumberSimulation(1);
+    // readDbStateMatrixs();
     // Read the last simulation.
-    // leerDbStateMatrixs(simulationFile + dictionary::controlDict["previousComputationFile"]); 
+    // readDbStateMatrixs(simulationFile + dictionary::controlDict["previousComputationFile"]); 
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,7 +52,7 @@ const std::string stateMatrixs::simulationFile = "stateMatrices/";
 //     // dbNode contains all the nodes of the simulation
 //     (*this).dbNode = dbNode;
 //     // Read the last simulation.
-//     leerDbStateMatrixs(encontrarUltimoFile()); 
+//     readDbStateMatrixs(findLastFile()); 
 // }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -82,10 +82,10 @@ stateMatrixs* stateMatrixs::get() {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-std::string stateMatrixs::creacionFileStateMatrix() const {
+std::string stateMatrixs::createStateMatrixFile() const {
     /* Create the name of the export file.*/
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // iFileInicio     |-->| ID OF THE START FILE, 1
+    // iStartFile     |-->| ID OF THE START FILE, 1
     // preName         |-->| EXPORT EXTENSION
     // typeFile        |-->| EXPORT EXTENSION
     // filenameStream  |-->| FAKE FILE, ALLOWS CONTROLLING THE CHARACTERS
@@ -96,20 +96,20 @@ std::string stateMatrixs::creacionFileStateMatrix() const {
     const std::string typeFile = ".csv";
     std::ostringstream filenameStream;
     // Create the initial file with the following format sim_000000001.csv
-    filenameStream << std::setw(9) << std::setfill('0') << tiempo::get()->getINumberSimulation() ;
+    filenameStream << std::setw(9) << std::setfill('0') << simulationTime::get()->getINumberSimulation() ;
     // Final export name 
     return preName + filenameStream.str() + typeFile;
 }
-std::string stateMatrixs::encontrarUltimoFile() {
+std::string stateMatrixs::findLastFile() {
     // Find the last simulation to read it
-    std::string ultimoFile;
-    ultimoFile = "stateMatrices/sim_000000006.csv";
-    return ultimoFile;
+    std::string lastFile;
+    lastFile = "stateMatrices/sim_000000006.csv";
+    return lastFile;
 }
-std::string stateMatrixs::crearFilenameSalida(int numeroSimulacion) {
+std::string stateMatrixs::createOutputFilename(int simulationNumber) {
     /* Create the name of the export file.*/
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // iFileInicio     |-->| ID OF THE START FILE, 1
+    // iStartFile     |-->| ID OF THE START FILE, 1
     // preName         |-->| EXPORT EXTENSION
     // typeFile        |-->| EXPORT EXTENSION
     // filenameStream  |-->| FAKE FILE, ALLOWS CONTROLLING THE CHARACTERS
@@ -122,19 +122,19 @@ std::string stateMatrixs::crearFilenameSalida(int numeroSimulacion) {
     // else {
         
     // }
-    int iFileInicio = 1;
+    int iStartFile = 1;
     std::string preName = "sim_";
     std::string typeFile = ".csv";
     std::ostringstream filenameStream;
     // Create the initial file with the following format sim_000000001.csv
-    filenameStream << std::setw(9) << std::setfill('0') << iFileInicio ;
+    filenameStream << std::setw(9) << std::setfill('0') << iStartFile ;
     // Final export name 
     return simulationFile +preName + filenameStream.str() + typeFile;
 }
-std::string stateMatrixs::fileNameSalida() {
+std::string stateMatrixs::outputFileName() {
     std::string lastFile_str = std::get<std::string>(dictionary::get()->lookup("previousComputationFile"));
-    size_t posicion = lastFile_str.find_first_of("123456789");
-    int iLastFile = std::stoi(lastFile_str.substr(posicion));
+    size_t position = lastFile_str.find_first_of("123456789");
+    int iLastFile = std::stoi(lastFile_str.substr(position));
     std::string preName = "sim_";
     std::string typeFile = ".csv";
     std::ostringstream filenameStream;
@@ -142,15 +142,15 @@ std::string stateMatrixs::fileNameSalida() {
     filenameStream << std::setw(9) << std::setfill('0') << iLastFile ;
     return simulationFile + preName + filenameStream.str() + typeFile;
 }
-// void stateMatrixs::agregarStateMatrix(stateMatrix stateMatrixElement) {
+// void stateMatrixs::addStateMatrix(stateMatrix stateMatrixElement) {
 //     dbStateMatrixs.push_back(stateMatrixElement);
 // }
-void stateMatrixs::leerActionsDb(std::fstream& file) {
+void stateMatrixs::readActionsDb(std::fstream& file) {
     /* Allows reading python files, with this actiondb file I can know
         the order of the streets at each node*/
     std::string line;
     char comma;
-    int idNode, cantidadLinks;
+    int idNode, linkCount;
     int idLink;
     actiondb.resize(nodes::get()->getDbNodeTotal().size()); 
     // if the file does not exist
@@ -166,24 +166,24 @@ void stateMatrixs::leerActionsDb(std::fstream& file) {
         }
         // reading of line
         std::istringstream iss(line);
-        if (!(iss >> idNode >> comma >> cantidadLinks >> comma)) {
+        if (!(iss >> idNode >> comma >> linkCount >> comma)) {
             std::cerr << "Error reading ID or count." << std::endl;
         }
         // check that it is not an evacuation node
         // because it has no connections
-        if (nodes::get()->getDbNodeTotal().at(idNode).get()->verificarNodoEvacuation() == false) {
+        if (nodes::get()->getDbNodeTotal().at(idNode).get()->checkNodeEvacuation() == false) {
             // create the size of the vector
-            actiondb.at(idNode).resize(cantidadLinks);
-            for (int i = 0; i < cantidadLinks; ++i) {
+            actiondb.at(idNode).resize(linkCount);
+            for (int i = 0; i < linkCount; ++i) {
                 if (!(iss >> idLink)) {
-                    std::cerr << "Error reading value for conectionCalles at position " << i << std::endl;
+                    std::cerr << "Error reading value for streetConnections at position " << i << std::endl;
                     return; // Exit the function if there is an error
                 }
                 // add to action each street connection according to the node 
                 actiondb.at(idNode).at(i) = links::get()->getDbLinkTotal().at(idLink).get();
                 // std::cout << actiondb.at(idNode).at(i)->getIdLink() << " ";
                 // Ignore the comma between values, if it is not the last value
-                if (i < cantidadLinks - 1) {
+                if (i < linkCount - 1) {
                     iss >> comma;  // Read and discard the comma
                     if (iss.fail()) {
                         std::cerr << "Error reading the comma after the value at position " << i << std::endl;
@@ -194,7 +194,7 @@ void stateMatrixs::leerActionsDb(std::fstream& file) {
         }
     } 
 }
-void stateMatrixs::leerDbStateMatrixs() {
+void stateMatrixs::readDbStateMatrixs() {
     if (std::get<std::string>(dictionary::get()->lookupDefault("process")) == "trained") {
         dictionary::get()->getControlDict()["computationContinued"] = true;
     }
@@ -204,7 +204,7 @@ void stateMatrixs::leerDbStateMatrixs() {
         // it must be read according to the order of the street connections
         if (std::get<bool>(dictionary::get()->lookupDefault("pythonVersion")) == true
         and std::get<std::string>(dictionary::get()->lookupDefault("pythonOption")) == "in") {
-            leerActionsDb(io::fileActionsDb.getFileFstream());
+            readActionsDb(io::fileActionsDb.getFileFstream());
         }
         /* Reading of data from a past simulation.*/
         std::fstream file;
@@ -217,7 +217,7 @@ void stateMatrixs::leerDbStateMatrixs() {
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         // iLinkConnection          |-->| POSITION IN THE ARRAY linkConection
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        // Update the street or linkActual, which is the street the person will go along. 
+        // Update the street or currentLink, which is the street the person will go along. 
 
         // Store each line of the file filname in the variable line.
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -226,7 +226,7 @@ void stateMatrixs::leerDbStateMatrixs() {
         // Q      |-->| Q OF STREET 1 OF THE linksConnection OF THE NODE
         // o      |-->| OTHER VARIABLES TO BE DEFINED
         // p0     |-->| WORD IN 0, READ BUT STORED 
-        // stateMatrixLeido |-->| CLASS IS CREATED AND THEN DESTROYED WITHIN THIS
+        // readStateMatrix |-->| CLASS IS CREATED AND THEN DESTROYED WITHIN THIS
         // SCOPE
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         // id could become unsigned short int
@@ -240,8 +240,8 @@ void stateMatrixs::leerDbStateMatrixs() {
         std::string s_str;
         std::string Q_str;
         std::string O_str;
-        std::vector<int> stateLeido;
-        std::vector<Q> QsLeido;
+        std::vector<int> readState;
+        std::vector<Q> readQs;
         // Iterate over all the lines of the file.
         while (std::getline(file, line)) {
             // If the file has comments with #, do not read them.
@@ -254,15 +254,15 @@ void stateMatrixs::leerDbStateMatrixs() {
             // Store the variable idNode
             std::getline(iss, idNode_str, ',');
             idNode = std::stoi(idNode_str);
-            node* const nodeLeido = nodes::get()->getDbNodeTotal().at(idNode).get();
+            node* const readNode = nodes::get()->getDbNodeTotal().at(idNode).get();
             // !-----------------------------------------------------------------------
             // Store the elements of state
-            stateLeido.clear();
-            for (int i = 0; i < io::tamanoElementosIO; ++i) {
-                if (i < nodeLeido->getLinkConnectionsPtr().size()) {
+            readState.clear();
+            for (int i = 0; i < io::ioElementSize; ++i) {
+                if (i < readNode->getLinkConnectionsPtr().size()) {
                     std::getline(iss, s_str, ',');
                     s = std::stoi(s_str);
-                    stateLeido.push_back(s);
+                    readState.push_back(s);
                 } 
                 else {
                     std::getline(iss, p0, ',');
@@ -273,15 +273,15 @@ void stateMatrixs::leerDbStateMatrixs() {
             // when reading stateMatrix files from python
             if (std::get<std::string>(dictionary::get()->lookupDefault("pythonOption")) == "in" and
             std::get<bool>(dictionary::get()->lookupDefault("pythonVersion")) == true) {
-                QsLeido.clear();
-                QsLeido.resize(nodeLeido->getLinkConnectionsPtr().size());
-                for (int i = 0; i < io::tamanoElementosIO; ++i) {
+                readQs.clear();
+                readQs.resize(readNode->getLinkConnectionsPtr().size());
+                for (int i = 0; i < io::ioElementSize; ++i) {
                     // check whether it is an evacuation node
-                    if(nodeLeido->verificarNodoEvacuation()){
+                    if(readNode->checkNodeEvacuation()){
                         if (i == 0) {
                             std::getline(iss, Q_str, ',');
                             Qa = std::stod(Q_str);
-                            QsLeido[i] = Q(Qa);
+                            readQs[i] = Q(Qa);
                         }
                         else {
                             std::getline(iss, p0, ',');
@@ -289,10 +289,10 @@ void stateMatrixs::leerDbStateMatrixs() {
                     }
                     // when it is not an evacuation node
                     else {
-                        if (i < nodeLeido->getLinkConnectionsPtr().size()) {
+                        if (i < readNode->getLinkConnectionsPtr().size()) {
                             std::getline(iss, Q_str, ',');
                             Qa = std::stod(Q_str);
-                            QsLeido[i] = Q(Qa, actiondb.at(idNode).at(i));
+                            readQs[i] = Q(Qa, actiondb.at(idNode).at(i));
                         } 
                         else {
                             std::getline(iss, p0, ',');
@@ -303,15 +303,15 @@ void stateMatrixs::leerDbStateMatrixs() {
             }
             // when reading a stateMatrix file from the same program
             else {
-                QsLeido.clear();
+                readQs.clear();
                 // iterate over the size of elements, generally it is 10
-                for (int i = 0; i < io::tamanoElementosIO; ++i) {
+                for (int i = 0; i < io::ioElementSize; ++i) {
                     // check whether it is an evacuation node
-                    if(nodeLeido->verificarNodoEvacuation()){
+                    if(readNode->checkNodeEvacuation()){
                         if (i == 0) {
                             std::getline(iss, Q_str, ',');
                             Qa = std::stod(Q_str);
-                            QsLeido.push_back(Q(Qa));
+                            readQs.push_back(Q(Qa));
                         }
                         else {
                             std::getline(iss, p0, ',');
@@ -319,10 +319,10 @@ void stateMatrixs::leerDbStateMatrixs() {
                     }
                     // when it is not an evacuation node
                     else {
-                        if (i < nodeLeido->getLinkConnectionsPtr().size()) {
+                        if (i < readNode->getLinkConnectionsPtr().size()) {
                             std::getline(iss, Q_str, ',');
                             Qa = std::stod(Q_str);
-                            QsLeido.push_back(Q(Qa, nodeLeido->getLinkConnectionsPtr().at(i)));
+                            readQs.push_back(Q(Qa, readNode->getLinkConnectionsPtr().at(i)));
                         } 
                         else {
                             std::getline(iss, p0, ',');
@@ -332,16 +332,16 @@ void stateMatrixs::leerDbStateMatrixs() {
             }
             // !-----------------------------------------------------------------------
             // Observation elements
-            for (int i = 0; i < io::tamanoElementosIO; ++i) {
+            for (int i = 0; i < io::ioElementSize; ++i) {
                 // check whether it is an evacuation node
-                if(nodeLeido->verificarNodoEvacuation()){
+                if(readNode->checkNodeEvacuation()){
                     if (i == 0) {
                         // always go through the observations
                         std::getline(iss, O_str, ',');
                         // if I want to read past observations
                         if (std::get<bool>(dictionary::get()->lookupDefault("observationStatePedestrian")) == true) {
                             O = std::stod(O_str);
-                            QsLeido.at(i).setObservaciones(O);
+                            readQs.at(i).setObservations(O);
                         }
                     } 
                     else {
@@ -350,13 +350,13 @@ void stateMatrixs::leerDbStateMatrixs() {
                 }
                 // if it is not an evacuation node
                 else {
-                    if (i < nodeLeido->getLinkConnectionsPtr().size()) {
+                    if (i < readNode->getLinkConnectionsPtr().size()) {
                         // always go through the observations
                         std::getline(iss, O_str, ',');
                         // if I want to read past observations
                         if (std::get<bool>(dictionary::get()->lookupDefault("observationStatePedestrian")) == true) {
                             O = std::stod(O_str);
-                            QsLeido.at(i).setObservaciones(O);
+                            readQs.at(i).setObservations(O);
                         }
                     } 
                     else {
@@ -366,9 +366,9 @@ void stateMatrixs::leerDbStateMatrixs() {
                 }
             }
             // creation of the stateMatrix
-            stateMatrix* nuevoStateMatrix = new stateMatrix(nodeLeido, stateLeido, QsLeido);
-            dbStateMatrixs.emplace_back(nuevoStateMatrix);
-            nodeLeido->addStateMatrixExperimentadosPtr(nuevoStateMatrix);
+            stateMatrix* newStateMatrix = new stateMatrix(readNode, readState, readQs);
+            dbStateMatrixs.emplace_back(newStateMatrix);
+            readNode->addExperiencedStateMatrixPtr(newStateMatrix);
         }
         file.close(); 
         // // End the timing
@@ -381,22 +381,22 @@ void stateMatrixs::leerDbStateMatrixs() {
     }
 
 }
-void stateMatrixs::mostrarDbStateMatrixs() const {
+void stateMatrixs::showDbStateMatrixs() const {
     // Show all the stateMatrix inside dbStateMatrixs.
    for (int i = 0; i < dbStateMatrixs.size(); i++) {
-        dbStateMatrixs[i]->mostrarStateMatrix();
+        dbStateMatrixs[i]->showStateMatrix();
     }
 }
-void stateMatrixs::imprimirDbStateMatrixs(fileIO* const file) const {
+void stateMatrixs::printDbStateMatrixs(fileIO* const file) const {
     // Create the name of the export file.
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // file    |-->| OUTPUT FILE, THE NAME IS CREATED WITH crearFilenameSalida()
+    // file    |-->| OUTPUT FILE, THE NAME IS CREATED WITH createOutputFilename()
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // std::fstream file;
-    // file.open(creacionArchivoSalida(), std::ios::out);
+    // file.open(createOutputFile(), std::ios::out);
     // Iterate over all the nodes
     for (const auto& it : dbStateMatrixs) {
         // print the statesMatrix of the tables of each node 
-        it->imprimirStateMatrix(file);
+        it->printStateMatrix(file);
     }
 }

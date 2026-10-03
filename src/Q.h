@@ -37,38 +37,38 @@
 class link;
 class Q {
 private: 
-    double valor;
-    const link* callePtr;
-    int observaciones;
+    double value;
+    const link* streetPtr;
+    int observations;
 
 public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // constructor
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Q();
-    Q(const double valor);
-    Q(const link* const callePtr);
-    Q(const double valor, const link* const callePtr);
+    Q(const double value);
+    Q(const link* const streetPtr);
+    Q(const double value, const link* const streetPtr);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // setters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    void setObservaciones(int observaciones);
+    void setObservations(int observations);
   
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // getter
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    double* getValor();
-    double getValor() const;
-    const link* getCallePtr() const; 
-    int getObservaciones() const;
+    double* getValue();
+    double getValue() const;
+    const link* getStreetPtr() const; 
+    int getObservations() const;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    void aumentar1Observacion();
-    void mostrarQs() const;
-    void imprimirQs(std::fstream& file) const;
+    void increase1Observation();
+    void showQs() const;
+    void printQs(std::fstream& file) const;
 };
 #endif
     

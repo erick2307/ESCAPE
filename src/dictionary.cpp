@@ -33,10 +33,10 @@ dictionary* dictionary::dictionaryInstance = nullptr;
 // constructor
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 dictionary::dictionary() {
-    leerDictionary();
+    readDictionary();
 }
 dictionary::dictionary(std::string nameDictionary) {
-    leerDictionary();
+    readDictionary();
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,8 +70,8 @@ dictionary* dictionary::get() {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void dictionary::leerDictionary() {
-    std::string fileName = dictionary::systemCarpet + getNameDictionary();
+void dictionary::readDictionary() {
+    std::string fileName = dictionary::systemFolder + getNameDictionary();
     std::fstream file;
     file.open(fileName, std::ios::in);
     // check whether the file exists
@@ -81,11 +81,11 @@ void dictionary::leerDictionary() {
     }
     // Variables of one row of the nodes file, which would be a single node
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // edad                 |-->| AGE OF THE PERSON
+    // age                 |-->| AGE OF THE PERSON
     // gender               |-->| GENDER OF THE PERSON
     // hhType               |-->| 
     // hhId                 |-->| 
-    // idNodeInicio         |-->| ID OF THE START NODE 
+    // startNodeId         |-->| ID OF THE START NODE 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     std::string line;
     std::string keyword_str, value_str;
@@ -103,8 +103,8 @@ void dictionary::leerDictionary() {
         std::getline(iss >> std::ws, value_str, ';');
         // stores the values in a dictionary
         // looks up the value type of the element
-        if (verificarOptions(keyword_str, value_str)) {
-            verificarType(keyword_str, value_str);
+        if (checkOptions(keyword_str, value_str)) {
+            checkType(keyword_str, value_str);
         }
     }
     file.close(); 
@@ -134,7 +134,7 @@ std::variant<std::string, int, double, bool> dictionary::lookupDefault(std::stri
         return controlDictDefault.at(keyword);
     }
 }
-bool dictionary::verificarOptions(std::string keyword, std::string value) const {
+bool dictionary::checkOptions(std::string keyword, std::string value) const {
     // checks whether the keyword exists in controlDictOptions
     auto it = controlDictOptions.find(keyword);
     if (it != controlDictOptions.end()) {
@@ -151,7 +151,7 @@ bool dictionary::verificarOptions(std::string keyword, std::string value) const 
     }
     return true;
 }
-bool dictionary::verificarType(std::string keyword, std::string value)  {
+bool dictionary::checkType(std::string keyword, std::string value)  {
     // looks up the requested keyword in typeControlDict and stores it in it
     std::map<std::string, std::string>::const_iterator it = typeControlDict.find(keyword);
     if (it != typeControlDict.end()) {
@@ -169,7 +169,7 @@ bool dictionary::verificarType(std::string keyword, std::string value)  {
             return true;
         }
         else if (type == "bool") {
-            if (value=="yes" or value=="true" or value=="si") {
+            if (value=="yes" or value=="true") {
                 controlDict[keyword] = true;
                 return true;
             }
@@ -189,7 +189,7 @@ bool dictionary::verificarType(std::string keyword, std::string value)  {
 // static metods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-void dictionary::mostrarControlDict() {
+void dictionary::showControlDict() {
     std::cout << "Contents of controlDict:" << std::endl;
     for (const auto& entry : controlDictDefault) {
         std::cout << entry.first << ": ";

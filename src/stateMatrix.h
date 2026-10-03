@@ -40,7 +40,7 @@ A row of an input or output file.
 
 // forward declaration
 class node;
-class nodeDestino;
+class nodeEvacuation;
 
 
 class stateMatrix {
@@ -51,7 +51,7 @@ private:
     // state     |-->| EXPERIENCED STATE IS COMPOSED OF THE DENSITIES OF THE CONNECTED LINKS
     // Qs        |-->| Q OF THE LINKS IN AN EXPERIENCED STATE
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    const node* const nodoPtr;
+    const node* const nodePtr;
     const std::vector<int> state;
     std::vector<Q> Qs;
 
@@ -59,14 +59,14 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // static member
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // static const int tamanoVectorIO;
+    // static const int ioVectorSize;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // constructor
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     stateMatrix();
     stateMatrix(const node* const nodePtr, const std::vector<int> state);
-    stateMatrix(const nodeDestino* const nodeDestinoPtr, const std::vector<int> state);
+    stateMatrix(const nodeEvacuation* const nodeEvacuationPtr, const std::vector<int> state);
     stateMatrix(const node* const nodePtr, const std::vector<int> state, std::vector<Q> Qs);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -83,26 +83,26 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // static getter
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // int static getTamanoVector();
+    // int static getVectorSize();
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     bool operator==(stateMatrix stateMatrix2);
-    stateMatrix* buscarStateMatrix(std::vector<int> state) const;
-    Q* buscarQ(const link* const callePtr);
-    const Q* buscarQMax() ;
-    void mostrarStateMatrix() const;
-    void imprimirState(fileIO* const file) const;
-    void imprimirQs(fileIO* const file) const;
-    void imprimirStateMatrix(fileIO* const file) const;
+    stateMatrix* findStateMatrix(std::vector<int> state) const;
+    Q* findQ(const link* const streetPtr);
+    const Q* findQMax() ;
+    void showStateMatrix() const;
+    void printState(fileIO* const file) const;
+    void printQs(fileIO* const file) const;
+    void printStateMatrix(fileIO* const file) const;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // static methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    static stateMatrix* creacionObtencionStateMatrix(
-        node* const nodo,
-        const std::vector<int> stateObservado);
+    static stateMatrix* createOrGetStateMatrix(
+        node* const targetNode,
+        const std::vector<int> observedState);
 
 
 };

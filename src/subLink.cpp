@@ -34,9 +34,9 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // constructor
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-subLink::subLink(const link *calle)
-    : calle(calle),
-      densidadSublink(0)
+subLink::subLink(const link *street)
+    : street(street),
+      sublinkDensity(0)
 {
 }
 
@@ -46,8 +46,8 @@ subLink::subLink(const link *calle)
 void subLink::setPedestriansInSublink(std::vector<pedestrian*> pedestriansInSublink) {
     (*this).pedestriansInSublink = pedestriansInSublink;
 }
-void subLink::setDensidadSublink(double densidadSublink) {
-    (*this).densidadSublink = densidadSublink;
+void subLink::setSublinkDensity(double sublinkDensity) {
+    (*this).sublinkDensity = sublinkDensity;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,40 +56,40 @@ void subLink::setDensidadSublink(double densidadSublink) {
 std::vector<pedestrian*>& subLink::getPedestriansInSublink() {
     return pedestriansInSublink;
 }
-double subLink::getDensidadSublink() const {
-    return densidadSublink;
+double subLink::getSublinkDensity() const {
+    return sublinkDensity;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void subLink::actualizarVelocidadPedestrianInSublink(double &velocidad) {
-    for (pedestrian* persona: pedestriansInSublink) {
-        persona->setVelocidadPedestrian(velocidad);
+void subLink::updatePedestrianVelocityInSublink(double &velocity) {
+    for (pedestrian* person: pedestriansInSublink) {
+        person->setPedestrianVelocity(velocity);
     }
 }
-double subLink::calcularDensidadSubdivision() const{
+double subLink::calculateSubdivisionDensity() const{
     /* calculates the density of the subdivision*/
-    return pedestriansInSublink.size() / (calle->getAnchoSubdivisiones() * calle->getWidth()); 
+    return pedestriansInSublink.size() / (street->getSubdivisionWidth() * street->getWidth()); 
 }
-void subLink::agregarPedestrian(pedestrian* const persona) {
+void subLink::addPedestrian(pedestrian* const person) {
 //     /* add person to the sublink*/
-    pedestriansInSublink.push_back(persona);
+    pedestriansInSublink.push_back(person);
 }
-void subLink::quitarPedestrian(pedestrian *const persona) {
+void subLink::removePedestrian(pedestrian *const person) {
     /* remove person from the sublink because they move to another sublink*/
-    pedestriansInSublink.erase(std::remove(pedestriansInSublink.begin(), pedestriansInSublink.end(), persona), pedestriansInSublink.end());
+    pedestriansInSublink.erase(std::remove(pedestriansInSublink.begin(), pedestriansInSublink.end(), person), pedestriansInSublink.end());
 }
-double subLink::calcularCantidadPedestrians() const {
+double subLink::calculatePedestrianCount() const {
     return pedestriansInSublink.size();
 }
-void subLink::reiniciar() {
+void subLink::reset() {
     pedestriansInSublink.clear();
-    densidadSublink = 0;
+    sublinkDensity = 0;
 }
-void subLink::mostrarsubdivision() const {
+void subLink::showSubdivision() const {
     std::cout << std::setw(2) << pedestriansInSublink.size() << " ";
     std::cout << std::fixed << std::setprecision(2);
-    std::cout << densidadSublink;
+    std::cout << sublinkDensity;
     std::cout << "|";
 }

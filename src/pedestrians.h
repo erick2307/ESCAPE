@@ -67,14 +67,14 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // metods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    void leerPedestrians(std::string fileName);
-    void tiempoInicioDistribution();
-    void reiniciarPedestrians();
-    void reiniciarConteoPedestrians();
-    void modelamientoPedestrians();
-    void mostrarDbPedestrianMovimiento();
-    void mostrarDbPedestrianTotal() const;
-    void imprimirPedestrians(fileIO* file1, fileIO* file2);
+    void readPedestrians(std::string fileName);
+    void initialTimeDistribution();
+    void resetPedestrians();
+    void resetPedestrianCount();
+    void modelPedestrians();
+    void showDbPedestrianMovement();
+    void showDbPedestrianTotal() const;
+    void printPedestrians(fileIO* file1, fileIO* file2);
 };
 
 #endif

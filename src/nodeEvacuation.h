@@ -35,34 +35,34 @@
 // forward declaration
 class pedestrian;
 
-class nodeDestino: public node {
+class nodeEvacuation: public node {
     
 private:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // maxPersonasEvacuadas   |-->| ID OF THE INTERSECTION
-    // personasEvacuadasPtr   |-->| LIST OF POINTERS TO EVACUATED PEOPLE
-    // lleno                  |-->| EVACUATION NODE AT MAXIMUM CAPACITY 
+    // maxEvacuatedPeople   |-->| ID OF THE INTERSECTION
+    // evacuatedPeoplePtr   |-->| LIST OF POINTERS TO EVACUATED PEOPLE
+    // full                  |-->| EVACUATION NODE AT MAXIMUM CAPACITY 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    const int maxPersonasEvacuadas;
-    std::vector<pedestrian*> personasEvacuadasPtr;
-    bool lleno;
+    const int maxEvacuatedPeople;
+    std::vector<pedestrian*> evacuatedPeoplePtr;
+    bool full;
 
 public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // static member
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    static int totalPersonasEvacuadas;
-    static int maxPersonasEvacuadasGlobal;
-    static bool evacuacionTotal;
+    static int totalEvacuatedPeople;
+    static int maxEvacuatedPeopleGlobal;
+    static bool totalEvacuation;
 
     std::string getNodeType() override;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // constructor
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    nodeDestino();
-    nodeDestino(const int id, const vector2D coordenada);
-    nodeDestino(const int id, const vector2D coordenada, const int maxPersonasEvacuadas);
+    nodeEvacuation();
+    nodeEvacuation(const int id, const vector2D coordinate);
+    nodeEvacuation(const int id, const vector2D coordinate, const int maxEvacuatedPeople);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // setters
@@ -71,38 +71,38 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // getters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    const int getMaxPersonasEvacuadas() const;
-    std::vector<pedestrian*> getPersonasEvacuadasPtr() const;
-    bool getLleno() const;
+    const int getMaxEvacuatedPeople() const;
+    std::vector<pedestrian*> getEvacuatedPeoplePtr() const;
+    bool getFull() const;
     
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // static getters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    int static getTotalPersonasEvacuadas();
-    static bool verificarEvacuacionTotal();
+    int static getTotalEvacuatedPeople();
+    static bool checkTotalEvacuation();
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    void reiniciar();
-    bool verificarLLeno() const;
-    estado estadoPedestrianEnNodo() const override;
-    bool verificarNodoEvacuation() const override;
-    std::vector<int> stateObservado() const override;
-    void contabilizarPersona(pedestrian* const persona);
-    void imprimirPersonasEvacuadas(std::fstream* file);
+    void reset();
+    bool checkFull() const;
+    pedestrianStatus pedestrianStateAtNode() const override;
+    bool checkNodeEvacuation() const override;
+    std::vector<int> observedState() const override;
+    void registerPerson(pedestrian* const person);
+    void printEvacuatedPeople(std::fstream* file);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // static metods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    static void sumarTotalPersonasEvacuadas();
-    static void imprimirNodeEvacuation(fileIO* const file);
-    static void imprimirTotalPersonasEvacuadas(fileIO* const file);
-    static void plotearTotalEvacuadosXSimulacion(fileIO* const file);
-    static void imprimirTotalEvacuadosXSimulacion(fileIO* const file);
-    static void plotearEvacuadosVsTiempo(fileIO* const file);
-    static void imprimirEvacuadosVsTiempo(fileIO* const file);
-    static void imprimirVariableTotalPersonasEvacuadas(fileIO* const file);
+    static void addTotalEvacuatedPeople();
+    static void printNodeEvacuation(fileIO* const file);
+    static void printTotalEvacuatedPeople(fileIO* const file);
+    static void plotEvacuatedVsTime(fileIO* const file);
+    static void printEvacuatedVsTime(fileIO* const file);
+    static void plotTotalEvacuatedVsSimulation(fileIO* const file);
+    static void printTotalEvacuatedVsSimulation(fileIO* const file);
+    static void printTotalEvacuatedPeopleVariable(fileIO* const file);
 
 
 };

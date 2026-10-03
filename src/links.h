@@ -76,13 +76,13 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    void leerLinks(std::string fileName);
-    void contarPedestrians();
+    void readLinks(std::string fileName);
+    void countPedestrians();
     void resetSublinks();
     void resetLinks();
-    void mostrarDbLinksTotal();
-    void mostrarSublink();
-    void imprimirMeshLinks();
+    void showDbLinksTotal();
+    void showSublink();
+    void printMeshLinks();
 
 };
 #endif

@@ -7,12 +7,12 @@ from screeninfo import get_monitors
 from os import path
 
 #files
-ruta_absoluta = path.abspath(__file__)
-directory_main = path.dirname(path.dirname(ruta_absoluta))
+absolute_path = path.abspath(__file__)
+directory_main = path.dirname(path.dirname(absolute_path))
 directory_data = path.join(directory_main, "data/time/")
 directory_export = path.join(directory_main, "postprocessing/snapshot/")
 os.makedirs(directory_export, exist_ok=True)
-directory_mesh = path.join(directory_main, "mesh/poliLinks")
+directory_mesh = path.join(directory_main, "mesh/polyLinks")
 
 x1_values = []
 x2_values = []
@@ -29,31 +29,31 @@ with open(directory_mesh, 'r') as csv_file:
         y2_values.append(float(row[3]))
 
 
-directorio_principal = '../'
-elementos = os.listdir(directory_data)
+main_directory = '../'
+entries = os.listdir(directory_data)
 
-carpetas_numericas = [elemento
-                      for elemento
-                      in elementos
+numeric_folders = [entry
+                      for entry
+                      in entries
                       if os.path.isdir(os.path.join(directory_data,
-                                                    elemento))
-                      and elemento.isdigit()]
-carpetas_numericas_ordenadas = sorted(carpetas_numericas, key=int)
+                                                    entry))
+                      and entry.isdigit()]
+sorted_numeric_folders = sorted(numeric_folders, key=int)
 
-bar = progressbar.ProgressBar(maxval=len(carpetas_numericas_ordenadas)).start()
+bar = progressbar.ProgressBar(maxval=len(sorted_numeric_folders)).start()
 screen_width = get_monitors()[0].width
 screen_height = get_monitors()[0].height
 width = screen_width/100
 height = screen_height/100
 
-for i in carpetas_numericas_ordenadas:
+for i in sorted_numeric_folders:
     fileName = directory_data + i + "/xy"
     fileName2 = directory_data + i + "/U"
-    fileName3 = directory_data + i + "/cantPedestrianEvacuated"
+    fileName3 = directory_data + i + "/evacuatedPedestrianCount"
     x_values = []
     y_values = []
-    magnitud = []
-    cantPedestrianEvacuated = []
+    magnitude = []
+    evacuatedPedestrianCount = []
 
     with open(fileName, 'r') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=' ')
@@ -66,25 +66,25 @@ for i in carpetas_numericas_ordenadas:
         csv_reader = csv.reader(csv_file2, delimiter=' ')
 
         for row in csv_reader:
-            magnitud.append(float(row[0]))
+            magnitude.append(float(row[0]))
 
     with open(fileName3, 'r') as csv_file3:
         csv_reader = csv.reader(csv_file3, delimiter=' ')
 
         for row in csv_reader:
-            cantPedestrianEvacuated.append(float(row[0]))
+            evacuatedPedestrianCount.append(float(row[0]))
 
     fig, ax = plt.subplots(1, 1, figsize=(width, height))
     ax.plot([x1_values, x2_values], [y1_values, y2_values], c="k", lw=1)
     vmin, vmax = 0.0, 1.3  # Adjust the limits to your needs
-    scatter = ax.scatter(x_values, y_values, c=magnitud,
+    scatter = ax.scatter(x_values, y_values, c=magnitude,
                          cmap="jet_r", marker='o', edgecolors="none",
                          vmin=vmin, vmax=vmax)
     # plt.title('Plot from CSV file')
     plt.xlabel('X values')
     plt.ylabel('Y values')
-    cantPeEv = str(int(cantPedestrianEvacuated[0]))
-    text1 = "t = " + i + " sec; evacuated: " + cantPeEv
+    evacuated_count = str(int(evacuatedPedestrianCount[0]))
+    text1 = "t = " + i + " sec; evacuated: " + evacuated_count
     fig.text(0.05, 0.03, text1, fontsize=12, fontweight='normal')
     plt.colorbar(scatter, ax=ax)
     # Adjust the vmin and vmax values to your preferences
@@ -100,5 +100,5 @@ for i in carpetas_numericas_ordenadas:
 
     plt.savefig(directory_export + i)
     plt.close(fig)
-    bar.update(carpetas_numericas_ordenadas.index(i) + 1)
+    bar.update(sorted_numeric_folders.index(i) + 1)
 bar.finish()

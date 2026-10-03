@@ -56,7 +56,7 @@ public:
     vector2D operator*(const vector2D& vector2) const;
     vector2D operator*(const double scalar) const;
     vector2D operator+=(vector2D vector2);
-    double distanciaA(const vector2D& coordenada2) const;
-    void mostrarVector() const;
+    double distanceTo(const vector2D& coordinate2) const;
+    void showVector() const;
 };
 #endif

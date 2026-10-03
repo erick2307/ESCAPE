@@ -35,10 +35,10 @@
 #include "dictionary.h"
 #include "chrono"
 
-class tiempo {
+class simulationTime {
 private:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // valorTiempo           |-->| SIMULATION TIME 
+    // timeValue           |-->| SIMULATION TIME 
     // deltaT                |-->| SIMULATION TIME STEP  
     // endTime               |-->| END TIME OF THE SIMULATION
     // graphicPrintoutPeriod |-->| TIME PERIOD FOR PRINTING DATA
@@ -47,7 +47,7 @@ private:
     // endNumberSimulation   |-->| END OF THE SIMULATION NUMBER
     // randomChoiceRate      |-->| COEFFICIENT OF CHOICE BETWEEN RANDOM OR SARSA 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    int valorTiempo;
+    int timeValue;
     const int deltaT;
     const int endTime;
     int startNumberSimulation;
@@ -61,24 +61,24 @@ private:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // constructor
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    tiempo();
+    simulationTime();
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // static member
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    static tiempo* tiempoInstance;
+    static simulationTime* simulationTimeInstance;
 
 public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // static member
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    static int deltaTiempo;
+    static int deltaTime;
     static std::string filenameData;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // setters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    void setValorTiempo(int valorTiempo);
+    void setTimeValue(int timeValue);
     void setStartNumberSimulation(int startNumberSimulation);
     void setINumberSimulation(int iNumberSimulation);
     void setEndNumberSimulation(int endNumberSimulation);
@@ -86,7 +86,7 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // getters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    int getValorTiempo() const;
+    int getTimeValue() const;
     const int getEndTime() const;
     const int getDeltaT() const;
     const int getGraphicPrintoutPeriod() const;
@@ -99,24 +99,24 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // static getters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    static tiempo* get();
+    static simulationTime* get();
     static std::string getFilenameData();
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    tiempo& operator++(int);
-    void aumentarTiempo();
-    void aumentarINumberSimulation();
-    void inicializarNumberSimulation();
+    simulationTime& operator++(int);
+    void increaseTime();
+    void increaseINumberSimulation();
+    void initializeNumberSimulation();
     int extractINumberSimulation() const;
-    void calcularRandomChoiceRate();
-    const double calcularTemp(const double r) const;
+    void calculateRandomChoiceRate();
+    const double calculateTemp(const double r) const;
     bool running() const;
-    void mostrarTiempo() const;
-    void mostrarIResultadosSimulacion();
-    bool verificarGraphicPrintoutPeriod() const; 
-    bool verificarPedestrianCountPeriod() const; 
+    void showTime() const;
+    void showSimulationResults();
+    bool checkGraphicPrintoutPeriod() const; 
+    bool checkPedestrianCountPeriod() const; 
     
 };
 

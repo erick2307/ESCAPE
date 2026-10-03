@@ -53,11 +53,11 @@ private:
     // idNode2           |-->| THE OTHER INTERSECTION OF THE STREET 
     // length            |-->| LENGTH OF THE STREET
     // width             |-->| WIDTH OF THE STREET
-    // orientacionLink   |-->| ANGLE THAT THE HORIZONTAL FORMS WITH THE STREET
-    // anchoSubdivision  |-->| WIDTH OF A SUBDIVISION OF THE STREET
+    // linkOrientation   |-->| ANGLE THAT THE HORIZONTAL FORMS WITH THE STREET
+    // subdivisionWidth  |-->| WIDTH OF A SUBDIVISION OF THE STREET
     // densityLevel      |-->| DENSITY LEVEL OF THE STREET
     // pedestriansLinkPtr|-->| PEOPLE IN THE STREET
-    // subdivisiones     |-->| SUBDIVISIONS OF THE STREET
+    // subdivisions     |-->| SUBDIVISIONS OF THE STREET
     // numberLinkDivision|-->| NUMBER OF DIVISIONS OR SUBLINKS OF A STREET
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     const int idLink;
@@ -65,11 +65,11 @@ private:
     const node* const node2Ptr;
     const int length;
     const int width;
-    const vector2D orientacionLink;
-    const double anchoSubdivision;
-    const int cantidadSubdivisiones;
+    const vector2D linkOrientation;
+    const double subdivisionWidth;
+    const int subdivisionCount;
     int densityLevel;
-    std::vector<subLink> subdivisiones;
+    std::vector<subLink> subdivisions;
     
 public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -95,28 +95,28 @@ public:
     const node* const getNode2Ptr() const;
     const int getLength() const;
     const int getWidth() const;
-    const vector2D getOrientacionLink() const;
-    const double getAnchoSubdivisiones() const;
-    const int getCantidadSubdivisiones() const;
+    const vector2D getLinkOrientation() const;
+    const double getSubdivisionWidth() const;
+    const int getSubdivisionCount() const;
     int getDensityLevel();
-    std::vector<subLink>& getSubdiviones();
+    std::vector<subLink>& getSubdivisions();
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    const vector2D calcularOrientacionLink() const;
-    const double calcularAnchoSubdivision(const std::string &opcionSubdivision) const;
-    const int calcularCantidadSubdivisiones(const std::string &opcionSubdivision);
-    void calcularDensityGeneral();
-    int calcularPedestriansLink() const;
-    int calcularDensityLink() const;
-    int calcularDensityLevelLink(const double densidadLink) const;
-    void agregarPedestrianSublink(pedestrian* const persona, const int idSublink);
-    void quitarPedestrianSublink(pedestrian* const persona, const int idSublink);
-    subLink* calcularSublink(const vector2D &position) const;
-    void reiniciarSubdivisiones();
-    void mostrarSubdivisiones() const;
-    void mostrarLink() const;
-    void imprimirLink(std::fstream& file);
+    const vector2D calculateLinkOrientation() const;
+    const double calculateSubdivisionWidth(const std::string &subdivisionOption) const;
+    const int calculateSubdivisionCount(const std::string &subdivisionOption);
+    void calculateDensityGeneral();
+    int calculatePedestriansLink() const;
+    int calculateDensityLink() const;
+    int calculateDensityLevelLink(const double linkDensity) const;
+    void addPedestrianSublink(pedestrian* const person, const int idSublink);
+    void removePedestrianSublink(pedestrian* const person, const int idSublink);
+    subLink* calculateSublink(const vector2D &position) const;
+    void resetSubdivisions();
+    void showSubdivisions() const;
+    void showLink() const;
+    void printLink(std::fstream& file);
 };
 #endif

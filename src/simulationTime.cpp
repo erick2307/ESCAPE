@@ -27,115 +27,115 @@
 #include "pedestrians.h"
 #include <chrono>
 
-int tiempo::deltaTiempo = 1;
-std::string tiempo::filenameData = "data/";
+int simulationTime::deltaTime = 1;
+std::string simulationTime::filenameData = "data/";
 
 
-tiempo* tiempo::tiempoInstance = nullptr;
+simulationTime* simulationTime::simulationTimeInstance = nullptr;
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // constructor
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-tiempo::tiempo()
+simulationTime::simulationTime()
     : deltaT(1),
-      valorTiempo(0),
+      timeValue(0),
       endTime(std::get<int>(dictionary::get()->lookup("endTime"))),
       graphicPrintoutPeriod(std::get<int>(dictionary::get()->lookupDefault("graphicPrintoutPeriod"))),
       pedestrianCountPeriod(std::get<int>(dictionary::get()->lookupDefault("pedestrianCountPeriod")))
 {
-    inicializarNumberSimulation();
+    initializeNumberSimulation();
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // setters
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void tiempo::setValorTiempo(int valorTiempo) {
-    (*this).valorTiempo = valorTiempo;
+void simulationTime::setTimeValue(int timeValue) {
+    (*this).timeValue = timeValue;
 }
-void tiempo::setStartNumberSimulation(int startNumberSimulation) {
+void simulationTime::setStartNumberSimulation(int startNumberSimulation) {
     (*this).startNumberSimulation = startNumberSimulation;
 }
-void tiempo::setINumberSimulation(int iNumberSimulation) {
+void simulationTime::setINumberSimulation(int iNumberSimulation) {
     (*this).iNumberSimulation = iNumberSimulation;
 }
-void tiempo::setEndNumberSimulation(int endNumberSimulation) {
+void simulationTime::setEndNumberSimulation(int endNumberSimulation) {
     (*this).endNumberSimulation = endNumberSimulation;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // getters
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int tiempo::getValorTiempo() const {
-    return valorTiempo;
+int simulationTime::getTimeValue() const {
+    return timeValue;
 }
-const int tiempo::getEndTime() const {
+const int simulationTime::getEndTime() const {
     return endTime;
 }
-const int tiempo::getDeltaT() const {
+const int simulationTime::getDeltaT() const {
     return deltaT;  
 }
-const int tiempo::getGraphicPrintoutPeriod() const {
+const int simulationTime::getGraphicPrintoutPeriod() const {
     return graphicPrintoutPeriod;
 }
-int tiempo::getStartNumberSimulation() const {
+int simulationTime::getStartNumberSimulation() const {
     return startNumberSimulation;
 }
-int tiempo::getINumberSimulation() const {
+int simulationTime::getINumberSimulation() const {
     return iNumberSimulation;
 }
-int tiempo::getEndNumberSimulation() const {
+int simulationTime::getEndNumberSimulation() const {
     return endNumberSimulation;
 }
-const int tiempo::getPedestrianCountPeriod() const {
+const int simulationTime::getPedestrianCountPeriod() const {
     return pedestrianCountPeriod;
 }
-double tiempo::getRandomChoiceRate() const {
+double simulationTime::getRandomChoiceRate() const {
     return randomChoiceRate;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // static getters
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-tiempo* tiempo::get() {
-    if (!tiempoInstance) {
-        tiempoInstance =  new tiempo();
+simulationTime* simulationTime::get() {
+    if (!simulationTimeInstance) {
+        simulationTimeInstance =  new simulationTime();
     }
-    return tiempoInstance;
+    return simulationTimeInstance;
 }
 
-std::string tiempo::getFilenameData() {
+std::string simulationTime::getFilenameData() {
     return filenameData;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-tiempo& tiempo::operator++(int) {
-    setValorTiempo(valorTiempo + deltaT); 
+simulationTime& simulationTime::operator++(int) {
+    setTimeValue(timeValue + deltaT); 
     return *this;
 }
-void tiempo::aumentarTiempo() {
+void simulationTime::increaseTime() {
     // increases the evacuation time
-    valorTiempo += deltaT;
+    timeValue += deltaT;
 }
-void tiempo::aumentarINumberSimulation() {
+void simulationTime::increaseINumberSimulation() {
     // increase the simulation number
     // setINumberSimulation(getINumberSimulation()+1);
     iNumberSimulation += 1;
     // reset the time
-    valorTiempo = 0;
+    timeValue = 0;
     // reset the count of evacuated people
-    nodeDestino::totalPersonasEvacuadas = 0;
+    nodeEvacuation::totalEvacuatedPeople = 0;
     // return the people to the start node
-    pedestrians::get()->reiniciarPedestrians();
-    nodes::get()->reiniciarNodesEvacuations();
+    pedestrians::get()->resetPedestrians();
+    nodes::get()->resetNodesEvacuations();
     // resets the list of people on streets
     links::get()->resetLinks();
     // restart the timer of a simulation 
     startTimeSimulation = std::chrono::high_resolution_clock::now();
 }
-void tiempo::inicializarNumberSimulation() {
+void simulationTime::initializeNumberSimulation() {
     /* Initialize the NumberSimulation variables*/
     // For calibration process
     if(std::get<std::string>(dictionary::get()->lookupDefault("process")) == "calibration"){
@@ -166,15 +166,15 @@ void tiempo::inicializarNumberSimulation() {
         endNumberSimulation = 1;
     }
 }
-int tiempo::extractINumberSimulation() const {
+int simulationTime::extractINumberSimulation() const {
     /* Extract the current simulation number according to the sim file of previous
         states from the control of the variable previousComputation*/
     const std::string lastFile_str = std::get<std::string>(dictionary::get()->lookup("previousComputationFile"));
     // finds the first number from 1-9 in the name of the states file
-    const size_t posicion = lastFile_str.find_first_of("123456789");
-    return std::stoi(lastFile_str.substr(posicion));
+    const size_t position = lastFile_str.find_first_of("123456789");
+    return std::stoi(lastFile_str.substr(position));
 }
-void tiempo::calcularRandomChoiceRate() {
+void simulationTime::calculateRandomChoiceRate() {
     const int k = iNumberSimulation;
     const int N = endNumberSimulation;
     // default value, can be 4 or 9 
@@ -186,7 +186,7 @@ void tiempo::calcularRandomChoiceRate() {
         auto it = dictionary::get()->getControlDict().find("exploration");
         if (it != dictionary::get()->getControlDict().end()) {
             // Key found, proceed with the operation
-            temp = calcularTemp(std::get<double>(it->second));
+            temp = calculateTemp(std::get<double>(it->second));
         }
         // formula for random choice
         const double gleeFactor = temp / double(N);
@@ -199,46 +199,46 @@ void tiempo::calcularRandomChoiceRate() {
         randomChoiceRate = 0;
     }
 }
-const double tiempo::calcularTemp(const double r) const {
+const double simulationTime::calculateTemp(const double r) const {
     const int N = endNumberSimulation;
     const double factor = N - 1;
     return (N - r * factor) / (r * factor);
 }
-bool tiempo::running() const {
+bool simulationTime::running() const {
     /* controls the evacuation time*/
     // Check whether the current time is less than the adjusted total evacuation time
-    if (valorTiempo >= (endTime - 0.5 * deltaT)) {
+    if (timeValue >= (endTime - 0.5 * deltaT)) {
         return false;
     }
     // Check whether all people have been evacuated
-    return !nodeDestino::verificarEvacuacionTotal();
+    return !nodeEvacuation::checkTotalEvacuation();
 }
-void tiempo::mostrarIResultadosSimulacion() {
+void simulationTime::showSimulationResults() {
     // show 
     std::cout << "***** Simu: " << iNumberSimulation << " *****" << std::endl;
     std::cout << "epsilon greedy - exploration: " << randomChoiceRate << std::endl;
-    std::cout << "survived pedestrian: " << nodeDestino::getTotalPersonasEvacuadas() << std::endl;
+    std::cout << "survived pedestrian: " << nodeEvacuation::getTotalEvacuatedPeople() << std::endl;
     // end of the simulation
     endTimeSimulation = std::chrono::high_resolution_clock::now();
     // simulation time
     const auto duration = endTimeSimulation - startTimeSimulation;
-    const auto miliSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration);
+    const auto milliSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration);
     const auto durationSeconds = std::chrono::duration_cast<std::chrono::seconds>(duration);
     const auto durationMinutes = std::chrono::duration_cast<std::chrono::minutes>(duration);
     std::cout << "Duration: " << durationMinutes.count() << " min";
     std::cout << " / " << durationSeconds.count() << " s";
-    std::cout << " / " << miliSeconds.count() << " ms" << std::endl;
+    std::cout << " / " << milliSeconds.count() << " ms" << std::endl;
     std::cout << std::endl;
 }
-void tiempo::mostrarTiempo() const {
+void simulationTime::showTime() const {
     // Show current time in the terminal.
-    std::cout << "Time = " << valorTiempo << std::endl;
+    std::cout << "Time = " << timeValue << std::endl;
 }
-bool tiempo::verificarGraphicPrintoutPeriod() const {
+bool simulationTime::checkGraphicPrintoutPeriod() const {
     /* how often to print variables*/
-    return (getValorTiempo() % graphicPrintoutPeriod == 0);
+    return (getTimeValue() % graphicPrintoutPeriod == 0);
 }
-bool tiempo::verificarPedestrianCountPeriod() const {
+bool simulationTime::checkPedestrianCountPeriod() const {
     /* how often to count the people*/
-    return getValorTiempo() % pedestrianCountPeriod == 0;
+    return getTimeValue() % pedestrianCountPeriod == 0;
 }

@@ -51,20 +51,20 @@ class node {
 private:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // idNode                      |-->| ID OF THE INTERSECTION
-    // coordenada                  |-->| X Y COORDINATE OF THE NODE
+    // coordinate                  |-->| X Y COORDINATE OF THE NODE
     // linkConnectionPtr           |-->| POINTER TO THE STREETS CONNECTED TO THE INTERSECTION
-    // stateMatrixExperimentosPtr  |-->| MAP AND TABLE OF STATEMATRIX OF THE INTERSECTION
+    // experiencedStateMatrixsPtr  |-->| MAP AND TABLE OF STATEMATRIX OF THE INTERSECTION
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     const int idNode;
-    const vector2D coordenada;
+    const vector2D coordinate;
     mutable std::vector<link*> linkConnectionsPtr;
-    std::vector<stateMatrix*> stateMatrixsExperimentadosPtr;
+    std::vector<stateMatrix*> experiencedStateMatrixsPtr;
 
 public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // constructor
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    node(const int id, const vector2D coordenada);
+    node(const int id, const vector2D coordinate);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // destructor
@@ -81,24 +81,24 @@ public:
     // getters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     const int getIdNode() const;
-    const vector2D getCoordenada() const;
+    const vector2D getCoordinate() const;
     const std::vector<link*> getLinkConnectionsPtr() const;
-    std::vector<stateMatrix*>* getStateMatrixExperimentadosPtr();
+    std::vector<stateMatrix*>* getExperiencedStateMatrixsPtr();
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    const node* buscarNodoFinal(link* callePtr) const;
-    virtual estado estadoPedestrianEnNodo() const;
-    virtual bool verificarNodoEvacuation() const;
-    virtual std::vector<int> stateObservado() const;
-    double calcularDistanciaA(const node* nodo2) const;
-    double calcularDistanciaA(const vector2D &position) const;
-    void addLink(link* calle);
-    void addStateMatrixExperimentadosPtr(stateMatrix* stateMatrixExperimentado);
-    void mostrarNode() const;
-    void mostrarStateMatrixTable() const;
-    void imprimirAction(std::fstream& file) const;
-    void imprimirTransition(std::fstream& file) const;
+    const node* findEndNode(link* streetPtr) const;
+    virtual pedestrianStatus pedestrianStateAtNode() const;
+    virtual bool checkNodeEvacuation() const;
+    virtual std::vector<int> observedState() const;
+    double calculateDistanceTo(const node* node2) const;
+    double calculateDistanceTo(const vector2D &position) const;
+    void addLink(link* street);
+    void addExperiencedStateMatrixPtr(stateMatrix* experiencedStateMatrix);
+    void showNode() const;
+    void showStateMatrixTable() const;
+    void printAction(std::fstream& file) const;
+    void printTransition(std::fstream& file) const;
 };
 #endif

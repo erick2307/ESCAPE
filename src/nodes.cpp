@@ -34,10 +34,10 @@ nodes* nodes::nodesInstance = nullptr;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nodes::nodes() {
     (*this).fileName = std::get<std::string>(dictionary::get()->lookupDefault("nodesFile"));
-    leerNodes(fileName);
+    readNodes(fileName);
 }
 nodes::nodes(std::string fileName) {
-   leerNodes(fileName);
+   readNodes(fileName);
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -49,7 +49,7 @@ std::string nodes::getFileName() {
 std::vector<std::shared_ptr<node>> nodes::getDbNodeTotal() {
     return dbNodeTotal;
 }
-std::vector<nodeDestino *> nodes::getDbNodeEvacuation() {
+std::vector<nodeEvacuation *> nodes::getDbNodeEvacuation() {
     return dbNodeEvacuation;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,16 +67,16 @@ nodes* nodes::get() {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // methods 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nodes::leerNodes(std::string fileName) {
+void nodes::readNodes(std::string fileName) {
     // Stores all the information of a single line. 
     std::string line;
     std::string lineActions;
     std::fstream fileActions;
-    int id, cantidadLinks;
+    int id, linkCount;
     std::string l_str;
     int l;
     char comma;
-    std::vector<int> conectionCalles;
+    std::vector<int> streetConnections;
     // Reading of nodes file
     std::fstream file;
     file.open(fileName, std::ios::in);
@@ -118,26 +118,26 @@ void nodes::leerNodes(std::string fileName) {
         // if the stateMatrix comes from the python version
         // there is a different order of the linksConnecton
         if (e==0) {
-            std::unique_ptr<node> nodoNuevo = std::make_unique<node>(n, vector2D(x, y));
-            // node nodoNuevo1 = node(n, x, y);
-            nodes::dbNodeTotal.push_back(std::move(nodoNuevo));
+            std::unique_ptr<node> newNode = std::make_unique<node>(n, vector2D(x, y));
+            // node newNode1 = node(n, x, y);
+            nodes::dbNodeTotal.push_back(std::move(newNode));
         }
         else if (e==1) {
-            std::unique_ptr<nodeDestino> nodoEvacuationNuevo = std::make_unique<nodeDestino>(n, vector2D(x, y));
-            // nodeEvacuation nodoEvacuationNuevo= nodeEvacuation(n, x, y);
-            dbNodeTotal.push_back(std::move(nodoEvacuationNuevo));
+            std::unique_ptr<nodeEvacuation> newEvacuationNode = std::make_unique<nodeEvacuation>(n, vector2D(x, y));
+            // nodeEvacuation newEvacuationNode= nodeEvacuation(n, x, y);
+            dbNodeTotal.push_back(std::move(newEvacuationNode));
             // create an array of evacuation nodes
-            dbNodeEvacuation.push_back(dynamic_cast<nodeDestino*>(dbNodeTotal.back().get()));
+            dbNodeEvacuation.push_back(dynamic_cast<nodeEvacuation*>(dbNodeTotal.back().get()));
         }
         // limited evacuation node
         else if (e==2) {
             // reading of the maximum number of people evacuated at that node
             std::getline(iss, m_str, ',');
             m = std::stoi(m_str);
-            std::unique_ptr<nodeDestino> nodoEvacuationNuevo = std::make_unique<nodeDestino>(n, vector2D(x, y), m);
-            dbNodeTotal.push_back(std::move(nodoEvacuationNuevo));
+            std::unique_ptr<nodeEvacuation> newEvacuationNode = std::make_unique<nodeEvacuation>(n, vector2D(x, y), m);
+            dbNodeTotal.push_back(std::move(newEvacuationNode));
             // create an array of evacuation nodes
-            dbNodeEvacuation.push_back(dynamic_cast<nodeDestino*>(dbNodeTotal.back().get()));
+            dbNodeEvacuation.push_back(dynamic_cast<nodeEvacuation*>(dbNodeTotal.back().get()));
         }
         std::getline(iss, r_str, '\n');
         r = std::stoi(r_str);
@@ -148,19 +148,19 @@ void nodes::leerNodes(std::string fileName) {
 }
 
 
-void nodes::reiniciarNodesEvacuations() {
+void nodes::resetNodesEvacuations() {
     for (int i = 0; i < dbNodeEvacuation.size(); i++) {
-        dbNodeEvacuation.at(i)->reiniciar();
+        dbNodeEvacuation.at(i)->reset();
 
     }
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // show
-// void nodes::mostrarNodes() const {
+// void nodes::showNodes() const {
 //     // Shows all the nodes and their data in the terminal.
 //     for (int i = 0; i < dbNodeTotal.size(); i++) {
-//         dbNodeTotal.at(i)->mostrarNode();
-//         dbNodeTotal.at(i)->mostrarQTable();
+//         dbNodeTotal.at(i)->showNode();
+//         dbNodeTotal.at(i)->showQTable();
 //         // const node* baseNode = dbNode.at(i);
 //         // const nodeEvacuation* evacuationNode = dynamic_cast<const nodeEvacuation*>(baseNode);
 //         // if (evacuationNode) {
@@ -168,38 +168,38 @@ void nodes::reiniciarNodesEvacuations() {
 //         // }
 //     }
 // }
-void nodes::mostrardbNodeTotal() const {
+void nodes::showDbNodeTotal() const {
     for (int i = 0; i < dbNodeTotal.size(); i++) {
-        dbNodeTotal.at(i)->mostrarNode();
+        dbNodeTotal.at(i)->showNode();
     }
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // print
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nodes::imprimirActionsDb(std::fstream& file) const {
+void nodes::printActionsDb(std::fstream& file) const {
     /* print actionDb, compatibility file for the python version*/
     for (auto it = dbNodeTotal.begin(); it != dbNodeTotal.end(); ++it) {
-        (*it)->imprimirAction(file);
+        (*it)->printAction(file);
     }
     file.close();
 }
-void nodes::imprimirTransitionsDb(std::fstream& file) const {
+void nodes::printTransitionsDb(std::fstream& file) const {
     /* print transitionDb, compatibility file for the python version*/
     for (auto it = dbNodeTotal.begin(); it != dbNodeTotal.end(); ++it) {
-        (*it)->imprimirTransition(file);
+        (*it)->printTransition(file);
     }
     file.close();
 }
 
 
-// void nodes::imprimirCantPedestrianEvacuted(std::string folderName) {
+// void nodes::printEvacuatedPedestrianCount(std::string folderName) {
 //     std::fstream file3;
-//     file3.open(folderName + "/cantPedestrianEvacuated",std::ios::out);
+//     file3.open(folderName + "/evacuatedPedestrianCount",std::ios::out);
 //     for (int i = 0; i < dbNode.size(); i++) {
 //         // const node* baseNode = dbNode.at(i);
 
 //         // if (evacuationNode) {
-//         //     file3 << evacuationNode->getPersonasEvacudas();
+//         //     file3 << evacuationNode->getEvacuatedPeople();
 //         // }
 //     }
 

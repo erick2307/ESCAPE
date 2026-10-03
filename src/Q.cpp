@@ -29,66 +29,66 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Q::Q()
     :
-    valor(0),
-    callePtr(nullptr),
-    observaciones(0)
+    value(0),
+    streetPtr(nullptr),
+    observations(0)
 {
 }
-Q::Q(const double valor)
+Q::Q(const double value)
     :
-    valor(valor),
-    callePtr(nullptr),
-    observaciones(0)
+    value(value),
+    streetPtr(nullptr),
+    observations(0)
 {
 }
-Q::Q(const link* const callePtr) :
-    valor(0),
-    callePtr(callePtr),
-    observaciones(0)
+Q::Q(const link* const streetPtr) :
+    value(0),
+    streetPtr(streetPtr),
+    observations(0)
 {
 }
-Q::Q(const double valor, const link *const callePtr)
-    : valor(valor), callePtr(callePtr), observaciones(0)
+Q::Q(const double value, const link *const streetPtr)
+    : value(value), streetPtr(streetPtr), observations(0)
 {
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // setters
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void Q::setObservaciones(int observaciones) {
-    (*this).observaciones = observaciones;
+void Q::setObservations(int observations) {
+    (*this).observations = observations;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // getter
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-double* Q::getValor() {
-    return &valor;    
+double* Q::getValue() {
+    return &value;    
 }
-double Q::getValor() const {
-    return valor;
+double Q::getValue() const {
+    return value;
 }
-const link* Q::getCallePtr() const {
-    return callePtr;
+const link* Q::getStreetPtr() const {
+    return streetPtr;
 }
-int Q::getObservaciones() const {
-    return observaciones;
+int Q::getObservations() const {
+    return observations;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void Q::aumentar1Observacion() {
-    observaciones += 1;
+void Q::increase1Observation() {
+    observations += 1;
 }
-void Q::mostrarQs() const{
-    if (callePtr == nullptr) {
-        std::cout << valor << " ";
+void Q::showQs() const{
+    if (streetPtr == nullptr) {
+        std::cout << value << " ";
     }
     else {
-        std::cout << valor << " ";
+        std::cout << value << " ";
     }
 }
-// void Q::imprimirQs(std::fstream &file) const {
-//     for (int i = 0; i < stateMatrix::tamanoVectorIO; i++) {
+// void Q::printQs(std::fstream &file) const {
+//     for (int i = 0; i < stateMatrix::ioVectorSize; i++) {
 //         if (i < QsVector.size()) {
 //             file << QsVector.at(i) << ',';
 //         } else {

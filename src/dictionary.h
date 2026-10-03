@@ -51,7 +51,7 @@ private:
     // endTime               |-->| END TIME OF THE SIMULATION
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     const std::string nameDictionary = "controlDict";
-    const std::string systemCarpet = "system/";
+    const std::string systemFolder = "system/";
     std::map<std::string, std::variant<std::string, int, double, bool>> controlDict;
     const std::map<std::string, std::variant<std::string, int, double, bool>> controlDictDefault = {
         {"nodesFile", std::string("nodes.csv")},
@@ -69,15 +69,15 @@ private:
         {"stopSimulationAt", std::string("endNumberSimulation")},
         {"pythonVersion", false},
         {"pythonOption", std::string("in")},
-        {"figureTotalEvacuadosVsSimulacion", true},
-        {"figureEvacuadosVsTiempo", true},
-        {"tableTotalEvacuadosVsSimulacion", true},
-        {"tableEvacuadosVsTiempo", true},
-        {"totalEvacuadosVsSimulacionPeriod", 1},
+        {"figureEvacuatedVsTime", true},
+        {"figureTotalEvacuatedVsSimulation", true},
+        {"tableEvacuatedVsTime", true},
+        {"tableTotalEvacuatedVsSimulation", true},
+        {"totalEvacuatedVsSimulationPeriod", 1},
         {"evacuatedVsTimeAt", std::string("1,2,3")},
-        {"opcionSubdivision", std::string("anchoSubdivision")},
-        {"cantidadSubdivisiones", 10},
-        {"anchoSubdivision", 2.0}
+        {"subdivisionOption", std::string("subdivisionWidth")},
+        {"subdivisionCount", 10},
+        {"subdivisionWidth", 2.0}
     };
     const std::map<std::string, std::string> typeControlDict = {
         {"nodesFile", "string"},
@@ -103,15 +103,15 @@ private:
         {"stopSimulationAt", "string"},
         {"pythonVersion", "bool"},
         {"pythonOption", "string"},
-        {"figureTotalEvacuadosVsSimulacion", "bool"},
-        {"figureEvacuadosVsTiempo", "bool"},
-        {"tableTotalEvacuadosVsSimulacion", "bool"},
-        {"tableEvacuadosVsTiempo", "bool"},
+        {"figureEvacuatedVsTime", "bool"},
+        {"figureTotalEvacuatedVsSimulation", "bool"},
+        {"tableEvacuatedVsTime", "bool"},
+        {"tableTotalEvacuatedVsSimulation", "bool"},
         {"evacuatedVsTimeAt", "string"},
-        {"totalEvacuadosVsSimulacionPeriod", "int"},
-        {"opcionSubdivision", "string"},
-        {"cantidadSubdivisiones", "int"},
-        {"anchoSubdivision", "double"}
+        {"totalEvacuatedVsSimulationPeriod", "int"},
+        {"subdivisionOption", "string"},
+        {"subdivisionCount", "int"},
+        {"subdivisionWidth", "double"}
 
     };
     std::map<std::string, std::vector<std::string>> controlDictOptions = {{"sarsaProcesses", {"calibration", "trained"}}
@@ -147,18 +147,18 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    void leerDictionary();
+    void readDictionary();
     std::variant<std::string, int, double, bool> lookup(std::string keyword);
     std::variant<std::string, int, double, bool> lookupDefault(std::string keyword);
-    bool verificarOptions(std::string keyword, std::string value) const;
-    bool verificarType(std::string keyword, std::string value);
+    bool checkOptions(std::string keyword, std::string value) const;
+    bool checkType(std::string keyword, std::string value);
 
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // static metods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
-    void mostrarControlDict();
+    void showControlDict();
     
 };
 #endif

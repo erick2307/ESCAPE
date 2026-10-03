@@ -77,15 +77,15 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    std::string creacionFileStateMatrix() const;
-    std::string encontrarUltimoFile();
-    std::string crearFilenameSalida(int numeroSimulacion);
-    std::string fileNameSalida();
-    void agregarStateMatrix(stateMatrix stateMatrixElement);
-    void leerDbStateMatrixs();
-    void leerActionsDb(std::fstream& file);
-    void mostrarDbStateMatrixs() const;
-    void imprimirDbStateMatrixs(fileIO* const file) const;
+    std::string createStateMatrixFile() const;
+    std::string findLastFile();
+    std::string createOutputFilename(int simulationNumber);
+    std::string outputFileName();
+    void addStateMatrix(stateMatrix stateMatrixElement);
+    void readDbStateMatrixs();
+    void readActionsDb(std::fstream& file);
+    void showDbStateMatrixs() const;
+    void printDbStateMatrixs(fileIO* const file) const;
 
 };
 

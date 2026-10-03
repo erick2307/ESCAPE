@@ -26,9 +26,9 @@ previousComputationFile	sim_000000001.csv;
 
 stopSimulationAt          endNumberSimulation;
 
-opcionSubdivision cantidadSubdivisiones;
+subdivisionOption subdivisionCount;
 
-cantidadSubdivisiones 10;
+subdivisionCount 10;
 
 pedestrianCountPeriod 10;
 

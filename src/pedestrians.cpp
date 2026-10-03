@@ -35,9 +35,9 @@ pedestrians* pedestrians::pedestriansInstance = nullptr;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 pedestrians::pedestrians() {
     // creation of the people data
-    leerPedestrians(std::get<std::string>(dictionary::get()->lookupDefault("populationsFile")));
+    readPedestrians(std::get<std::string>(dictionary::get()->lookupDefault("populationsFile")));
     // start time according to the Rayleigh distribution
-    // tiempoInicioDistribution();
+    // initialTimeDistribution();
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -80,7 +80,7 @@ pedestrians* pedestrians::get() {
 
 //     return random_number;
 // }
-void pedestrians::leerPedestrians(std::string fileName){
+void pedestrians::readPedestrians(std::string fileName){
     std::fstream file;
     file.open(fileName, std::ios::in);
     // check whether the file exists
@@ -90,15 +90,15 @@ void pedestrians::leerPedestrians(std::string fileName){
     }
     // Variables of one row of the nodes file, which would be a single node
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // edad                 |-->| AGE OF THE PERSON
+    // age                 |-->| AGE OF THE PERSON
     // gender               |-->| GENDER OF THE PERSON
     // hhType               |-->| 
     // hhId                 |-->| 
-    // idNodeInicio         |-->| ID OF THE START NODE 
+    // startNodeId         |-->| ID OF THE START NODE 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     std::string line;
     std::string a1_str, a2_str, a3_str, a4_str, a5_str;
-    std::string edad_str, gender_str, hhType_str, hhId_str, idNodeArranque_str;
+    std::string age_str, gender_str, hhType_str, hhId_str, originNodeId_str;
     while (std::getline(file, line)) {
         // If the file has comments with #, do not read them.
         if (line[0] == '#') {
@@ -107,23 +107,23 @@ void pedestrians::leerPedestrians(std::string fileName){
         // Save each line in the variable line. 
         std::istringstream iss(line);
         // Save each value in the variables.
-        std::getline(iss, edad_str, ',');
+        std::getline(iss, age_str, ',');
         std::getline(iss, gender_str, ',');
         std::getline(iss, hhType_str, ',');
         std::getline(iss, hhId_str, ',');
-        std::getline(iss, idNodeArranque_str, '\n');
+        std::getline(iss, originNodeId_str, '\n');
         // Convert from str to int
-        int edad = std::stoi(edad_str);
+        int age = std::stoi(age_str);
         int gender = std::stoi(gender_str);
         int hhType = std::stoi(hhType_str);
         int hhId = std::stoi(hhId_str);
-        int idNodeArranque = std::stoi(idNodeArranque_str);
+        int originNodeId = std::stoi(originNodeId_str);
         // Creation of each person in the data base.
-        dbPedestrianTotal.push_back(pedestrian(edad, gender, hhType, hhId, nodes::get()->getDbNodeTotal().at(idNodeArranque).get()));
+        dbPedestrianTotal.push_back(pedestrian(age, gender, hhType, hhId, nodes::get()->getDbNodeTotal().at(originNodeId).get()));
     }
     file.close(); 
 }
-// void pedestrians::tiempoInicioDistribution() {
+// void pedestrians::initialTimeDistribution() {
 //     /* calculates the start time, using the Rayleigh distribution*/
 //     std::random_device rd;
 //     std::mt19937 gen(rd());
@@ -131,25 +131,25 @@ void pedestrians::leerPedestrians(std::string fileName){
 //     double meanRayleigh = 7 * 60;
 //     double scaleRayleigh = meanRayleigh * std::pow((2/M_PI), 0.5);
 
-//     std::vector<int> tiempoi;
+//     std::vector<int> initialTimes;
 //     for (int i = 0; i < dbPedestrianTotal.size(); ++i) {
 //         // std::cout << "g: " << gen << std::endl;
 //         double random_number = generate_rayleigh_random(scaleRayleigh);
 //         // must be improved,
 //         // I have problems when the person starts moving at 0
 //         if(random_number < 2.0){
-//             dbPedestrianTotal.at(i).setTiempoInicial(2);
+//             dbPedestrianTotal.at(i).setInitialTime(2);
 //         }
 //         else {
-//             dbPedestrianTotal.at(i).setTiempoInicial(random_number);
+//             dbPedestrianTotal.at(i).setInitialTime(random_number);
 //         }
-//             tiempoi.push_back(random_number);  // Store the initial time
+//             initialTimes.push_back(random_number);  // Store the initial time
 
 //     }
 
 //     FILE* gnuplotPipe = popen("gnuplot -persistent", "w");
 //     fprintf(gnuplotPipe, "set terminal png size 800,600\n");
-//     fprintf(gnuplotPipe, "set output 'tiempos_iniciales.png'\n");
+//     fprintf(gnuplotPipe, "set output 'initial_times.png'\n");
 //     fprintf(gnuplotPipe, "set xlabel 'Initial Time (s)'\n");
 //     fprintf(gnuplotPipe, "set ylabel 'Number of Pedestrians'\n");
 //     fprintf(gnuplotPipe, "set title 'Distribution of Initial Times'\n");
@@ -158,8 +158,8 @@ void pedestrians::leerPedestrians(std::string fileName){
     
 //     // Pass the data to Gnuplot
 //     fprintf(gnuplotPipe, "$DATA << EOD\n");
-//     for (double tiempo : tiempoi) {
-//         fprintf(gnuplotPipe, "%f\n", tiempo);
+//     for (double simulationTime : initialTimes) {
+//         fprintf(gnuplotPipe, "%f\n", simulationTime);
 //     }
 //     fprintf(gnuplotPipe, "EOD\n");
         
@@ -171,48 +171,48 @@ void pedestrians::leerPedestrians(std::string fileName){
 //     // }
 
 // }
-void pedestrians::reiniciarPedestrians() {
+void pedestrians::resetPedestrians() {
     // returns the person to their initial departure position before the evacuation starts
     for (int i = 0; i < dbPedestrianTotal.size(); i++) {
-        dbPedestrianTotal.at(i).reiniciar();
+        dbPedestrianTotal.at(i).reset();
     }
 }
-void pedestrians::reiniciarConteoPedestrians() {
+void pedestrians::resetPedestrianCount() {
     //  
     for (auto it = dbPedestrianTotal.begin(); it != dbPedestrianTotal.end(); ++it) {
-        // it->modelamientoPedestrian();
+        // it->modelPedestrian();
     }
 }
-void pedestrians::modelamientoPedestrians() {
+void pedestrians::modelPedestrians() {
     //  
     for (auto it = dbPedestrianTotal.begin(); it != dbPedestrianTotal.end(); ++it) {
-        it->modelamientoPedestrian();
+        it->modelPedestrian();
     }
 }
-void pedestrians::mostrarDbPedestrianMovimiento() {
+void pedestrians::showDbPedestrianMovement() {
     // for (int i = 0; i < dbPedestrianTotal.size(); i++) {
-        dbPedestrianTotal.at(0).mostrarMovimientoPedestrian();
-        if (dbPedestrianTotal.at(0).getTiempoInicial() < tiempo::get()->getValorTiempo() and getDbPedestrianTotal().at(0).getInterseccion()) {
-            dbPedestrianTotal.at(0).getStateMatrixCurrent()->mostrarStateMatrix();
-            dbPedestrianTotal.at(0).getNodeFinal()->mostrarNode();
+        dbPedestrianTotal.at(0).showMovementPedestrian();
+        if (dbPedestrianTotal.at(0).getInitialTime() < simulationTime::get()->getTimeValue() and getDbPedestrianTotal().at(0).getIntersection()) {
+            dbPedestrianTotal.at(0).getStateMatrixCurrent()->showStateMatrix();
+            dbPedestrianTotal.at(0).getEndNode()->showNode();
         }
     // }
 }
-void pedestrians::mostrarDbPedestrianTotal() const {
+void pedestrians::showDbPedestrianTotal() const {
     for (int i = 0; i < dbPedestrianTotal.size(); i++) {
-        dbPedestrianTotal.at(i).mostrarPedestrian();
+        dbPedestrianTotal.at(i).showPedestrian();
         std::cout << std::endl;
     }
 }
-void pedestrians::imprimirPedestrians(fileIO* file1, fileIO* file2){
+void pedestrians::printPedestrians(fileIO* file1, fileIO* file2){
     /* print position data, number of evacuees and speed.*/
     // if the option is active it will print, active by default
     if (std::get<bool>(dictionary::get()->lookupDefault("graphicPrintout")) == true) {
         // printing of variables
         for (auto it = dbPedestrianTotal.begin(); it != dbPedestrianTotal.end(); ++it) {
-            if (tiempo::get()->getValorTiempo() >= it->getTiempoInicial()) {
-                it->imprimirPedestrianPosition(file1);
-                it->imprimirPedestrianVelocity(file2);
+            if (simulationTime::get()->getTimeValue() >= it->getInitialTime()) {
+                it->printPedestrianPosition(file1);
+                it->printPedestrianVelocity(file2);
             }
         }
     }
