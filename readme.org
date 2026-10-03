@@ -38,9 +38,12 @@ If you need more information on how to configure or use the project, check the f
 
 The change history is shown below:
 
-| Version  | Date        | Description                                   |
-|----------+-------------+-----------------------------------------------|
-| 1.0.0    | 2025-04-07  | Initial version, project release.             |
+| Version  | Date        | Description                                                                                  |
+|----------+-------------+----------------------------------------------------------------------------------------------|
+| 2.0.0    | 2026-10-03  | First English version: code, controlDict keywords, output names, tutorials and manual are    |
+|          |             | translated (existing controlDict files must be updated); fixes for trained mode and the      |
+|          |             | Python post-processing scripts.                                                              |
+| 1.0.0    | 2025-04-07  | Initial version, project release.                                                            |
 
 
 
