@@ -23,11 +23,11 @@
 #ifndef node_h
 #define node_h
 /*---------------------------------------------------------------------------*\
-Punto de interseccion de calles.
+Intersection point of streets.
 \*---------------------------------------------------------------------------*/
 //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header generales
+// general headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include <fstream>
 #include <string>
@@ -38,7 +38,7 @@ Punto de interseccion de calles.
 #include "unordered_map"
 #include "map"
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header propios
+// own headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "stateMatrix.h"
 #include "vector2D.h"
@@ -50,10 +50,10 @@ class link;
 class node {
 private:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // idNode                      |-->| ID DE LA INTERSECCION
-    // coordenada                  |-->| COORDENADA X Y DEL NODO
-    // linkConnectionPtr           |-->| PUNTERO A LAS CALLES CONECTADAS A LA INTERSECCION
-    // stateMatrixExperimentosPtr  |-->| MAP Y TABLA DE STATEMATRIX DE LA INTERSECCION
+    // idNode                      |-->| ID OF THE INTERSECTION
+    // coordenada                  |-->| X Y COORDINATE OF THE NODE
+    // linkConnectionPtr           |-->| POINTER TO THE STREETS CONNECTED TO THE INTERSECTION
+    // stateMatrixExperimentosPtr  |-->| MAP AND TABLE OF STATEMATRIX OF THE INTERSECTION
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     const int idNode;
     const vector2D coordenada;
@@ -67,7 +67,7 @@ public:
     node(const int id, const vector2D coordenada);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // destrutor
+    // destructor
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // virtual ~node() {}
     virtual std::string getNodeType();
@@ -86,7 +86,7 @@ public:
     std::vector<stateMatrix*>* getStateMatrixExperimentadosPtr();
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // metodos
+    // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     const node* buscarNodoFinal(link* callePtr) const;
     virtual estado estadoPedestrianEnNodo() const;

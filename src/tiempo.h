@@ -24,13 +24,13 @@
 #define tiempo_h
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header generales
+// general headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include <sys/stat.h> 
 #include <iostream>
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header propios
+// own headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "dictionary.h"
 #include "chrono"
@@ -38,14 +38,14 @@
 class tiempo {
 private:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // valorTiempo           |-->| TIEMPO DE SIMULACION 
-    // deltaT                |-->| TIEMPO DE PASO DE SIMULACION  
-    // endTime               |-->| TIEMPO DE TERMINO DE LA SIMULACION
-    // graphicPrintoutPeriod |-->| PERIODO DE TIEMPO PARA IMPRIMIR DATOS
-    // startNumberSimulation |-->| INICIO DEL NUMERO DE SIMULACION
-    // iNumberSimulation     |-->| NUMERO DE SIMULACION ACTUAL
-    // endNumberSimulation   |-->| FIN DEL NUMERO DE SIMULACION
-    // randomChoiceRate      |-->| COEFICIENTE DE ELECCION ENTRE RANDOM O SARSA 
+    // valorTiempo           |-->| SIMULATION TIME 
+    // deltaT                |-->| SIMULATION TIME STEP  
+    // endTime               |-->| END TIME OF THE SIMULATION
+    // graphicPrintoutPeriod |-->| TIME PERIOD FOR PRINTING DATA
+    // startNumberSimulation |-->| START OF THE SIMULATION NUMBER
+    // iNumberSimulation     |-->| CURRENT SIMULATION NUMBER
+    // endNumberSimulation   |-->| END OF THE SIMULATION NUMBER
+    // randomChoiceRate      |-->| COEFFICIENT OF CHOICE BETWEEN RANDOM OR SARSA 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     int valorTiempo;
     const int deltaT;
@@ -103,7 +103,7 @@ public:
     static std::string getFilenameData();
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // metodos
+    // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     tiempo& operator++(int);
     void aumentarTiempo();

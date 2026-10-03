@@ -81,31 +81,31 @@ bool nodeDestino::getLleno() const{
 // static getters
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 bool nodeDestino::verificarEvacuacionTotal() {
-    /* verifica si todas las personas fueron evacuadas */
+    /* checks whether all the people were evacuated */
     const int totalPersonas = pedestrians::get()->getDbPedestrianTotal().size();
     return totalPersonasEvacuadas == totalPersonas;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// metodos
+// methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void nodeDestino::reiniciar() {
     personasEvacuadasPtr.clear();
     lleno = false;
 }
 bool nodeDestino::verificarLLeno() const {
-    /* verifica si el nodo de evacuacion esta lleno*/
-    // compara el tamaño de la lista de personas evacuadas con la cantidad
-    // maxima de personas evacuadas en el nodo de evacuacion
+    /* checks whether the evacuation node is full*/
+    // compares the size of the list of evacuated people with the maximum
+    // number of evacuated people at the evacuation node
     return personasEvacuadasPtr.size() == maxPersonasEvacuadas;
 
 }
 estado nodeDestino::estadoPedestrianEnNodo() const {
-    /* devuelve el estado de la persona segun el tipo de nodo donde se encuentra */
+    /* returns the state of the person according to the type of node where it is */
     return evacuado;
 }
 bool nodeDestino::verificarNodoEvacuation() const {
-    /* verifica si el nodo es un node de evacuacion */
+    /* checks whether the node is an evacuation node */
     return true;
 }
 std::vector<int> nodeDestino::stateObservado() const {
@@ -128,41 +128,41 @@ void nodeDestino::sumarTotalPersonasEvacuadas() {
     totalPersonasEvacuadas++;
 }
 void nodeDestino::imprimirNodeEvacuation(fileIO* const file) {
-    // reviza el dictionario la opcion esta activada, por default esta activado
+    // checks the dictionary whether the option is enabled, enabled by default
     if (std::get<bool>(dictionary::get()->lookupDefault(file->getFileName())) == true) {
-        // impresion de id de nodos, solo en tiempo 1 al inicio
+        // printing of node ids, only at time 1 at the start
         if (tiempo::get()->getValorTiempo() == 1) {
             // id 1 2 3 4
             file->getFileFstream() << "id,";
             for (int i = 0; i < nodes::get()->getDbNodeEvacuation().size(); i++) {
                 file->getFileFstream() << nodes::get()->getDbNodeEvacuation().at(i)->getIdNode();
-                // imprime , hasta antes de la ultima
+                // prints , up to before the last one
                 if (i < nodes::get()->getDbNodeEvacuation().size() - 1) {
                     file->getFileFstream() << ",";
                 }
             }
-            // salto de linea
+            // line break
             file->getFileFstream() << std::endl;
         }
-        // impresion de personas evacuadas por nodo de evacuacion
-        // imprime el tiempo
+        // printing of people evacuated per evacuation node
+        // prints the time
         file->getFileFstream() << tiempo::get()->getValorTiempo() << ",";
         for (int i = 0; i < nodes::get()->getDbNodeEvacuation().size(); i++) {
-            // imprime la cantidad de personas evacuadas por nodo
+            // prints the number of people evacuated per node
             file->getFileFstream() << nodes::get()->getDbNodeEvacuation().at(i)->getPersonasEvacuadasPtr().size();
-            // imprime , hasta antes de la ultima
+            // prints , up to before the last one
             if (i < nodes::get()->getDbNodeEvacuation().size() - 1) {
                 file->getFileFstream() << ",";
             }
         }
-        // salto de linea
+        // line break
         file->getFileFstream() << std::endl;
     }
 }
 void nodeDestino::imprimirTotalPersonasEvacuadas(fileIO* const file) {
-    // reviza el dictionario la opcion esta activada, por default esta activado
+    // checks the dictionary whether the option is enabled, enabled by default
     if (std::get<bool>(dictionary::get()->lookupDefault(file->getFileName())) == true) {
-        // impresion de tiempo y personas evacuadas
+        // printing of time and evacuated people
         file->getFileFstream() << tiempo::get()->getValorTiempo() << ",";
         file->getFileFstream() << totalPersonasEvacuadas;
         file->getFileFstream() << std::endl;
@@ -173,7 +173,7 @@ std::vector<int> stringToVector(const std::string& str) {
     std::string item;
     std::string cleanStr = str;
 
-    // Encontrar el delimitador ';' y eliminar todo lo que está después
+    // Find the delimiter ';' and remove everything after it
     size_t pos = cleanStr.find(';');
     if (pos != std::string::npos) {
         cleanStr = cleanStr.substr(0, pos);
@@ -181,72 +181,72 @@ std::vector<int> stringToVector(const std::string& str) {
 
     std::stringstream ss(cleanStr);
 
-    // Divide la cadena en partes usando la coma como delimitador
+    // Split the string into parts using the comma as delimiter
     while (std::getline(ss, item, ',')) {
         int number;
-        std::stringstream(item) >> number; // Convierte la parte a un entero
-        result.push_back(number); // Añade el entero al vector
+        std::stringstream(item) >> number; // Convert the part to an integer
+        result.push_back(number); // Add the integer to the vector
     }
 
     return result;
 }
 void nodeDestino::plotearTotalEvacuadosXSimulacion(fileIO* const file) {
-    // reviza el dictionario la opcion esta activada, por default esta activado
+    // checks the dictionary whether the option is enabled, enabled by default
     if (std::get<bool>(dictionary::get()->lookupDefault(file->getFileName())) == true) {
         class totalPersonasEvacuadasXSimulacion{
         public:
             std::vector<int> tiempo;
             std::vector<int> totalEvacuados;
         }; 
-        // elementos de simulaciones a imprimir
+        // simulation elements to print
         std::vector<int> tiempoSimulacion;
         auto it1 = dictionary::get()->getControlDict().find("totalEvacuadosVsSimulacionAt");
         //atsimulation
         if (it1 != dictionary::get()->getControlDict().end()) {
-            // Clave encontrada, proceder con la operación
+            // Key found, proceed with the operation
             static std::string valoresNumeroSimulacion = std::get<std::string>(it1->second);
             tiempoSimulacion = stringToVector(valoresNumeroSimulacion);
         }
-        // valores por default
+        // default values
         else {
             tiempoSimulacion = {1,2,3};
         }
         // const std::vector<int> tiempoSimulacion = {1, 2, 3};
         static std::vector<totalPersonasEvacuadasXSimulacion> data(tiempoSimulacion.size());
         auto it = std::find(tiempoSimulacion.begin(), tiempoSimulacion.end(), tiempo::get()->getINumberSimulation());
-        // solo entra en el numero de simulacion que pide tiempoSimulacion
+        // only enters at the simulation number that tiempoSimulacion asks for
         if (it != tiempoSimulacion.end()) {
-            // Determinar el índice en el vector `data` basado en la posición en `tiempoSimulacion`
+            // Determine the index in the vector `data` based on the position in `tiempoSimulacion`
             int index = std::distance(tiempoSimulacion.begin(), it);
-            // Agregar el valor del tiempo actual al vector `tiempo` correspondiente
+            // Add the current time value to the corresponding vector `tiempo`
             data.at(index).tiempo.push_back(tiempo::get()->getValorTiempo());
             data.at(index).totalEvacuados.push_back(totalPersonasEvacuadas);
         }
-        // imprimir ploteo cuando al final del numero de simulacion y al terminar el tiempo de evacuacion
+        // print the plot at the end of the simulation number and when the evacuation time ends
         if (tiempo::get()->getINumberSimulation() ==  tiempo::get()->getEndNumberSimulation() and tiempo::get()->getValorTiempo() == tiempo::get()->getEndTime()) {
             FILE* gnuplotPipe = popen("gnuplot -persistent", "w");
             if (gnuplotPipe) {
-                // Configurar Gnuplot
+                // Configure Gnuplot
                 fprintf(gnuplotPipe, "set terminal png size 800,600\n");
-                // Usa la ruta completa
+                // Use the full path
                 fprintf(gnuplotPipe, "set output '%s'\n", file->getFullPath().c_str());
-                fprintf(gnuplotPipe, "set xlabel 'Tiempo (s)'\n");
-                fprintf(gnuplotPipe, "set ylabel 'Total de personas evacuadas'\n");
-                fprintf(gnuplotPipe, "set title 'Personas evacuadas en el tiempo'\n");
+                fprintf(gnuplotPipe, "set xlabel 'Time (s)'\n");
+                fprintf(gnuplotPipe, "set ylabel 'Total evacuated people'\n");
+                fprintf(gnuplotPipe, "set title 'Evacuated people over time'\n");
                 fprintf(gnuplotPipe, "set grid\n");
-                // Posicionar los títulos a la izquierda
+                // Position the titles on the left
                 fprintf(gnuplotPipe, "set key left\n");
-                // cracion de plot
+                // creation of plot
                 fprintf(gnuplotPipe, "plot ");
-                // creando titulo de linea
+                // creating line title
                 for (size_t i = 0; i < data.size(); ++i) {
-                    fprintf(gnuplotPipe, "'-' using 1:2 with lines title 'Simulacion %d'", tiempoSimulacion.at(i));
+                    fprintf(gnuplotPipe, "'-' using 1:2 with lines title 'Simulation %d'", tiempoSimulacion.at(i));
                     if (i < data.size() - 1) {
                         fprintf(gnuplotPipe, ", ");
                     }
                 }
                 fprintf(gnuplotPipe, "\n");
-                // ploteando lineas 
+                // plotting lines 
                 for (size_t i = 0; i < data.size(); ++i) {
                     for (size_t j = 0; j < data.at(i).tiempo.size(); ++j) {
                         fprintf(gnuplotPipe, "%d %d\n", data.at(i).tiempo.at(j), data.at(i).totalEvacuados.at(j));
@@ -260,25 +260,25 @@ void nodeDestino::plotearTotalEvacuadosXSimulacion(fileIO* const file) {
     }
 }
 void nodeDestino::imprimirTotalEvacuadosXSimulacion(fileIO* const file) {
-    // reviza el dictionario la opcion esta activada, por default esta activado
+    // checks the dictionary whether the option is enabled, enabled by default
     if (std::get<bool>(dictionary::get()->lookupDefault(file->getFileName())) == true) {
-        // elementos de simulaciones a imprimir
+        // simulation elements to print
         std::vector<int> tiempoSimulacion;
         auto it1 = dictionary::get()->getControlDict().find("totalEvacuadosVsSimulacionAt");
         if (it1 != dictionary::get()->getControlDict().end()) {
-            // Clave encontrada, proceder con la operación
+            // Key found, proceed with the operation
             static std::string valoresNumeroSimulacion = std::get<std::string>(it1->second);
             tiempoSimulacion = stringToVector(valoresNumeroSimulacion);
         }
-        // valores por default
+        // default values
         else {
             tiempoSimulacion = {1,2,3};
         }
         // const std::vector<int> tiempoSimulacion = {1, 2, 3};
         auto it = std::find(tiempoSimulacion.begin(), tiempoSimulacion.end(), tiempo::get()->getINumberSimulation());
-        // solo entra en el numero de simulacion que pide tiempoSimulacion
+        // only enters at the simulation number that tiempoSimulacion asks for
         if (it != tiempoSimulacion.end()) {
-            // enviar datos a un archivo tabla
+            // send data to a table file
             file->getFileFstream() << tiempo::get()->getValorTiempo() << ",";
             file->getFileFstream() << totalPersonasEvacuadas;
             file->getFileFstream() << std::endl;
@@ -286,34 +286,34 @@ void nodeDestino::imprimirTotalEvacuadosXSimulacion(fileIO* const file) {
     }
 }
 void nodeDestino::plotearEvacuadosVsTiempo(fileIO* const file) {
-    // reviza el dictionario la opcion esta activada, por default esta activado
+    // checks the dictionary whether the option is enabled, enabled by default
     if (std::get<bool>(dictionary::get()->lookupDefault(file->getFileName())) == true) {
         static std::vector<int> numeroSimulaciones;
         static std::vector<double> survivors;
-        // numero de simulacion
+        // simulation number
         const int numeroSimulacion = tiempo::get()->getINumberSimulation();
-        // solo guarda segun el perido en segundos que se le asigne
+        // only saves according to the period in seconds that is assigned
         if (numeroSimulacion % std::get<int>(dictionary::get()->lookupDefault("totalEvacuadosVsSimulacionPeriod")) == 0 or numeroSimulacion == 1) {
-            // guardo datos en data para luego plotearlos
+            // store data in data to plot it later
             numeroSimulaciones.push_back(numeroSimulacion);
             survivors.push_back(totalPersonasEvacuadas);
         }
-        // imprimir ploteo cuando al final del numero de simulacion y al terminar el tiempo de evacuacion
+        // print the plot at the end of the simulation number and when the evacuation time ends
         if (tiempo::get()->getINumberSimulation() ==  tiempo::get()->getEndNumberSimulation()) {
             FILE* gnuplotPipe = popen("gnuplot -persistent", "w");
             if (gnuplotPipe) {
-                // Configurar Gnuplot
+                // Configure Gnuplot
                 fprintf(gnuplotPipe, "set terminal png size 800,600\n");
-                // Usa la ruta completa
+                // Use the full path
                 fprintf(gnuplotPipe, "set output '%s'\n", file->getFullPath().c_str());
-                fprintf(gnuplotPipe, "set xlabel 'Numero de simulaciones'\n");
-                fprintf(gnuplotPipe, "set ylabel 'Numero de sobrevivientes'\n"); 
+                fprintf(gnuplotPipe, "set xlabel 'Number of simulations'\n");
+                fprintf(gnuplotPipe, "set ylabel 'Number of survivors'\n"); 
                 fprintf(gnuplotPipe, "set grid\n");
-                // fprintf(gnuplotPipe, "set xtics 1\n");  // Cambia '1' al intervalo que desees
-                // fprintf(gnuplotPipe, "set ytics 1\n");  // Cambia '1' al intervalo que desees
-                // fprintf(gnuplotPipe, "set mytics 4\n");   // 4 sub-ticks entre cada tick principal
-                fprintf(gnuplotPipe, "set xrange [1:*]\n"); // Asegura que el eje x comience en 1
-                // cracion de plot
+                // fprintf(gnuplotPipe, "set xtics 1\n");  // Change '1' to the desired interval
+                // fprintf(gnuplotPipe, "set ytics 1\n");  // Change '1' to the desired interval
+                // fprintf(gnuplotPipe, "set mytics 4\n");   // 4 sub-ticks between each main tick
+                fprintf(gnuplotPipe, "set xrange [1:*]\n"); // Ensures that the x axis starts at 1
+                // creation of plot
                 fprintf(gnuplotPipe, "plot '-' with linespoints notitle\n");
                 for (size_t j = 0; j < numeroSimulaciones.size(); ++j) {
                     fprintf(gnuplotPipe, "%d %lf\n", numeroSimulaciones.at(j), survivors.at(j));
@@ -325,15 +325,15 @@ void nodeDestino::plotearEvacuadosVsTiempo(fileIO* const file) {
     }
 }
 void nodeDestino::imprimirEvacuadosVsTiempo(fileIO* const file) {
-    // reviza el dictionario la opcion esta activada, por default esta activado
+    // checks the dictionary whether the option is enabled, enabled by default
     if (std::get<bool>(dictionary::get()->lookupDefault(file->getFileName())) == true) {
         static std::vector<int> numeroSimulaciones;
         static std::vector<double> mortalidad;
-        // numero de simulacion
+        // simulation number
         const int numeroSimulacion = tiempo::get()->getINumberSimulation();
-        // solo guarda segun el perido en segundos que se le asigne
+        // only saves according to the period in seconds that is assigned
         if (numeroSimulacion % std::get<int>(dictionary::get()->lookupDefault("totalEvacuadosVsSimulacionPeriod")) == 0 or numeroSimulacion == 1) {
-            // enviarlo a archivo tablas
+            // send it to table file
             file->getFileFstream() << numeroSimulacion << ","; 
             file->getFileFstream() << totalPersonasEvacuadas; 
             file->getFileFstream() << std::endl; 
@@ -341,6 +341,6 @@ void nodeDestino::imprimirEvacuadosVsTiempo(fileIO* const file) {
     }
 }
 void nodeDestino::imprimirVariableTotalPersonasEvacuadas(fileIO* const file) {
-    // impresion de tiempo y personas evacuadas
+    // printing of time and evacuated people
     file->getFileFstream() << totalPersonasEvacuadas;
 }

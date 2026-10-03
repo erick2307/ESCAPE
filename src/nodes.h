@@ -23,11 +23,11 @@
 #ifndef nodes_h
 #define nodes_h
 /*---------------------------------------------------------------------------*\
-Punto de interseccion de calles.
+Intersection point of streets.
 \*---------------------------------------------------------------------------*/
 //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header generales
+// general headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include <string>
 #include <memory>
@@ -37,7 +37,7 @@ Punto de interseccion de calles.
 #include <fstream>
 #include <string>
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header propios
+// own headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "node.h"
 #include "vector2D.h"
@@ -52,7 +52,7 @@ private:
     static nodes* nodesInstance;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // dbNodeTotal     |-->| DATOS TOTALES DE LAS INTERSECCIONES
+    // dbNodeTotal     |-->| TOTAL DATA OF THE INTERSECTIONS
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     std::string fileName;
     std::vector<std::shared_ptr<node>> dbNodeTotal;
@@ -80,7 +80,7 @@ public:
     static nodes* get();
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // metodos
+    // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     void leerNodes(std::string fileName);
     void usarlink();

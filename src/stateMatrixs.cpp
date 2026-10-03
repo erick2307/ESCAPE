@@ -38,20 +38,20 @@ stateMatrixs* stateMatrixs::stateMatrixsInstance = nullptr;
 stateMatrixs::stateMatrixs() {
     // setINumeroSimulacion(1);
     // leerDbStateMatrixs();
-    // Lectura de la ultima simulacion.
+    // Read the last simulation.
     // leerDbStateMatrixs(simulationFile + dictionary::controlDict["previousComputationFile"]); 
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // static
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Nombre del la carpeta donde estan las simulaciones.
+// Name of the folder where the simulations are.
 const std::string stateMatrixs::simulationFile = "stateMatrices/";
 
 // stateMatrixs::stateMatrixs(nodes* dbNode) {
-//     // dbNode contiene todos los nodos de la simulacion
+//     // dbNode contains all the nodes of the simulation
 //     (*this).dbNode = dbNode;
-//     // Lectura de la ultima simulacion.
+//     // Read the last simulation.
 //     leerDbStateMatrixs(encontrarUltimoFile()); 
 // }
 
@@ -71,7 +71,7 @@ std::vector<stateMatrix*> &stateMatrixs::getDbStateMatrixs() {
 // static getters
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 stateMatrixs* stateMatrixs::get() {
-    /* si aun no existe crea la unica instancia de nodes*/
+    /* if it does not exist yet, create the unique instance of nodes*/
     if (!stateMatrixsInstance) {
         stateMatrixsInstance =  new stateMatrixs();
     }
@@ -80,42 +80,42 @@ stateMatrixs* stateMatrixs::get() {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// metodos
+// methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 std::string stateMatrixs::creacionFileStateMatrix() const {
-    /* Crear el nombre del archivo de exportacion.*/
+    /* Create the name of the export file.*/
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // iFileInicio     |-->| ID DEL ARCHIVO DE inicio, 1
-    // preName         |-->| EXTENSION DE EXPORTACION
-    // typeFile        |-->| EXTENSION DE EXPORTACION
-    // filenameStream  |-->| ARCHIVO FALSO, PERMITE CONTROLAR LOS CARACTERES
-    // DE UNA VARIABLE PARA LUEGO GUARDARLO EN UN STRING
+    // iFileInicio     |-->| ID OF THE START FILE, 1
+    // preName         |-->| EXPORT EXTENSION
+    // typeFile        |-->| EXPORT EXTENSION
+    // filenameStream  |-->| FAKE FILE, ALLOWS CONTROLLING THE CHARACTERS
+    // OF A VARIABLE TO THEN STORE IT IN A STRING
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // aumento del numero de simulacion
+    // increase of the simulation number
     const std::string preName = "sim_";
     const std::string typeFile = ".csv";
     std::ostringstream filenameStream;
-    // Crea el archivo inicial con el siguiente formato sim_000000001.csv
+    // Create the initial file with the following format sim_000000001.csv
     filenameStream << std::setw(9) << std::setfill('0') << tiempo::get()->getINumberSimulation() ;
-    // Nombre final de exportacion 
+    // Final export name 
     return preName + filenameStream.str() + typeFile;
 }
 std::string stateMatrixs::encontrarUltimoFile() {
-    // Encontrar la ultima simulacion para leerla
+    // Find the last simulation to read it
     std::string ultimoFile;
     ultimoFile = "stateMatrices/sim_000000006.csv";
     return ultimoFile;
 }
 std::string stateMatrixs::crearFilenameSalida(int numeroSimulacion) {
-    /* Crear el nombre del archivo de exportacion.*/
+    /* Create the name of the export file.*/
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // iFileInicio     |-->| ID DEL ARCHIVO DE inicio, 1
-    // preName         |-->| EXTENSION DE EXPORTACION
-    // typeFile        |-->| EXTENSION DE EXPORTACION
-    // filenameStream  |-->| ARCHIVO FALSO, PERMITE CONTROLAR LOS CARACTERES
-    // DE UNA VARIABLE PARA LUEGO GUARDARLO EN UN STRING
+    // iFileInicio     |-->| ID OF THE START FILE, 1
+    // preName         |-->| EXPORT EXTENSION
+    // typeFile        |-->| EXPORT EXTENSION
+    // filenameStream  |-->| FAKE FILE, ALLOWS CONTROLLING THE CHARACTERS
+    // OF A VARIABLE TO THEN STORE IT IN A STRING
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Si lee un archivo de estados
+    // If it reads a state file
     // if (dictionary::controlDict["computationContinued"] == "yes" ) {
         
     // }
@@ -126,9 +126,9 @@ std::string stateMatrixs::crearFilenameSalida(int numeroSimulacion) {
     std::string preName = "sim_";
     std::string typeFile = ".csv";
     std::ostringstream filenameStream;
-    // Crea el archivo inicial con el siguiente formato sim_000000001.csv
+    // Create the initial file with the following format sim_000000001.csv
     filenameStream << std::setw(9) << std::setfill('0') << iFileInicio ;
-    // Nombre final de exportacion 
+    // Final export name 
     return simulationFile +preName + filenameStream.str() + typeFile;
 }
 std::string stateMatrixs::fileNameSalida() {
@@ -138,7 +138,7 @@ std::string stateMatrixs::fileNameSalida() {
     std::string preName = "sim_";
     std::string typeFile = ".csv";
     std::ostringstream filenameStream;
-    // Crea el archivo inicial con el siguiente formato sim_000000001.csv
+    // Create the initial file with the following format sim_000000001.csv
     filenameStream << std::setw(9) << std::setfill('0') << iLastFile ;
     return simulationFile + preName + filenameStream.str() + typeFile;
 }
@@ -146,48 +146,48 @@ std::string stateMatrixs::fileNameSalida() {
 //     dbStateMatrixs.push_back(stateMatrixElement);
 // }
 void stateMatrixs::leerActionsDb(std::fstream& file) {
-    /* Permite leer archivos de python, con este archivo actiondb puedo saber
-        el orden las calles en cada nodo*/
+    /* Allows reading python files, with this actiondb file I can know
+        the order of the streets at each node*/
     std::string line;
     char comma;
     int idNode, cantidadLinks;
     int idLink;
     actiondb.resize(nodes::get()->getDbNodeTotal().size()); 
-    // si no existe el arhivo
+    // if the file does not exist
     if (file.fail()) {
         std::cout << "Error opening the file " << std::endl;
         exit(1);
     }
-    // lectura de cada line
+    // reading of each line
     while (std::getline(file, line)) {
-        // Si el archivo tiene comentarios con #, no leerlos.
+        // If the file has comments with #, do not read them.
         if (line[0] == '#') {
             continue;
         }
-        // lectura de linea
+        // reading of line
         std::istringstream iss(line);
         if (!(iss >> idNode >> comma >> cantidadLinks >> comma)) {
-            std::cerr << "Error al leer ID o count." << std::endl;
+            std::cerr << "Error reading ID or count." << std::endl;
         }
-        // verifica que no sea un nodo de evacuacion
-        // porque no tiene conecciones
+        // check that it is not an evacuation node
+        // because it has no connections
         if (nodes::get()->getDbNodeTotal().at(idNode).get()->verificarNodoEvacuation() == false) {
-            // crea el tamaño del vector
+            // create the size of the vector
             actiondb.at(idNode).resize(cantidadLinks);
             for (int i = 0; i < cantidadLinks; ++i) {
                 if (!(iss >> idLink)) {
-                    std::cerr << "Error al leer valor para conectionCalles en la posición " << i << std::endl;
-                    return; // Sale de la función si hay un error
+                    std::cerr << "Error reading value for conectionCalles at position " << i << std::endl;
+                    return; // Exit the function if there is an error
                 }
-                // agrega en action cada coneccion de calle segun el nodo 
+                // add to action each street connection according to the node 
                 actiondb.at(idNode).at(i) = links::get()->getDbLinkTotal().at(idLink).get();
                 // std::cout << actiondb.at(idNode).at(i)->getIdLink() << " ";
-                // Ignora la coma entre valores, si no es el último valor
+                // Ignore the comma between values, if it is not the last value
                 if (i < cantidadLinks - 1) {
-                    iss >> comma;  // Lee y descarta la coma
+                    iss >> comma;  // Read and discard the comma
                     if (iss.fail()) {
-                        std::cerr << "Error al leer la coma después del valor en la posición " << i << std::endl;
-                        return; // Sale de la función si hay un error
+                        std::cerr << "Error reading the comma after the value at position " << i << std::endl;
+                        return; // Exit the function if there is an error
                     }
                 }
             }
@@ -198,38 +198,38 @@ void stateMatrixs::leerDbStateMatrixs() {
     if (std::get<std::string>(dictionary::get()->lookupDefault("process")) == "trained") {
         dictionary::get()->getControlDict()["computationContinued"] = "yes";
     }
-    // si la opcion de lectura de datos anteriores de stateMatrixs esta activa
+    // if the option to read previous stateMatrixs data is active
     if (std::get<bool>(dictionary::get()->lookupDefault("computationContinued")) == true) {
-        // lectura de datos de stateMatrixs de la version en python,
-        // se debe leer de acuerdo a al orden a las conecciones de calles
+        // reading of stateMatrixs data from the python version,
+        // it must be read according to the order of the street connections
         if (std::get<bool>(dictionary::get()->lookupDefault("pythonVersion")) == true
         and std::get<std::string>(dictionary::get()->lookupDefault("pythonOption")) == "in") {
             leerActionsDb(io::fileActionsDb.getFileFstream());
         }
-        /* Lectura de datos de una simulación pasada.*/
+        /* Reading of data from a past simulation.*/
         std::fstream file;
         file.open(simulationFile + std::get<std::string>(dictionary::get()->lookup("previousComputationFile")), std::ios::in);
-        // Si no existe el archivo
+        // If the file does not exist
         if (file.fail()) {
-            std::cout << "Error al abrir el archivo: "<< std::get<std::string>(dictionary::get()->lookup("previousComputationFile")) << std::endl;
+            std::cout << "Error opening the file: "<< std::get<std::string>(dictionary::get()->lookup("previousComputationFile")) << std::endl;
             exit(1);
         }
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        // iLinkConnection          |-->| POSICION EN EL ARREGLO linkConection
+        // iLinkConnection          |-->| POSITION IN THE ARRAY linkConection
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        // Actualizar la calle o linkActual, que es la calle por donde ira la persona. 
+        // Update the street or linkActual, which is the street the person will go along. 
 
-        // Guardar cada linea del archivo filname en la variable line.
+        // Store each line of the file filname in the variable line.
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        // id     |-->| ID DEL NODO O DE LA INTERSECCION
-        // s      |-->| ESTADO DE UNA DE LAS CALLES EN linksConnection DE UN NODO
-        // Q      |-->| Q DE LA CALLE 1 DE LOS linksConnection DEL NODO
-        // o      |-->| OTRAS VARIABLES POR DEFINIR
-        // p0     |-->| PALABRA EN 0, LEIDAS PERO GUARDADAS 
-        // stateMatrixLeido |-->| CLASS SE CREA Y LUEGO SE DESTRUYE DENTRO DE ESTE
-        // AMBITO
+        // id     |-->| ID OF THE NODE OR OF THE INTERSECTION
+        // s      |-->| STATE OF ONE OF THE STREETS IN linksConnection OF A NODE
+        // Q      |-->| Q OF STREET 1 OF THE linksConnection OF THE NODE
+        // o      |-->| OTHER VARIABLES TO BE DEFINED
+        // p0     |-->| WORD IN 0, READ BUT STORED 
+        // stateMatrixLeido |-->| CLASS IS CREATED AND THEN DESTROYED WITHIN THIS
+        // SCOPE
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        // id podria pasar unsigned short int
+        // id could become unsigned short int
         std::string line;
         int idNode;
         int s;
@@ -242,21 +242,21 @@ void stateMatrixs::leerDbStateMatrixs() {
         std::string O_str;
         std::vector<int> stateLeido;
         std::vector<Q> QsLeido;
-        // Recorre todas las line del archivo.
+        // Iterate over all the lines of the file.
         while (std::getline(file, line)) {
-            // Si el archivo tiene comentarios con #, no leerlos.
+            // If the file has comments with #, do not read them.
             if (line[0] == '#') {
                 continue;
             }
             // !-----------------------------------------------------------------------
-            // Guardar cada line en la variable line  
+            // Store each line in the variable line  
             std::istringstream iss(line);
-            // Guarda la variable idNode
+            // Store the variable idNode
             std::getline(iss, idNode_str, ',');
             idNode = std::stoi(idNode_str);
             node* const nodeLeido = nodes::get()->getDbNodeTotal().at(idNode).get();
             // !-----------------------------------------------------------------------
-            // Guarda los elementos de state
+            // Store the elements of state
             stateLeido.clear();
             for (int i = 0; i < io::tamanoElementosIO; ++i) {
                 if (i < nodeLeido->getLinkConnectionsPtr().size()) {
@@ -269,14 +269,14 @@ void stateMatrixs::leerDbStateMatrixs() {
                 }
             }
             // !-----------------------------------------------------------------------
-            // Elementos de Q
-            // cuando se lee archivos stateMatrix de python
+            // Elements of Q
+            // when reading stateMatrix files from python
             if (std::get<std::string>(dictionary::get()->lookupDefault("pythonOption")) == "in" and
             std::get<bool>(dictionary::get()->lookupDefault("pythonVersion")) == true) {
                 QsLeido.clear();
                 QsLeido.resize(nodeLeido->getLinkConnectionsPtr().size());
                 for (int i = 0; i < io::tamanoElementosIO; ++i) {
-                    // verificar si es nodo de evacuacion
+                    // check whether it is an evacuation node
                     if(nodeLeido->verificarNodoEvacuation()){
                         if (i == 0) {
                             std::getline(iss, Q_str, ',');
@@ -287,7 +287,7 @@ void stateMatrixs::leerDbStateMatrixs() {
                             std::getline(iss, p0, ',');
                         }
                     }
-                    // cuando no es un nodo de evacuacion
+                    // when it is not an evacuation node
                     else {
                         if (i < nodeLeido->getLinkConnectionsPtr().size()) {
                             std::getline(iss, Q_str, ',');
@@ -301,12 +301,12 @@ void stateMatrixs::leerDbStateMatrixs() {
 
                 }
             }
-            // cuando se lee un archivo stateMatrix del mismo programa
+            // when reading a stateMatrix file from the same program
             else {
                 QsLeido.clear();
-                // recorre el tamaño de elementos, por general es 10
+                // iterate over the size of elements, generally it is 10
                 for (int i = 0; i < io::tamanoElementosIO; ++i) {
-                    // verificar si es nodo de evacuacion
+                    // check whether it is an evacuation node
                     if(nodeLeido->verificarNodoEvacuation()){
                         if (i == 0) {
                             std::getline(iss, Q_str, ',');
@@ -317,7 +317,7 @@ void stateMatrixs::leerDbStateMatrixs() {
                             std::getline(iss, p0, ',');
                         }
                     }
-                    // cuando no es un nodo de evacuacion
+                    // when it is not an evacuation node
                     else {
                         if (i < nodeLeido->getLinkConnectionsPtr().size()) {
                             std::getline(iss, Q_str, ',');
@@ -331,14 +331,14 @@ void stateMatrixs::leerDbStateMatrixs() {
                 }
             }
             // !-----------------------------------------------------------------------
-            // Elementos de observacion
+            // Observation elements
             for (int i = 0; i < io::tamanoElementosIO; ++i) {
-                // verificar si es nodo de evacuacion
+                // check whether it is an evacuation node
                 if(nodeLeido->verificarNodoEvacuation()){
                     if (i == 0) {
-                        // siempre paso las observacines
+                        // always go through the observations
                         std::getline(iss, O_str, ',');
-                        // si quiero leer observaciones pasadas
+                        // if I want to read past observations
                         if (std::get<bool>(dictionary::get()->lookupDefault("observationStatePedestrian")) == true) {
                             O = std::stod(O_str);
                             QsLeido.at(i).setObservaciones(O);
@@ -348,12 +348,12 @@ void stateMatrixs::leerDbStateMatrixs() {
                         std::getline(iss, p0, ',');
                     }
                 }
-                // si no es nodo de evacuacion
+                // if it is not an evacuation node
                 else {
                     if (i < nodeLeido->getLinkConnectionsPtr().size()) {
-                        // siempre paso las observacines
+                        // always go through the observations
                         std::getline(iss, O_str, ',');
-                        // si quiero leer observaciones pasadas
+                        // if I want to read past observations
                         if (std::get<bool>(dictionary::get()->lookupDefault("observationStatePedestrian")) == true) {
                             O = std::stod(O_str);
                             QsLeido.at(i).setObservaciones(O);
@@ -365,38 +365,38 @@ void stateMatrixs::leerDbStateMatrixs() {
                  
                 }
             }
-            // creaciones del stateMatrix
+            // creation of the stateMatrix
             stateMatrix* nuevoStateMatrix = new stateMatrix(nodeLeido, stateLeido, QsLeido);
             dbStateMatrixs.emplace_back(nuevoStateMatrix);
             nodeLeido->addStateMatrixExperimentadosPtr(nuevoStateMatrix);
         }
         file.close(); 
-        // // Termina el timing
+        // // End the timing
         // auto stop = std::chrono::high_resolution_clock::now();
         // auto duration = stop - start;
         // auto durationSeconds = std::chrono::duration_cast<std::chrono::seconds>(duration);
         // auto durationMinutes = std::chrono::duration_cast<std::chrono::minutes>(duration);
-        // std::cout << "Duración Lectura: " << durationMinutes.count() << " min";
+        // std::cout << "Reading duration: " << durationMinutes.count() << " min";
         // std::cout << " / " << durationSeconds.count() << " s" << std::endl;
     }
 
 }
 void stateMatrixs::mostrarDbStateMatrixs() const {
-    // Mostrar todos los stateMatrix dentro de dbStateMatrixs.
+    // Show all the stateMatrix inside dbStateMatrixs.
    for (int i = 0; i < dbStateMatrixs.size(); i++) {
         dbStateMatrixs[i]->mostrarStateMatrix();
     }
 }
 void stateMatrixs::imprimirDbStateMatrixs(fileIO* const file) const {
-    // Crear el nombre del archivo de exportacion.
+    // Create the name of the export file.
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // file    |-->| ARCHIVO DE SALIDA, EL NOMBRE SE CREA CON crearFilenameSalida()
+    // file    |-->| OUTPUT FILE, THE NAME IS CREATED WITH crearFilenameSalida()
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // std::fstream file;
     // file.open(creacionArchivoSalida(), std::ios::out);
-    // Recorre todos los nodos
+    // Iterate over all the nodes
     for (const auto& it : dbStateMatrixs) {
-        // imprimir los statesMatrix de las tablas de cada nodo 
+        // print the statesMatrix of the tables of each node 
         it->imprimirStateMatrix(file);
     }
 }

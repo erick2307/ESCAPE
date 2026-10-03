@@ -36,28 +36,28 @@
 #include "pedestrians.h"
 
 int main() {
-    // imprimi malla de calles.
+    // print street mesh.
     links::get()->imprimirMeshLinks();
-    // Lectura de simulaciones pasadas.
+    // Reading of past simulations.
     stateMatrixs::get()->leerDbStateMatrixs();
-    // segun el número de simulaciones
+    // according to the number of simulations
     while (tiempo::get()->getINumberSimulation() <= tiempo::get()->getEndNumberSimulation()) {
-        // calcula el valor el valor del randomChoiceRate
+        // computes the value of the randomChoiceRate
         tiempo::get()->calcularRandomChoiceRate();
-        // loop para una evacuacion
+        // loop for one evacuation
         while (tiempo::get()->running()) {
             tiempo::get()->aumentarTiempo();
-           // modelamiento de pedestrian.
+           // pedestrian modeling.
             pedestrians::get()->modelamientoPedestrians();
-            // contador de personas un tiempo atras de la funcion modelamiento
+            // pedestrian counter one time step behind the modeling function
             links::get()->contarPedestrians();
             io::get()->imprimirOutput();
-            // pone en 0 los elementos valores sublink            
+            // sets the sublink value elements to 0            
             links::get()->resetSublinks();
         }
-        // mostrar resultados simulation
+        // show simulation results
         tiempo::get()->mostrarIResultadosSimulacion();
-        // aumentar el numero de simulacion y reiniciar valores
+        // increase the simulation number and reset values
         tiempo::get()->aumentarINumberSimulation();
     }
 }

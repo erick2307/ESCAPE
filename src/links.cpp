@@ -55,7 +55,7 @@ std::vector<std::shared_ptr<link>> links::getDbLinkTotal() {
 // static getters
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 links* links::get() {
-    /* si aun no existe crea la unica instancia de nodes*/
+    /* if it does not exist yet, creates the single instance of nodes*/
     if (!linksInstance) {
         linksInstance =  new links();
     }
@@ -63,32 +63,32 @@ links* links::get() {
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// metodos
+// methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void links::leerLinks(std::string fileName){
-    /* Lectura de archivo de links */
+    /* Reading of links file */
     std::fstream file;
     file.open(fileName, std::ios::in);
-    // en caso no exista el archivo link.csv 
+    // in case the file link.csv does not exist 
     if (file.fail()) {
         std::cout << "Error opening the file " << fileName << std::endl;
         exit(1);
     }
-    // Variables de una fila del archivo nodos, que seria un solo node
+    // Variables of one row of the nodes file, which would be a single node
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // idLink                |-->| IDLINK
-    // idNode1               |-->| POSICION X
-    // idNode2               |-->| POSICION Y
-    // lengthLink            |-->| NODE DE EVACUACION, SI ES 1
+    // idNode1               |-->| X POSITION
+    // idNode2               |-->| Y POSITION
+    // lengthLink            |-->| EVACUATION NODE, IF IT IS 1
     // withLink              |-->| 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     std::string a1_str, a2_str, a3_str, a4_str, a5_str;
     std::string idLink_str, idNode1_str, idNode2_str, lengthLink_str, widthLink_str;
     std::string line;
     // link linkObj1;
-    // Lectura de archivo de nodos
+    // Reading of nodes file
     while (std::getline(file, line)) {
-        // Si el archivo tiene comentarios con #, no leerlos.
+        // If the file has comments with #, do not read them.
         if (line[0] == '#') {
             continue;
         }
@@ -105,36 +105,36 @@ void links::leerLinks(std::string fileName){
         int idNode2 = std::stoi(idNode2_str);
         int lengthLink = std::stoi(lengthLink_str);
         int widthLink = std::stoi(widthLink_str);
-        // obtiendo los node1 y node2
+        // getting node1 and node2
         node* node1 =nodes::get()->getDbNodeTotal().at(idNode1).get();
         node* node2 =nodes::get()->getDbNodeTotal().at(idNode2).get();
         std::unique_ptr<link> linkNuevo = std::make_unique<link>(idLink, node1, node2, lengthLink, widthLink);
         dbLinkTotal.push_back(std::move(linkNuevo));
-        // añadir link en cada nodo
+        // add link to each node
         node1->addLink(dbLinkTotal.back().get());
         node2->addLink(dbLinkTotal.back().get());
     }
     file.close(); 
 }
 void links::contarPedestrians() {
-    /* calcula el nivel de densidad en las calles*/
+    /* calculates the density level on the streets*/
     if(tiempo::get()->verificarPedestrianCountPeriod()){
-        // recorre todas las calles
+        // goes through all the streets
         for (auto it = dbLinkTotal.begin(); it != dbLinkTotal.end(); ++it) {
-            // calcula el nivel de densidad de todas las calles con los datos anterios
+            // calculates the density level of all the streets with the previous data
             it->get()->calcularDensityGeneral();
         }
     }
 }
 void links::resetSublinks() {
-    /* reinicia valores de conteo de sublink*/
-    // verifica cada cuando esta contando
+    /* resets the counting values of sublink*/
+    // checks how often it is counting
     if (tiempo::get()->getPedestrianCountPeriod()) {
-        // recorre todos las calles
+        // goes through all the streets
         for (auto it = dbLinkTotal.begin(); it != dbLinkTotal.end(); ++it) {
-            // recorre cada sublink y lo reincia
+            // goes through each sublink and resets it
             for (auto y = it->get()->getSubdiviones().begin(); y != it->get()->getSubdiviones().end(); ++y) {
-                // solo borra si no esta vacia
+                // only clears if it is not empty
                 if (!y->getPedestriansInSublink().empty()) {
                     y->getPedestriansInSublink().clear();
                 }
@@ -143,7 +143,7 @@ void links::resetSublinks() {
     }
 }
 void links::resetLinks() {
-    /* reinicia los valores de los pedestriansLink*/  
+    /* resets the values of the pedestriansLink*/  
     for (auto it = dbLinkTotal.begin(); it != dbLinkTotal.end(); ++it) {
         it->get()->reiniciarSubdivisiones();
     }
@@ -160,16 +160,16 @@ void links::mostrarSublink() {
     }
 }
 void links::imprimirMeshLinks() {
-    /* imprimi datos para la malla de calles, donde guardo informacion
-        de calles y intersecciones.*/
+    /* prints data for the street mesh, where I store information
+        about streets and intersections.*/
     std::fstream file;
-    // nombre de la carpeta
+    // name of the folder
     const char* folderName = "mesh";
-    // Crear la carpeta mesh
+    // Create the mesh folder
     mkdir(folderName, S_IRWXU | S_IRWXG | S_IRWXO);
-    // abre el archivo en el objeto file
+    // opens the file in the file object
     file.open(std::string(folderName) + "/poliLinks",std::ios::out);
-    // recorre todas la base de datos de calle.
+    // goes through the whole street database.
     for (int i=0; i < links::dbLinkTotal.size(); i++) {
         dbLinkTotal.at(i)->imprimirLink(file);
     }

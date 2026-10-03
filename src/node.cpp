@@ -39,7 +39,7 @@ node::node(const int idNode, const vector2D coordenada) :
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// destrutor
+// destructor
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // node::~node(){}
 
@@ -71,26 +71,26 @@ std::vector<stateMatrix*>* node::getStateMatrixExperimentadosPtr() {
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// metodos
+// methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const node* node::buscarNodoFinal(link *callePtr) const {
-    /* busqueda del node final segun la calle que se encuentre
-        cada calle tiene un nodo de inicio y final dependiendo
-        si esta de ida o vuelta delvolvera el nodo final esto seria ida */
-    // Si el nodo donde estoy es el nodo 1 de la calle entonce nodo final es el nodo 2
+    /* search for the final node according to the street found
+        each street has a start and an end node depending on
+        whether it is outbound or inbound it will return the final node, this would be outbound */
+    // If the node where I am is node 1 of the street then the final node is node 2
     if(callePtr->getNode1Ptr() == this){
         return callePtr->getNode2Ptr();
     }
-    // Si el nodo donde estoy es el nodo 2 de la calle entonce nodo final es el nodo 1
+    // If the node where I am is node 2 of the street then the final node is node 1
     else {
         return callePtr->getNode1Ptr();    
     }
 }
 // void node::buscarStateMatrix(stateMatrix stateMatrixBuscando, bool& verificarStateMatrix, int& iStateMatrixTable) {
-//     /* recorre la tabla de stateMatrix en busqueda del elemento stateMatrixBuscando  */
+//     /* iterates over the stateMatrix table searching for the element stateMatrixBuscando  */
 //     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//     // stateMatrixBuscando   |-->| ELEMENTO stateMatrix a buscar 
-//     // verificarStateMatrix  |-->| SI ENCUENTRA EL ELEMENTO, ES VERDADERO 
+//     // stateMatrixBuscando   |-->| ELEMENT stateMatrix to search for 
+//     // verificarStateMatrix  |-->| IF THE ELEMENT IS FOUND, IT IS TRUE 
 //     for (int i = 0; i < stateMatrixTable.size(); i++) {
 //         if (stateMatrixTable.at(i) == stateMatrixBuscando) {
 //             verificarStateMatrix = true;
@@ -98,7 +98,7 @@ const node* node::buscarNodoFinal(link *callePtr) const {
 //             return;
 //         }
 //     } 
-//     // Establecer verificarQ basado en qEncontrado
+//     // Set verificarQ based on qEncontrado
 //     verificarStateMatrix = false;
 // }
 // void node::addqQTable(stateActionQ qElemento) {
@@ -108,11 +108,11 @@ const node* node::buscarNodoFinal(link *callePtr) const {
 //     std::sort(qTable.begin(), qTable.end(), stateActionQ::compararId);
 // }
 // void node::buscarQ(stateActionQ qBuscando, bool* verificarQ) {
-//     std::cout << "buscando.." << std::endl;
+//     std::cout << "searching.." << std::endl;
 //     verificarQ = false;
 //     for (int i = 0; i < getQTable().size(); i++) {
 //         if (getQTable().at(i) == qBuscando) {
-//             std::cout << "hola";
+//             std::cout << "hello";
 //             // qEncontrado = &getQTable().at(i);
 //             *verificarQ = true;
 //             std::cout << *verificarQ << std::endl;
@@ -134,36 +134,36 @@ bool node::verificarNodoEvacuation() const {
     return false;    
 }
 std::vector<int> node::stateObservado() const {
-    // vector de estado
+    // state vector
     std::vector<int> stateObservado;
-    // Reserva espacio en el vector
+    // Reserve space in the vector
     stateObservado.reserve(linkConnectionsPtr.size());
-    // asignacion de estados
+    // assignment of states
     for (link* calle : linkConnectionsPtr) {
         stateObservado.push_back(calle->getDensityLevel());
     }
     return stateObservado;
 }
 double node::calcularDistanciaA(const node* nodo2) const {
-    /* calcula la distancia entre dos nodos*/
+    /* calculates the distance between two nodes*/
     return coordenada.distanciaA(nodo2->getCoordenada());
 }
 double node::calcularDistanciaA(const vector2D &position) const {
-    /* calcula la distancia entre dos nodos*/
+    /* calculates the distance between two nodes*/
     return coordenada.distanciaA(position);
 }
 void node::addLink(link *calle) {
-    /* agrega una calle en el vector de linkConnections*/
+    /* adds a street to the linkConnections vector*/
     linkConnectionsPtr.push_back(calle);
 }
 void node::addStateMatrixExperimentadosPtr(stateMatrix *stateMatrixExperimentado){
-    /* agrega un stateMatrixExperimentado en el vector stateMatrixsExperimentado*/
+    /* adds a stateMatrixExperimentado to the stateMatrixsExperimentado vector*/
     stateMatrixsExperimentadosPtr.push_back(stateMatrixExperimentado);
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// mostrar
+// show
 void node::mostrarNode() const {
-    /* Muestra en el terminal datos del nodo:
+    /* Shows node data in the terminal:
     // IdNode
     // x y
     // idLinkConnections*/
@@ -179,27 +179,27 @@ void node::mostrarNode() const {
     std::cout << std::endl;
 }
 void node::mostrarStateMatrixTable() const {
-    /* muestra la tabla de stateMatrix experimentado*/
+    /* shows the table of experienced stateMatrix*/
     std::cout << "Qtable: " << std::endl;
     for (const stateMatrix* const elemento : stateMatrixsExperimentadosPtr) {
         elemento->mostrarStateMatrix();
     } 
 }
 void node::imprimirAction(std::fstream& file) const {
-    /* impresion de una linea de actionDb*/ 
-    // id, cantidadCalles, idCalle....
+    /* printing of one line of actionDb*/ 
+    // id, streetCount, streetId....
     file << idNode << ",";
     file << linkConnectionsPtr.size() << ",";
-    // imprime el id de la calle
+    // prints the street id
     for (auto it = linkConnectionsPtr.begin(); it != linkConnectionsPtr.end(); ++it) {
         file << (*it)->getIdLink();
         file << ",";
     }
-    // recorre los elementos de impresion de una fila
-    // por defecto esta 10
+    // iterates over the elements to print in a row
+    // by default it is 10
     size_t faltante = io::tamanoElementosIO - linkConnectionsPtr.size();
     for (size_t i = 0; i < faltante; i++) {
-        // solo la ultima pornerle sin coma
+        // only the last one without a comma
         if (i == faltante - 1) {
             file << "0";
         }
@@ -211,13 +211,13 @@ void node::imprimirAction(std::fstream& file) const {
     file << std::endl;
 }
 void node::imprimirTransition(std::fstream& file) const {
-    /* impresion de una linea de transition*/ 
-    // id, cantidadCalles, idNode...
+    /* printing of one line of transition*/ 
+    // id, streetCount, idNode...
     file << idNode << ",";
     file << linkConnectionsPtr.size() << ",";
-    // imprime el id de la calle
+    // prints the street id
     for (auto it = linkConnectionsPtr.begin(); it != linkConnectionsPtr.end(); ++it) {
-        // da el otro nodo de la calle diferente al de idNode
+        // gives the other node of the street, different from idNode
         if ((*it)->getNode1Ptr() == this) {
             file << (*it)->getNode2Ptr()->idNode;
         }
@@ -228,11 +228,11 @@ void node::imprimirTransition(std::fstream& file) const {
             file << ",";
         }
     }
-    // recorre los elementos de impresion de una fila
-    // por defecto esta 10
+    // iterates over the elements to print in a row
+    // by default it is 10
     size_t faltante = io::tamanoElementosIO - linkConnectionsPtr.size();
     for (size_t i = 0; i < faltante; i++) {
-        // solo la ultima pornerle sin coma
+        // only the last one without a comma
         if (i == faltante - 1) {
             file << "0";
         }

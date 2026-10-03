@@ -23,10 +23,10 @@
 #ifndef link_h
 #define link_h
 /*---------------------------------------------------------------------------*\
-Una calle.
+A street.
 \*---------------------------------------------------------------------------*/
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header generales
+// general headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include <fstream>
 #include <vector>
@@ -35,7 +35,7 @@ Una calle.
 #include <stdexcept>
 #include "iomanip"
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header propios
+// own headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "subLink.h"
 #include "vector2D.h"
@@ -48,17 +48,17 @@ Una calle.
 class link{
 private:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // idLink            |-->| ID DE LA CALLE
-    // idNode1           |-->| INTERSECCION DE LA CALLE  
-    // idNode2           |-->| LA OTRA INTERSECCION DE LA CALLE 
-    // length            |-->| LARGO DE LA CALLE
-    // width             |-->| ANCHO DE LA CALLE
-    // orientacionLink   |-->| ANGULO QUE FORMA LA HORIZONTAL CON LA CALLE
-    // anchoSubdivision  |-->| ANCHO DE UNA SUBDIVISION DE LA CALLE
-    // densityLevel      |-->| NIVEL DE DENSIDAD DE LA CALLE
-    // pedestriansLinkPtr|-->| PERSONAS EN LA CALLE
-    // subdivisiones     |-->| SUBDIVISIONES DE LA CALLE
-    // numberLinkDivision|-->| NUMERO DE DIVISIONES O SUBLINK DE UNA CALLE
+    // idLink            |-->| ID OF THE STREET
+    // idNode1           |-->| INTERSECTION OF THE STREET  
+    // idNode2           |-->| THE OTHER INTERSECTION OF THE STREET 
+    // length            |-->| LENGTH OF THE STREET
+    // width             |-->| WIDTH OF THE STREET
+    // orientacionLink   |-->| ANGLE THAT THE HORIZONTAL FORMS WITH THE STREET
+    // anchoSubdivision  |-->| WIDTH OF A SUBDIVISION OF THE STREET
+    // densityLevel      |-->| DENSITY LEVEL OF THE STREET
+    // pedestriansLinkPtr|-->| PEOPLE IN THE STREET
+    // subdivisiones     |-->| SUBDIVISIONS OF THE STREET
+    // numberLinkDivision|-->| NUMBER OF DIVISIONS OR SUBLINKS OF A STREET
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     const int idLink;
     const node* const node1Ptr;
@@ -102,7 +102,7 @@ public:
     std::vector<subLink>& getSubdiviones();
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // metodos
+    // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     const vector2D calcularOrientacionLink() const;
     const double calcularAnchoSubdivision(const std::string &opcionSubdivision) const;

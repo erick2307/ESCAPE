@@ -45,7 +45,7 @@ double velocidad::getMagnitud() const{
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// metodos
+// methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void velocidad::calcularAjusteRandom() {
     magnitud = magnitud + (0.02 * (static_cast<double>(std::rand()) / RAND_MAX)) - 0.01;

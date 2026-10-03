@@ -73,13 +73,13 @@ for i in carpetas_numericas_ordenadas:
 
         for row in csv_reader:
             cantPedestrianEvacuated.append(float(row[0]))
-    # figura
+    # figure
     fig, ax = plt.subplots(1, 1, figsize=(width, height))
     fig.subplots_adjust(left=0.05, right=0.95, top=0.98, bottom=0.03, wspace=0.3, hspace=0.09)
-    # linea y puntos
+    # line and points
     ax.plot([x1_values, x2_values], [y1_values, y2_values], c="k", lw=0.5)
     vmin, vmax = 0.0, 1.3
-    # puntos o personas
+    # points or pedestrians
     scatter = ax.scatter(x_values, y_values, c=magnitud,s=8,
                          cmap="jet_r", marker='o', edgecolors="none",
                          vmin=vmin, vmax=vmax)
@@ -89,21 +89,21 @@ for i in carpetas_numericas_ordenadas:
     axins.scatter(x_values, y_values, c=magnitud,
                   cmap="jet_r", marker='o', edgecolors="none",
                   vmin=vmin, vmax=vmax)
-    # texto
+    # text
     cantPeEv = str(int(cantPedestrianEvacuated[0]))
-    text1 = "t = " + i + " seg; evacuated: " + cantPeEv
+    text1 = "t = " + i + " sec; evacuated: " + cantPeEv
     fig.text(0.05, 0.03, text1, fontsize=12, fontweight='normal',
              transform=ax.transAxes)
     plt.colorbar(scatter, ax=ax, fraction=0.04)
-    # configuraciones
+    # settings
     xlim_auto = ax.get_xlim()
     ylim_auto = ax.get_ylim()
     ax.set_xlim(xlim_auto)
     ax.set_ylim(ylim_auto)
     axins.set_xlim({746500, 747500})
     axins.set_ylim({8157400, 8158000})
-    plt.xlabel('Valores X')
-    plt.ylabel('Valores Y')
+    plt.xlabel('X values')
+    plt.ylabel('Y values')
     plt.savefig(directory_export + i)
     plt.close(fig)
     bar.update(carpetas_numericas_ordenadas.index(i) + 1)

@@ -24,7 +24,7 @@
 #define nodeDestino_h
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header propios
+// own headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "pedestrian.h"
 #include "vector2D.h"
@@ -39,9 +39,9 @@ class nodeDestino: public node {
     
 private:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // maxPersonasEvacuadas   |-->| ID DE LA INTERSECCION
-    // personasEvacuadasPtr   |-->| LISTA DE PUNTEROS DE PERSONAS EVACUADAS
-    // lleno                  |-->| NODO EVACUACION AL MAXIMO DE SU CAPACIDAD 
+    // maxPersonasEvacuadas   |-->| ID OF THE INTERSECTION
+    // personasEvacuadasPtr   |-->| LIST OF POINTERS TO EVACUATED PEOPLE
+    // lleno                  |-->| EVACUATION NODE AT MAXIMUM CAPACITY 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     const int maxPersonasEvacuadas;
     std::vector<pedestrian*> personasEvacuadasPtr;
@@ -82,7 +82,7 @@ public:
     static bool verificarEvacuacionTotal();
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // metodos
+    // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     void reiniciar();
     bool verificarLLeno() const;

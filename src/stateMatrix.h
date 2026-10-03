@@ -23,17 +23,17 @@
 #ifndef stateMatrix_h
 #define stateMatrix_h
 /*---------------------------------------------------------------------------*\
-Una fila de archivo de entrada o salida.
+A row of an input or output file.
 \*---------------------------------------------------------------------------*/
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header generales
+// general headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include <fstream>
 #include <vector>
 #include "io.h"
 #include "variant"
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header propios
+// own headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "pedestrianMassState.h"
 #include "Q.h"
@@ -46,10 +46,10 @@ class nodeDestino;
 class stateMatrix {
 private:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // id        |-->| ID DEL STATEMATRIX
-    // nodeId    |-->| PUNTERO A NODO DONDE SE PUEDE EXPERIMENTAR LOS ESTADOS
-    // state     |-->| ESTADO EXPERIMENTADO ESTA COMPUESTO DE LAS DENSIDADES DE LOS LINK CONECTADOS
-    // Qs        |-->| Q DE LOS LINK EN UN STATE EXPERIMENTADO
+    // id        |-->| ID OF THE STATEMATRIX
+    // nodeId    |-->| POINTER TO NODE WHERE THE STATES CAN BE EXPERIENCED
+    // state     |-->| EXPERIENCED STATE IS COMPOSED OF THE DENSITIES OF THE CONNECTED LINKS
+    // Qs        |-->| Q OF THE LINKS IN AN EXPERIENCED STATE
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     const node* const nodoPtr;
     const std::vector<int> state;
@@ -86,7 +86,7 @@ public:
     // int static getTamanoVector();
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // metodos
+    // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     bool operator==(stateMatrix stateMatrix2);
     stateMatrix* buscarStateMatrix(std::vector<int> state) const;
@@ -98,7 +98,7 @@ public:
     void imprimirStateMatrix(fileIO* const file) const;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // static metodos
+    // static methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     static stateMatrix* creacionObtencionStateMatrix(
         node* const nodo,

@@ -15,6 +15,6 @@ profile:
 	g++ -std=c++17 -pg -g $(SOURCES) -o bin/sarsa
 
 
-# Regla para crear la carpeta bin si no existe
+# Rule to create the bin folder if it does not exist
 $(BIN_DIR):
 	mkdir -p $@

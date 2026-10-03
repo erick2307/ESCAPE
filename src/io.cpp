@@ -81,7 +81,7 @@ const std::string dirIO::getFullPath() const {
 // methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void dirIO::crearDir() {
-    // permisos del directorio S_ para ejecutar, leer y escribir
+    // directory permissions S_ to execute, read and write
     if (directory == nullptr) {
         mkdir(dirName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     }
@@ -93,13 +93,13 @@ void dirIO::crearDir() {
 bool dirIO::verificarDirExists() const{
     struct stat info;
     if (stat(dirName.c_str(), &info) != 0) {
-        // No se pudo acceder al directorio (puede que no exista)
+        // Could not access the directory (it may not exist)
         return false;
     } else if (info.st_mode & S_IFDIR) {
-        // Existe y es un directorio
+        // It exists and is a directory
         return true;
     } else {
-        // Existe pero no es un directorio
+        // It exists but is not a directory
         return false;
     }
 }
@@ -124,7 +124,7 @@ fileIO::fileIO(const std::string& fileName, const bool checkFile) :
     fullPath(fileName),
     directory(nullptr)
 {
-    // solo crear si checkFile es true
+    // only create if checkFile is true
     if (checkFile) {
         crearFile();
     }
@@ -134,7 +134,7 @@ fileIO::fileIO(const std::string& fileName, const std::string extension,const bo
     fullPath(fileName + "." +  extension),
     directory(nullptr)
 {
-    // solo crear si checkFile es true
+    // only create if checkFile is true
     if (checkFile) {
         crearFile();
     }
@@ -144,7 +144,7 @@ fileIO::fileIO(const std::string& fileName,  const std::string extension, const 
     fullPath(fileName + "." +  extension),
     directory(nullptr)
 {
-    // solo crear si checkFile es true
+    // only create if checkFile is true
     if (checkFile) {
         openFile(inoutFile(inoutStr));
     }
@@ -168,7 +168,7 @@ fileIO::fileIO(const std::string& fileName,  const std::string extension, const 
     directory(directory),
     fullPath(directory->getFullPath() + fileName + "." + extension)
 {
-    // solo crear si checkFile es true
+    // only create if checkFile is true
     if (checkFile) {
         openFile(inoutFile(inoutStr));
     }
@@ -210,7 +210,7 @@ std::ios_base::openmode fileIO::inoutFile(const std::string& inout) {
         return std::ios::out;
     }
     else {
-        throw std::runtime_error("No se pudo abrir el archivo: ");
+        throw std::runtime_error("Could not open the file: ");
     }
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -250,7 +250,7 @@ io::io() {
 // static getters
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 io* io::get() {
-    /* si aun no existe crea la unica instancia de nodes*/
+    /* if it does not exist yet, create the single instance of nodes*/
     if (!ioInstance) {
         ioInstance =  new io();
     }
@@ -268,56 +268,56 @@ io* io::get() {
 // metods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 dirIO* io::crearCarpetaTiempo() {
-    /* Crea carpetas de cada tiempo de evacuacion*/
+    /* Create folders for each evacuation time*/
     dirIO* dirTime = new dirIO(std::to_string(tiempo::get()->getValorTiempo()), &directoryTime);
-    // crear carpeta de los tiempos en segundos para almacenar informacion
+    // create folder for the times in seconds to store information
     mkdir(dirTime->getFullPath().c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     return dirTime;
 }
 void io::imprimirOutput() {
-    /* manejo de las output*/
-    // exportacion cuando esta entrenado
+    /* handling of the outputs*/
+    // export when trained
     if (std::get<std::string>(dictionary::get()->lookupDefault("process")) == "trained") {
         if (tiempo::get()->verificarGraphicPrintoutPeriod()) {
-            // crear carpetas de tiempo
+            // create time folders
             dirIO* dirTiempo = crearCarpetaTiempo();
-            // imprimir datos de personas: posicion y velocidad
+            // print pedestrian data: position and velocity
             fileIO xy("xy", dirTiempo);
             fileIO U("U", dirTiempo);
             pedestrians::get()->imprimirPedestrians(&xy, &U);
-            // imprimir datos de personas: cantidad de personas evacuadas
+            // print pedestrian data: number of evacuated pedestrians
             fileIO cantPedestrianEvacuated("cantPedestrianEvacuated", dirTiempo);
             nodeDestino::imprimirVariableTotalPersonasEvacuadas(&cantPedestrianEvacuated);
             delete dirTiempo;
             dirTiempo = nullptr; 
-            // archivos de tablas de exportacion
-            // imprime personas totales evacuadas
+            // export table files
+            // prints total evacuated pedestrians
             nodeDestino::imprimirTotalPersonasEvacuadas(&fileTotalEvacuatedCount);
-            // imprime personas evacuadas por node evacuacion
+            // prints pedestrians evacuated per evacuation point
             nodeDestino::imprimirNodeEvacuation(&fileEvacuatedCount);
-            // imprimir personas en las calles
-            std::string nombreArchivo = "Figure-" + std::to_string(tiempo::get()->getValorTiempo()); // O el formato que desees
+            // print pedestrians on the streets
+            std::string nombreArchivo = "Figure-" + std::to_string(tiempo::get()->getValorTiempo()); // or the format you want
             fileIO figure(nombreArchivo, "png", &directoryFigure);
             pedestrian::plotearPedestrians(&figure);
         }
     }
-    // exportacion durante la calibracion
+    // export during calibration
     else if (std::get<std::string>(dictionary::get()->lookupDefault("process")) == "calibration") {
-        // imprime data de statematrix cada termino de simulaciont
-        // solo lo imprime al final de la evacuacion
+        // prints statematrix data at the end of each simulation
+        // only prints it at the end of the evacuation
         if (tiempo::get()->getValorTiempo() == tiempo::get()->getEndTime()) {
             fileIO stateMatrice(stateMatrixs::get()->creacionFileStateMatrix(), &directoryStateMatrices);
             stateMatrixs::get()->imprimirDbStateMatrixs(&stateMatrice);
-            // ploteo mortalidad por simulacion
+            // plot mortality per simulation
             nodeDestino::plotearEvacuadosVsTiempo(&figureEvacuadosVsTiempo);
             nodeDestino::imprimirEvacuadosVsTiempo(&tableEvacuadosVsTiempo);
         }
-        // ploteo total personas evacuadas por simulacion
+        // plot total evacuated pedestrians per simulation
         nodeDestino::plotearTotalEvacuadosXSimulacion(&figureTotalEvacuadosVsSimulacion);
         nodeDestino::imprimirTotalEvacuadosXSimulacion(&tableTotalEvacuadosVsSimulacion);
-        // imprimir actionDb
+        // print actionDb
         if (std::get<bool>(dictionary::get()->lookupDefault("pythonVersion")) == true and std::get<std::string>(dictionary::get()->lookupDefault("pythonOption")) == "out") {
-            // cuando este numero de simulacion 1 y sea final de la evacuacion
+            // when the simulation number is 1 and it is the end of the evacuation
             if (tiempo::get()->getINumberSimulation() == tiempo::get()->getStartNumberSimulation()
             and tiempo::get()->getValorTiempo() == tiempo::get()->getEndTime()) {
                 nodes::get()->imprimirActionsDb(fileActionsDb.getFileFstream());

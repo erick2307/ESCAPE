@@ -87,25 +87,25 @@ const int link::getCantidadSubdivisiones() const {
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// metodos
+// methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const vector2D link::calcularOrientacionLink() const{
-    /* deberia esta calcular orientacion pero necesita acceder a dbLink
-        por ello se calculara la direccione en pedestrian*/
-    /* calcula la direccion de la calle con los nodos inicial y final*/
+    /* this should calculate the orientation but it needs access to dbLink
+        so the direction will be calculated in pedestrian*/
+    /* calculates the direction of the street with the start and end nodes*/
     const double x = node2Ptr->getCoordenada().getX() - node1Ptr->getCoordenada().getX();
     const double y = node2Ptr->getCoordenada().getY() - node1Ptr->getCoordenada().getY();
-    // Calcula la magnitud del vector de dirección
+    // Calculates the magnitude of the direction vector
     const double magnitud = std::sqrt(std::pow(x, 2) + std::pow(y, 2));
-    // Normaliza el vector de dirección (divide cada e por la magnitud)
+    // Normalizes the direction vector (divides each element by the magnitude)
     return {std::abs(x / magnitud), std::abs(y / magnitud)};
 }
 const double link::calcularAnchoSubdivision(const std::string &opcionSubdivision) const{
-    // la opcionSubdivision es cantidadSubvisiones,
-    // es decir le voy a dar la cantidad de subdiviones que debo tener
-    // en un link por tanto calculo el ancho
+    // the opcionSubdivision is cantidadSubvisiones,
+    // that is, I will give it the number of subdivisions it must have
+    // in a link so I calculate the width
     if (opcionSubdivision == "cantidadSubdivisiones") {
-        /* Calcula el ancho de divisiones de la calle segun el numero de divisiones preestablecidas*/
+        /* Calculates the width of the street divisions according to the preset number of divisions*/
         const vector2D nodo1Coordenada = node1Ptr->getCoordenada();
         const vector2D nodo2Coordenada = node2Ptr->getCoordenada();
         const double ancho_x = nodo1Coordenada.getX() - nodo2Coordenada.getX();
@@ -113,58 +113,58 @@ const double link::calcularAnchoSubdivision(const std::string &opcionSubdivision
         const double ancho = std::sqrt(ancho_x * ancho_x + ancho_y * ancho_y) / static_cast<double>(std::get<int>(dictionary::get()->lookupDefault("cantidadSubdivisiones")));
         return ancho;
     }
-    // se el ancho, el default es 2 metros
+    // the width is given, the default is 2 meters
     else {
-        // calcula la cantidad de subdivisiones segun el ancho dado, luego calcula el ancho de nuevo
+        // calculates the number of subdivisions according to the given width, then calculates the width again
         const int cantSec = std::round(length / std::get<double>(dictionary::get()->lookupDefault("anchoSubdivision")));
         return length / static_cast<double>(cantSec);
     }
 }
 const int link::calcularCantidadSubdivisiones(const std::string &opcionSubdivision) {
-    // si la opcionSubdivision es cantidadSubvisiones, es decir le voy a dar la cantidad de subdiviones que debe haber
-    // en un link no es necesario hacer calculo porque ya se cantidad de subdivision
+    // if the opcionSubdivision is cantidadSubvisiones, that is, I will give it the number of subdivisions there must be
+    // in a link no calculation is needed because the number of subdivisions is already known
     if (opcionSubdivision == "cantidadSubdivisiones") {
         return std::get<int>(dictionary::get()->lookupDefault("cantidadSubdivisiones"));
     }
-    // se el ancho de subdivision, debo calcular la cantidad de subdiviones.
+    // the subdivision width is given, I must calculate the number of subdivisions.
     else {
-        // la cantidad de secciones es un promedio de el largo entre ancho de subseccion
+        // the number of sections is an average of the length divided by the subsection width
         return std::round(length / anchoSubdivision);
     }
 }
 void link::calcularDensityGeneral() {
-    /* calculo de la densidad en cada sublink de la calle*/
-    // subdivion es it
+    /* calculation of the density in each sublink of the street*/
+    // subdivision is it
     double densidadMaxima = 0;
     for (auto it = subdivisiones.begin(); it != subdivisiones.end(); ++it) {
-        // calcula la densidad segun la cantidad de personas
+        // calculates the density according to the number of people
         double densidadSublink = it->calcularDensidadSubdivision();
-        // guardar densidadMaxima
+        // store densidadMaxima
         if (densidadSublink > densidadMaxima) {
             densidadMaxima = densidadSublink;
         }
-        // verifica si aun un cambio en la densidad de sublink
+        // checks whether there is a change in the sublink density
         if (it->getDensidadSublink() != densidadSublink) {
             double velocidadEnSublink = velocidad::actualizarVelocidad(densidadSublink);
-            // verifica si aun un cambio en la velocidad de las personas dentro del sublink
+            // checks whether there is a change in the speed of the people within the sublink
             if (!(it->getPedestriansInSublink().empty())) {
                 if (it->getPedestriansInSublink().at(0)->getVelocidadPedestrian().getMagnitud() != velocidadEnSublink) {
                     it->actualizarVelocidadPedestrianInSublink(velocidadEnSublink);
                 }
             }
         }
-        // guarda las densidades para el proximo calculo
+        // stores the densities for the next calculation
         it->setDensidadSublink(densidadSublink);
     }
     densityLevel = calcularDensityLevelLink(densidadMaxima);
 }
 int link::calcularDensityLink() const{
-    /* calcula la densidad de la calle segun la cantidad de personas dentra*/
+    /* calculates the density of the street according to the number of people inside*/
     return calcularPedestriansLink() / (anchoSubdivision * width);
 }
 int link::calcularDensityLevelLink(const double densidadLink) const {
-    /* calcula el nivel de densidad segun la densidad de la calle*/
-    // elecion del nivel de densidad segun rangos preestablecidos
+    /* calculates the density level according to the density of the street*/
+    // choice of the density level according to preset ranges
     if(densidadLink <= 0.5){
         return 0;
     }  
@@ -182,8 +182,8 @@ void link::quitarPedestrianSublink(pedestrian* const persona, const int idSublin
     subdivisiones.at(idSublink).agregarPedestrian(persona);
 }
 // subLink* link::calcularSublink(const vector2D &position) const {
-//      /* Calcula la ubicacion de la persona en el array del subLink*/
-//     // distancia de la persona al nodeInicio de la persona
+//      /* Calculates the location of the person in the subLink array*/
+//     // distance from the person to the nodeInicio of the person
 //     // double index_x = position.getX() - nodeInicioPtr->getCoordenada().getX();
 //     const double index_x = position.getX() - node1Ptr->getCoordenada().getX();
 //     // double index_y = position.getY() - nodeInicioPtr->getCoordenada().getY();
@@ -203,9 +203,9 @@ int link::calcularPedestriansLink() const {
   return personasEnCalle; 
 }
 void link::reiniciarSubdivisiones() {
-    // reiniciar el vector de subdiviones
+    // reset the subdivisions vector
     for (auto& sublink : subdivisiones) {
-        // Llamamos al método reiniciar() de cada subLink
+        // We call the reiniciar() method of each subLink
         sublink.reiniciar();
     }
 }

@@ -1,6 +1,6 @@
 * ESCAPE
 
-Puedes observar la simulación completa del caso Square [[https://youtu.be/0RpVIt6iqHw][aquí]].
+You can watch the full simulation of the Square case [[https://youtu.be/0RpVIt6iqHw][here]].
 
 * Installation
 
@@ -13,30 +13,31 @@ make
 source bashrc
 #+END_SRC
 
-* Requisitos
+* Requirements
 
-- Lenguaje: C++ (se requiere soporte para C++17)
-- Compilador: GCC 9.4 o superior / Clang 10.0 o superior
-- Herramientas de Construcción: 
+- Language: C++ (C++17 support is required)
+- Compiler: GCC 9.4 or higher / Clang 10.0 or higher
+- Build tools: 
   - GNU Make 4.2.1 (Makefile)
-  - Sistema operativo: Ubuntu 20.04.6 LTS
+  - Operating system: Ubuntu 20.04.6 LTS
 
-* Licencia
+* License
 
-Este proyecto se distribuye bajo los términos de la licencia MIT. Consulta el archivo [[LICENCIA][LICENSE.txt]] para más detalles.
+This project is distributed under the terms of the MIT license. See the [[LICENSE.txt][LICENSE.txt]] file for more details.
 
-* Documentación Adicional
+* Additional Documentation
 
-Si necesitas más información sobre cómo configurar o utilizar el proyecto, revisa los siguientes recursos:
-- [[/documentation/escape.pdf][Guia de usuario]]
+If you need more information on how to configure or use the project, check the following resources:
+- [[/documentation/escape_en.pdf][User guide (English)]]
+- [[/documentation/escape.pdf][User guide (Spanish)]]
 
-* Historial de Cambios
+* Changelog
 
-A continuación se muestra el historial de cambios:
+The change history is shown below:
 
-| Versión  | Fecha       | Descripción                                   |
+| Version  | Date        | Description                                   |
 |----------+-------------+-----------------------------------------------|
-| 1.0.0    | 2025-04-07  | Versión inicial, lanzamiento del proyecto.    |
+| 1.0.0    | 2025-04-07  | Initial version, project release.             |
 
 
 

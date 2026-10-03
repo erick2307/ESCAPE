@@ -109,93 +109,93 @@ std::string tiempo::getFilenameData() {
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// metodos
+// methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 tiempo& tiempo::operator++(int) {
     setValorTiempo(valorTiempo + deltaT); 
     return *this;
 }
 void tiempo::aumentarTiempo() {
-    // aumenta el tiempo de evacuacion
+    // increases the evacuation time
     valorTiempo += deltaT;
 }
 void tiempo::aumentarINumberSimulation() {
-    // aumentar el numero de simulacion
+    // increase the simulation number
     // setINumberSimulation(getINumberSimulation()+1);
     iNumberSimulation += 1;
-    // reiniciar el tiempo
+    // reset the time
     valorTiempo = 0;
-    // reiniciar el conteo de personas Evacuadas
+    // reset the count of evacuated people
     nodeDestino::totalPersonasEvacuadas = 0;
-    // regresar a las personas al nodo de arranque
+    // return the people to the start node
     pedestrians::get()->reiniciarPedestrians();
     nodes::get()->reiniciarNodesEvacuations();
-    // reinicia la lista de personas en calles
+    // resets the list of people on streets
     links::get()->resetLinks();
-    // reinicar el timer de una simulacion 
+    // restart the timer of a simulation 
     startTimeSimulation = std::chrono::high_resolution_clock::now();
 }
 void tiempo::inicializarNumberSimulation() {
-    /* Inicializar las variables de NumberSimulation*/
-    // Para proceso de calibracion
+    /* Initialize the NumberSimulation variables*/
+    // For calibration process
     if(std::get<std::string>(dictionary::get()->lookupDefault("process")) == "calibration"){
-        // si lee statematrix
+        // if it reads statematrix
         if (std::get<bool>(dictionary::get()->lookupDefault("computationContinued")) == true) {
             startNumberSimulation = 0;
             endNumberSimulation = std::get<int>(dictionary::get()->lookup("endNumberSimulation"));
             startNumberSimulation = startNumberSimulation + 1;
             iNumberSimulation = startNumberSimulation;
         }
-        // si no lee statematrix
+        // if it does not read statematrix
         else {
-            // inicia el la simulacion 1
+            // starts at simulation 1
             startNumberSimulation = 1;
             iNumberSimulation = 1;
             endNumberSimulation = std::get<int>(dictionary::get()->lookup("endNumberSimulation"));
         }
-        // iniciar el timer tiempo real de simulacion
+        // start the real-time timer of the simulation
         startTimeSimulation = std::chrono::high_resolution_clock::now();
     }
-    // Para proceso ya entrenado
+    // For already trained process
     else if (std::get<std::string>(dictionary::get()->lookupDefault("process")) == "trained"){
-        // iniciar el timer tiempo real de simulacion
+        // start the real-time timer of the simulation
         startTimeSimulation = std::chrono::high_resolution_clock::now();
         startNumberSimulation = 1;
         iNumberSimulation = 1;
-        // solo 1 simulacion
+        // only 1 simulation
         endNumberSimulation = 1;
     }
 }
 int tiempo::extractINumberSimulation() const {
-    /* Extrar el numero de simulacion actual segun el archivo sim de estados
-        anteriores del control de la variable previousComputation*/
+    /* Extract the current simulation number according to the sim file of previous
+        states from the control of the variable previousComputation*/
     const std::string lastFile_str = std::get<std::string>(dictionary::get()->lookup("previousComputationFile"));
-    // busca el primer numero del 1-9 del nombre del archivo de estados
+    // finds the first number from 1-9 in the name of the states file
     const size_t posicion = lastFile_str.find_first_of("123456789");
     return std::stoi(lastFile_str.substr(posicion));
 }
 void tiempo::calcularRandomChoiceRate() {
     const int k = iNumberSimulation;
     const int N = endNumberSimulation;
-    // valor por default, puede ser 4 o 9 
+    // default value, can be 4 or 9 
     double temp = 4.0;
-    // buscar nombre correcto
-    // en proceso de calibracion
+    // find the correct name
+    // in calibration process
     if (std::get<std::string>(dictionary::get()->lookupDefault("process")) == "calibration") {
-        // en busca el keyword exploration
+        // looks for the keyword exploration
         auto it = dictionary::get()->getControlDict().find("exploration");
         if (it != dictionary::get()->getControlDict().end()) {
-            // Clave encontrada, proceder con la operación
+            // Key found, proceed with the operation
             temp = calcularTemp(std::get<double>(it->second));
         }
-        // formula para random choice
+        // formula for random choice
         const double gleeFactor = temp / double(N);
-        // el -1 es para empezar el numero de simulaciones en 0
+        // the -1 is to start the number of simulations at 0
         randomChoiceRate = 1.0 / (gleeFactor * double(k - 1) + 1.0);
     }
-    // en proceso de trained
+    // in trained process
     else if(std::get<std::string>(dictionary::get()->lookupDefault("process")) == "trained") {
-        // para que solo eliga sarsa nada de aletorio
+        // so that it only chooses sarsa, nothing random
         randomChoiceRate = 0;
     }
 }
@@ -205,40 +205,40 @@ const double tiempo::calcularTemp(const double r) const {
     return (N - r * factor) / (r * factor);
 }
 bool tiempo::running() const {
-    /* contrala el tiempo de evacuacion*/
-    // Verificar si el tiempo actual es menor al tiempo total de la evacuación ajustado
+    /* controls the evacuation time*/
+    // Check whether the current time is less than the adjusted total evacuation time
     if (valorTiempo >= (endTime - 0.5 * deltaT)) {
         return false;
     }
-    // Verificar si todas las personas han sido evacuadas
+    // Check whether all people have been evacuated
     return !nodeDestino::verificarEvacuacionTotal();
 }
 void tiempo::mostrarIResultadosSimulacion() {
-    // mostrar 
+    // show 
     std::cout << "***** Simu: " << iNumberSimulation << " *****" << std::endl;
     std::cout << "epsilon greedy - exploration: " << randomChoiceRate << std::endl;
     std::cout << "survived pedestrian: " << nodeDestino::getTotalPersonasEvacuadas() << std::endl;
-    // termino de la simulacion
+    // end of the simulation
     endTimeSimulation = std::chrono::high_resolution_clock::now();
-    // tiempo de simulacion
+    // simulation time
     const auto duration = endTimeSimulation - startTimeSimulation;
     const auto miliSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration);
     const auto durationSeconds = std::chrono::duration_cast<std::chrono::seconds>(duration);
     const auto durationMinutes = std::chrono::duration_cast<std::chrono::minutes>(duration);
-    std::cout << "Duración: " << durationMinutes.count() << " min";
+    std::cout << "Duration: " << durationMinutes.count() << " min";
     std::cout << " / " << durationSeconds.count() << " s";
     std::cout << " / " << miliSeconds.count() << " ms" << std::endl;
     std::cout << std::endl;
 }
 void tiempo::mostrarTiempo() const {
-    // Mostrar en terminal tiempo actual.
+    // Show current time in the terminal.
     std::cout << "Time = " << valorTiempo << std::endl;
 }
 bool tiempo::verificarGraphicPrintoutPeriod() const {
-    /* cada cuando imprimir variables*/
+    /* how often to print variables*/
     return (getValorTiempo() % graphicPrintoutPeriod == 0);
 }
 bool tiempo::verificarPedestrianCountPeriod() const {
-    /* cada cuando debe contar las personas*/
+    /* how often to count the people*/
     return getValorTiempo() % pedestrianCountPeriod == 0;
 }

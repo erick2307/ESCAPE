@@ -24,20 +24,20 @@
 #define sarsa_h
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header generales
+// general headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header propios
+// own headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class sarsa{
 
 private:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // alpha     |-->| Q DE LA INTERSECCION DONDE SE ENCUENTRA LA PERSONA ACTUAL
-    // gamma    |-->| Q DE LA INTERSECCION DONDE PASO ANTERIORMENTE LA PERSONA
-    // r            |-->| REWARD DE LA PERSONA DURANTE EL PASO DE LA CALLE
+    // alpha     |-->| Q OF THE INTERSECTION WHERE THE CURRENT PERSON IS LOCATED
+    // gamma    |-->| Q OF THE INTERSECTION WHERE THE PERSON PREVIOUSLY PASSED
+    // r            |-->| REWARD OF THE PERSON DURING THE STREET TRAVERSAL
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
 public: 

@@ -23,7 +23,7 @@
 #include "stateMatrix.h"
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header propios
+// own headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "Q.h"
 #include "io.h"
@@ -99,26 +99,26 @@ std::vector<Q> &stateMatrix::getQs() {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 // void stateMatrix::mostrarStateMatrix() {
-//     /* muestra en la terminal cada linea del stateMatrix. */
+//     /* shows in the terminal each line of the stateMatrix. */
 //     // state value
 //     stateValue.mostrarState();
-//     /* imprime 0 en donde no hay state debido a que siempre imprime 10 elementos state. */
+//     /* prints 0 where there is no state because it always prints 10 state elements. */
 //     // for (int i = 0; i < tamanoVector - getStateValue().getDensityLinks().size(); i++) {
 //     //     std::cout << "0,";
 //     // }
 Q* stateMatrix::buscarQ(const link* const callePtr) {
-    // cuando es nodeEvacuacion la calle apunta a un nullptr
-    // solo trenda un Q
+    // when it is nodeEvacuacion the street points to a nullptr
+    // it will only have one Q
     if(callePtr == nullptr)
     {
         return &(Qs.at(0));
     }
     else {
-    /* Obtener Q segun la calle ejecutada*/
+    /* Get Q according to the executed street*/
         for (Q& q : Qs) {
-            // Comparar el puntero calle del objeto Q con callePtr
+            // Compare the street pointer of the Q object with callePtr
             if (q.getCallePtr() == callePtr) {
-                // Retornar un puntero al objeto Q encontrado
+                // Return a pointer to the found Q object
                 return &q;
             }
         }
@@ -126,13 +126,13 @@ Q* stateMatrix::buscarQ(const link* const callePtr) {
     return nullptr;
 }
 const Q* stateMatrix::buscarQMax() {
-    // Encontrar el valor máximo
+    // Find the maximum value
     auto maxElementIt = std::max_element(Qs.begin(), Qs.end(),
                                          [](const Q& a, const Q& b) {
                                              return a.getValor() < b.getValor();
                                          });
     double maxValue = *(maxElementIt->getValor());
-    // Recopilar todos los elementos que tienen el valor máximo
+    // Collect all the elements that have the maximum value
     std::vector<const Q*> maxElements;
     for (const auto& q : Qs) {
         if (q.getValor() == maxValue) {
@@ -142,15 +142,15 @@ const Q* stateMatrix::buscarQMax() {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(0, maxElements.size() - 1);
-    // Generar un índice aleatorio
+    // Generate a random index
     int randomIndex = dis(gen);
-    // Obtener el elemento aleatorio
+    // Get the random element
     const Q* randomElement = maxElements[randomIndex];
-    return randomElement; // Devolver uno de los máximos aleatorios
+    return randomElement; // Return one of the random maxima
 }
 void stateMatrix::mostrarStateMatrix() const {
-    /* muestra en la terminal cada linea del stateMatrix. */
-    // id del nodo
+    /* shows in the terminal each line of the stateMatrix. */
+    // node id
     std::cout << "idN:" << nodoPtr->getIdNode() << " ";
     // state 
     std::cout << "s:";
@@ -162,16 +162,16 @@ void stateMatrix::mostrarStateMatrix() const {
     for(const Q &q : Qs){
         q.mostrarQs(); 
     }
-    // salto de linea
+    // line break
     std::cout << std::endl;
 }
 void stateMatrix::imprimirState(fileIO* const file) const {
-    /* impresion de estados en un arreglo de 10 columnas*/
-    // impresion de datos states hasta donde tenga, puede variar
+    /* printing of states in an array of 10 columns*/
+    // printing of state data as far as it has, it may vary
     for(auto it = state.begin(); it != state.end(); ++it){
         file->getFileFstream() << (*it) << ',';
     }
-    // completar con 0 hasta 10 elemtos
+    // fill with 0 up to 10 elements
     size_t faltante = io::tamanoElementosIO - state.size();
     for (size_t i = 0; i < faltante; i++) {
         file->getFileFstream() << "0,";
@@ -186,7 +186,7 @@ void stateMatrix::imprimirState(fileIO* const file) const {
     // }
 }
 void stateMatrix::imprimirQs(fileIO* const file) const {
-    /* impresion de Q en un arreglo de 10 columnas*/
+    /* printing of Q in an array of 10 columns*/
     for (int i = 0; i < io::tamanoElementosIO; i++) {
         if (i < Qs.size()) {
             file->getFileFstream() << Qs.at(i).getValor() << ',';
@@ -204,41 +204,41 @@ void stateMatrix::imprimirQs(fileIO* const file) const {
 
 }
 void stateMatrix::imprimirStateMatrix(fileIO* const file) const {
-   // Imprimir una fila del elemento stateMatrix.
+   // Print a row of the stateMatrix element.
     file->getFileFstream() << nodoPtr->getIdNode() << ",";
     // !-----------------------------------------------------------------------
-    // Imprimir todos los elementos de state y se completa con 0 para llegar a
-    // 10 elementos.
+    // Print all the elements of state and fill with 0 to reach
+    // 10 elements.
     imprimirState(file);
     // !-----------------------------------------------------------------------
-    // Imprimir todos los elementos de Q y se completa con 0 para llegar a
-    // 10 elementos.
+    // Print all the elements of Q and fill with 0 to reach
+    // 10 elements.
     imprimirQs(file);
-    // Imprimir todos los elementos de pedestrianMassState y se completa con 0 para llegar a
-    // 10 elementos.
+    // Print all the elements of pedestrianMassState and fill with 0 to reach
+    // 10 elements.
     // pedestrianMassStateValue.imprimirPedestrianMassStateVector(file);
     file->getFileFstream() << std::endl;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// static metodos
+// static methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 stateMatrix* stateMatrix::creacionObtencionStateMatrix(
     node* const nodo,
     const std::vector<int> stateObservado)
 {
-    /* cuando una persona llega a un nodo, con lo observado busca en el nodo
-        donde esta si el stateMatrixExperimentado se encuentra en caso contrario lo crea
+    /* when a person arrives at a node, with what was observed it looks in the node
+        where it is whether the stateMatrixExperimentado is found, otherwise it creates it
         */
     std::vector<stateMatrix*>* stateMatrixExperimentados = nodo->getStateMatrixExperimentadosPtr();
-    // loop para buscar cada lista de stateMatrix
+    // loop to search each list of stateMatrix
     for (stateMatrix* stateMatrixExperimentado : *stateMatrixExperimentados) {
-       // si stateMatrixExperiemntado es igual al stateObservado entonces si existe ese stateMatrix
+       // if stateMatrixExperiemntado is equal to stateObservado then that stateMatrix exists
         if (stateMatrixExperimentado->getState() == stateObservado) {
             return stateMatrixExperimentado; 
         }
     }
-    // creacion del stateMatrix experimentado
+    // creation of the experienced stateMatrix
     stateMatrix* nuevoStateMatrix = (dynamic_cast<nodeDestino*>(nodo)) 
         ? new stateMatrix(static_cast<nodeDestino*>(nodo), stateObservado)
         : new stateMatrix(nodo, stateObservado);

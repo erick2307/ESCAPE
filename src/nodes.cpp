@@ -56,7 +56,7 @@ std::vector<nodeDestino *> nodes::getDbNodeEvacuation() {
 // static getters
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nodes* nodes::get() {
-    /* si aun no existe crea la unica instancia de nodes*/
+    /* if it does not exist yet, creates the single instance of nodes*/
     if (!nodesInstance) {
         nodesInstance =  new nodes();
     }
@@ -68,7 +68,7 @@ nodes* nodes::get() {
 // methods 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void nodes::leerNodes(std::string fileName) {
-    // Guarda todo la informacion de una solo linea. 
+    // Stores all the information of a single line. 
     std::string line;
     std::string lineActions;
     std::fstream fileActions;
@@ -77,35 +77,35 @@ void nodes::leerNodes(std::string fileName) {
     int l;
     char comma;
     std::vector<int> conectionCalles;
-    // Lectura de archivo de nodos
+    // Reading of nodes file
     std::fstream file;
     file.open(fileName, std::ios::in);
 
     if (file.fail()) {
         // std::cout << "Error opening the file nodes.csv" << std::endl;
-        std::cout << "Error al abrir el archivo: " << getFileName() << std::endl;
+        std::cout << "Error opening the file: " << getFileName() << std::endl;
         exit(1);
     }
-    // Variables de una fila del archivo nodos, que seria un solo node
+    // Variables of one row of the nodes file, which would be a single node
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // idNode          |-->| IDNODE
-    // x               |-->| POSICION X
-    // y               |-->| POSICION Y
-    // e               |-->| NODE DE EVACUACION, SI ES 1, SI ES 2 LIMITADO
+    // x               |-->| X POSITION
+    // y               |-->| Y POSITION
+    // e               |-->| EVACUATION NODE, IF IT IS 1, IF IT IS 2 LIMITED
     // r               |-->| 
-    // m               |-->| MAXIMO DE PERSONAS EVACUADAS
+    // m               |-->| MAXIMUM NUMBER OF PEOPLE EVACUATED
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     int n, x, y, e, r, m;
     std::string n_str, y_str, x_str, e_str, r_str, m_str;
-    // Recorre todas las lineas del archivo.
+    // Goes through all the lines of the file.
     while (std::getline(file, line)) {
-        // Si el archivo tiene comentarios con #, no leerlos.
+        // If the file has comments with #, do not read them.
         if (line[0] == '#') {
             continue;
         }
-        // Guardar cada line en la variable line  
+        // Save each line in the variable line  
         std::istringstream iss(line);
-        // Guardar cada valor en las variables.
+        // Save each value in the variables.
 
         std::getline(iss, n_str, ',');
         n = std::stoi(n_str);
@@ -115,8 +115,8 @@ void nodes::leerNodes(std::string fileName) {
         y = std::stoi(y_str);
         std::getline(iss, e_str, ',');
         e = std::stoi(e_str);
-        // si el stateMatrix viene de la version de python
-        // existe un orden diferente de los linksConnecton
+        // if the stateMatrix comes from the python version
+        // there is a different order of the linksConnecton
         if (e==0) {
             std::unique_ptr<node> nodoNuevo = std::make_unique<node>(n, vector2D(x, y));
             // node nodoNuevo1 = node(n, x, y);
@@ -126,23 +126,23 @@ void nodes::leerNodes(std::string fileName) {
             std::unique_ptr<nodeDestino> nodoEvacuationNuevo = std::make_unique<nodeDestino>(n, vector2D(x, y));
             // nodeEvacuation nodoEvacuationNuevo= nodeEvacuation(n, x, y);
             dbNodeTotal.push_back(std::move(nodoEvacuationNuevo));
-            // crear un array de nodos de evacuacion
+            // create an array of evacuation nodes
             dbNodeEvacuation.push_back(dynamic_cast<nodeDestino*>(dbNodeTotal.back().get()));
         }
-        // nodo evacuacion limitado
+        // limited evacuation node
         else if (e==2) {
-            // lectura de maxima cantidad de personas evacuadas en ese nodo
+            // reading of the maximum number of people evacuated at that node
             std::getline(iss, m_str, ',');
             m = std::stoi(m_str);
             std::unique_ptr<nodeDestino> nodoEvacuationNuevo = std::make_unique<nodeDestino>(n, vector2D(x, y), m);
             dbNodeTotal.push_back(std::move(nodoEvacuationNuevo));
-            // crear un array de nodos de evacuacion
+            // create an array of evacuation nodes
             dbNodeEvacuation.push_back(dynamic_cast<nodeDestino*>(dbNodeTotal.back().get()));
         }
         std::getline(iss, r_str, '\n');
         r = std::stoi(r_str);
-        // Cambiar de str a int
-        // Creacion de cada persona en la data base.
+        // Convert from str to int
+        // Creation of each person in the data base.
     }
     file.close(); 
 }
@@ -155,9 +155,9 @@ void nodes::reiniciarNodesEvacuations() {
     }
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// mostrar
+// show
 // void nodes::mostrarNodes() const {
-//     // Muestra en el terminal todos los nodos y sus datos.
+//     // Shows all the nodes and their data in the terminal.
 //     for (int i = 0; i < dbNodeTotal.size(); i++) {
 //         dbNodeTotal.at(i)->mostrarNode();
 //         dbNodeTotal.at(i)->mostrarQTable();
@@ -174,17 +174,17 @@ void nodes::mostrardbNodeTotal() const {
     }
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// imprimir
+// print
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void nodes::imprimirActionsDb(std::fstream& file) const {
-    /* imprimir actionDb, archivo de compatibilidad de la version de python*/
+    /* print actionDb, compatibility file for the python version*/
     for (auto it = dbNodeTotal.begin(); it != dbNodeTotal.end(); ++it) {
         (*it)->imprimirAction(file);
     }
     file.close();
 }
 void nodes::imprimirTransitionsDb(std::fstream& file) const {
-    /* imprimir transitionDb, archivo de compatibilidad de la version de python*/
+    /* print transitionDb, compatibility file for the python version*/
     for (auto it = dbNodeTotal.begin(); it != dbNodeTotal.end(); ++it) {
         (*it)->imprimirTransition(file);
     }

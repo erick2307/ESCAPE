@@ -23,11 +23,11 @@
 #ifndef links_h
 #define links_h
 /*---------------------------------------------------------------------------*\
-    base de datos de calles o link.
+    street or link database.
 \*---------------------------------------------------------------------------*/
 //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header generales
+// general headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include <string>
 #include <vector>
@@ -37,7 +37,7 @@
 #include <iostream>
 #include <sys/stat.h> 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header propios
+// own headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "link.h"
 #include "node.h"
@@ -51,7 +51,7 @@ private:
     static links* linksInstance;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // dbLinkTotal     |-->| DATOS TOTALES DE LAS CALLES
+    // dbLinkTotal     |-->| TOTAL DATA OF THE STREETS
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     std::string fileName;
     std::vector<std::shared_ptr<link>> dbLinkTotal;
@@ -74,7 +74,7 @@ public:
     static links* get();
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // metodos
+    // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     void leerLinks(std::string fileName);
     void contarPedestrians();

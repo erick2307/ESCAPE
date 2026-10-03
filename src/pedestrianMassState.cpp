@@ -44,7 +44,7 @@ std::vector<int>& pedestrianMassState::getPedestrianMassStateVector() {
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// metodos
+// methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void pedestrianMassState::mostrarPedestrianMassStateVector() const {
     for (int i = 0; i < pedestrianMassStateVector.size(); i++) {
@@ -57,7 +57,7 @@ void pedestrianMassState::imprimirPedestrianMassStateVector(std::fstream &file) 
         if (i < pedestrianMassStateVector.size()) {
             file << pedestrianMassStateVector.at(i) << ',';
         }
-        // el ultimo valor debe ser sin coma
+        // the last value must have no comma
         else if (i == 9) {
             file << "0";
         }

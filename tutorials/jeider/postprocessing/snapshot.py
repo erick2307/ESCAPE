@@ -76,18 +76,18 @@ for i in carpetas_numericas_ordenadas:
 
     fig, ax = plt.subplots(1, 1, figsize=(width, height))
     ax.plot([x1_values, x2_values], [y1_values, y2_values], c="k", lw=1)
-    vmin, vmax = 0.0, 1.3  # Ajusta los límites según tus necesidades
+    vmin, vmax = 0.0, 1.3  # Adjust the limits to your needs
     scatter = ax.scatter(x_values, y_values, c=magnitud,
                          cmap="jet_r", marker='o', edgecolors="none",
                          vmin=vmin, vmax=vmax)
-    # plt.title('Gráfico desde archivo CSV')
-    plt.xlabel('Valores X')
-    plt.ylabel('Valores Y')
+    # plt.title('Plot from CSV file')
+    plt.xlabel('X values')
+    plt.ylabel('Y values')
     cantPeEv = str(int(cantPedestrianEvacuated[0]))
-    text1 = "t = " + i + " seg; evacuated: " + cantPeEv
+    text1 = "t = " + i + " sec; evacuated: " + cantPeEv
     fig.text(0.05, 0.03, text1, fontsize=12, fontweight='normal')
     plt.colorbar(scatter, ax=ax)
-    # Ajusta los valores vmin y vmax según tus preferencias
+    # Adjust the vmin and vmax values to your preferences
 
     ax.set_axis_off()
     # if (i == "1"):

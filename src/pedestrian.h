@@ -24,7 +24,7 @@
 #define pedestrian_h
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header generales
+// general headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include <bits/types/FILE.h>
 #include <fstream>
@@ -39,7 +39,7 @@
 #include <vector>
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header propios
+// own headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "io.h"
 #include "sarsa.h"
@@ -57,32 +57,32 @@ enum estado { pasivo, evacuando, evacuado, muerto };
 class pedestrian {
 public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // idPedestrian        |-->| ID DE LA INTERSECCION
-    // edad                |-->| COORDENADA X DEL NODO 
-    // gender              |-->| COORDENADA Y DEL NODO
+    // idPedestrian        |-->| ID OF THE INTERSECTION
+    // edad                |-->| X COORDINATE OF THE NODE 
+    // gender              |-->| Y COORDINATE OF THE NODE
     // hhType              |-->| 
     // hhId                |-->| 
-    // position            |-->| POSICION DE LA PERSONA
-    // nodeArranque        |-->| INTERSECCION DE INICIO AL INICIAR SIMULACION  
-    // tiempoInicial       |-->| TIEMPO DE INICIO PARA QUE LA PERSONA EMPIEZE A CAMINAR 
-    // position            |-->| POSICION DE LA PERSONA 
-    // nodeInicio          |-->| INTERSECCION DE UNA CALLE 
-    // nodeFinal           |-->| OTRA INTERSECCION DE LA MISMA CALLE
-    // nodeInicioAnterior  |-->| INTERSECCION INICIAL DE LA CALLE ANTERIOR
-    // linkActual          |-->| CALLE POR DONDE ESTA ACTUALMENTE LA PERSONA 
-    // linkPasado          |-->| CALLE ANTERIOR POR DONDE PASO
-    // direccionPedestrian |-->| DIRECCION DE LA PERSONA
-    // velocidad           |-->| VELOCIDAD DE LA PERSONA
-    // evacuado            |-->| LA PERSONA QUE LLEGO A UN PUNTO DE EVACUACION
-    // retorno             |-->| PODRIA COMO LA GANANCIA TOTAL 
-    // tiempoProximaInterseccion |-->| TIEMPO DE PROXIMA LLEGADA A UN NODO
+    // position            |-->| POSITION OF THE PERSON
+    // nodeArranque        |-->| STARTING INTERSECTION WHEN STARTING SIMULATION  
+    // tiempoInicial       |-->| START TIME FOR THE PERSON TO START WALKING 
+    // position            |-->| POSITION OF THE PERSON 
+    // nodeInicio          |-->| INTERSECTION OF A STREET 
+    // nodeFinal           |-->| OTHER INTERSECTION OF THE SAME STREET
+    // nodeInicioAnterior  |-->| INITIAL INTERSECTION OF THE PREVIOUS STREET
+    // linkActual          |-->| STREET WHERE THE PERSON CURRENTLY IS 
+    // linkPasado          |-->| PREVIOUS STREET THROUGH WHICH IT PASSED
+    // direccionPedestrian |-->| DIRECTION OF THE PERSON
+    // velocidad           |-->| SPEED OF THE PERSON
+    // evacuado            |-->| THE PERSON WHO REACHED AN EVACUATION POINT
+    // retorno             |-->| COULD BE LIKE THE TOTAL GAIN 
+    // tiempoProximaInterseccion |-->| TIME OF NEXT ARRIVAL AT A NODE
 
-    // stateMatrixCurrent  |-->| PUNTERO A STATEMATRIX EXPERIMENTANDO 
-    // stateMatrixPrevious |-->| PUNTERO A STATEMATRIX EXPERIMENTANDO ANTERIORMENTE
-    // QCurrent            |-->| PUNTERO A QCURRENTE 
-    // QPrevious           |-->| PUNTERO A QPREVIOUS 
-    // linkCurrent         |-->| PUNTERO A CALLE ACTUAL
-    // linkPrevious         |-->| PUNTERO A CALLE PASADA 
+    // stateMatrixCurrent  |-->| POINTER TO STATEMATRIX BEING EXPERIENCED 
+    // stateMatrixPrevious |-->| POINTER TO PREVIOUSLY EXPERIENCED STATEMATRIX
+    // QCurrent            |-->| POINTER TO QCURRENT 
+    // QPrevious           |-->| POINTER TO QPREVIOUS 
+    // linkCurrent         |-->| POINTER TO CURRENT STREET
+    // linkPrevious         |-->| POINTER TO PREVIOUS STREET 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 private:
     const int idPedestrian;
@@ -162,7 +162,7 @@ public:
     link* getLinkCurrent() const;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // metodos
+    // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     bool operator==(const pedestrian& pedestrian2) const;
     void modelamientoPedestrian();

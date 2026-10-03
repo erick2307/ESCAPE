@@ -31,7 +31,7 @@ carpetas_numericas = [elemento
 carpetas_numericas_ordenadas = sorted(carpetas_numericas, key=int)
 width = 12
 height = 5
-# tamaño de figura
+# figure size
 screen_width = get_monitors()[0].width
 screen_height = get_monitors()[0].height
 width = screen_width/100
@@ -70,16 +70,16 @@ def actualizar(i):
         for row in csv_reader:
             cantPedestrianEvacuated.append(float(row[0]))
 
-    # lineas o calles
+    # lines or streets
     ax.plot([x1_values, x2_values], [y1_values, y2_values], c="k", lw=1)
     vmin, vmax = 0.0, 1.3
-    # puntos o personas
+    # points or pedestrians
     scatter = ax.scatter(x_values, y_values, c=magnitud,
                          cmap="jet_r", marker='o', edgecolors="none",
                          vmin=vmin, vmax=vmax)
-    # texto
+    # text
     cantPeEv = str(int(cantPedestrianEvacuated[0]))
-    text1 = "t = " + str(i) + " seg; evacuated: " + cantPeEv
+    text1 = "t = " + str(i) + " sec; evacuated: " + cantPeEv
     ax.text(0.05, 0.03, text1, fontsize=12, fontweight='normal',
             transform=ax.transAxes)
 

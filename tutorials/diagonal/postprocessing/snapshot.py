@@ -24,7 +24,7 @@ with open(pathMeshLink, 'r') as csv_file:
 
 directorio_principal = '../data/'
 elementos = os.listdir(directorio_principal)
-# ubicar carpetas
+# locate folders
 carpetas_numericas = [elemento
                       for elemento
                       in elementos
@@ -35,7 +35,7 @@ carpetas_numericas_ordenadas = sorted(carpetas_numericas, key=int)
 
 bar = progressbar.ProgressBar(maxval=len(carpetas_numericas_ordenadas)).start()
 bar = progressbar.ProgressBar(maxval=len(carpetas_numericas_ordenadas)).start()
-# tamaño de figura
+# figure size
 screen_width = get_monitors()[0].width
 screen_height = get_monitors()[0].height
 width = screen_width/100
@@ -70,21 +70,21 @@ for i in carpetas_numericas_ordenadas:
             cantPedestrianEvacuated.append(float(row[0]))
 
     fig, ax = plt.subplots(1, 1, figsize=(width, height), tight_layout=True)
-    # lineas o calles
+    # lines or streets
     ax.plot([x1_values, x2_values], [y1_values, y2_values], c="k", lw=1)
     vmin, vmax = 0.0, 1.3
-    # puntos o personas
+    # points or pedestrians
     scatter = ax.scatter(x_values, y_values, c=magnitud,
                          cmap="jet_r", marker='o', edgecolors="none",
                          vmin=vmin, vmax=vmax)
-    # texto
+    # text
     cantPeEv = str(int(cantPedestrianEvacuated[0]))
-    text1 = "t = " + i + " seg; evacuated: " + cantPeEv
+    text1 = "t = " + i + " sec; evacuated: " + cantPeEv
     fig.text(0.05, 0.02, text1, fontsize=20, fontweight='normal',
              transform=ax.transAxes)
-    # barra
+    # colorbar
     plt.colorbar(scatter, ax=ax, fraction=0.03)
-    # configuraciones
+    # settings
     xlim_auto = ax.get_xlim()
     ylim_auto = ax.get_ylim()
     ax.set_xlim(xlim_auto)

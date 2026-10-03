@@ -60,7 +60,7 @@ std::map<std::string, std::variant<std::string, int, double, bool>>& dictionary:
 // static getters
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 dictionary* dictionary::get() {
-    /* si aun no existe crea la unica instancia de dictionario*/
+    /* if it does not exist yet, create the single instance of dictionary*/
     if (!dictionaryInstance) {
         dictionaryInstance =  new dictionary();
     }
@@ -68,41 +68,41 @@ dictionary* dictionary::get() {
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// metodos
+// methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void dictionary::leerDictionary() {
     std::string fileName = dictionary::systemCarpet + getNameDictionary();
     std::fstream file;
     file.open(fileName, std::ios::in);
-    // verificar si existe el archivo
+    // check whether the file exists
     if (file.fail()) {
         std::cout << "Error opening the file " <<fileName << std::endl;
         exit(1);
     }
-    // Variables de una fila del archivo nodos, que seria un solo node
+    // Variables of one row of the nodes file, which would be a single node
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // edad                 |-->| EDAD DE LA PERSONA
-    // gender               |-->| GENERO DE LA PERSONA
+    // edad                 |-->| AGE OF THE PERSON
+    // gender               |-->| GENDER OF THE PERSON
     // hhType               |-->| 
     // hhId                 |-->| 
-    // idNodeInicio         |-->| ID DEL NODO DE INICIO 
+    // idNodeInicio         |-->| ID OF THE START NODE 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     std::string line;
     std::string keyword_str, value_str;
     while (std::getline(file, line)) {
-        // Si el archivo tiene comentarios con # o es una linea vacia,
-        // no leerlos.
+        // If the file has comments with # or is an empty line,
+        // do not read them.
         if (line[0] == '#' or line.empty()) {
             continue;
         }
-        // Guardar cada line en la variable line. 
+        // Store each line in the variable line. 
         std::istringstream iss(line);
-        // Guardar cada valor en las variables.
-        // guarda la primera para palabra hasta el primer espacio
+        // Store each value in the variables.
+        // stores the first word up to the first space
         iss >> keyword_str;
         std::getline(iss >> std::ws, value_str, ';');
-        // guarda los valores en un dictionario
-        // busca el tipo de valor del elemento
+        // stores the values in a dictionary
+        // looks up the value type of the element
         if (verificarOptions(keyword_str, value_str)) {
             verificarType(keyword_str, value_str);
         }
@@ -110,23 +110,23 @@ void dictionary::leerDictionary() {
     file.close(); 
 }
 std::variant<std::string, int, double, bool> dictionary::lookup(std::string keyword) {
-    /* busca la keyword y devuelve su respuesta*/
+    /* looks up the keyword and returns its value*/
     auto it = controlDict.find(keyword);
-    // si no lo encuentra
+    // if it is not found
     if (it != controlDict.end()) {
         return it->second;
     }
     else {
-        std::cout << "El keyword "<< keyword << " no está presente en el controDict.\n";
-        // Terminar el programa con un código de error
+        std::cout << "The keyword "<< keyword << " is not present in the controlDict.\n";
+        // Terminate the program with an error code
         std::exit(EXIT_FAILURE);
     }
     return 0; 
 }
 std::variant<std::string, int, double, bool> dictionary::lookupDefault(std::string keyword) {
-    /* busca la keyword y devuelve su respuesta*/
+    /* looks up the keyword and returns its value*/
     auto it = controlDict.find(keyword);
-    // si no lo encuentra
+    // if it is not found
     if (it != controlDict.end()) {
         return it->second;
     }
@@ -135,13 +135,13 @@ std::variant<std::string, int, double, bool> dictionary::lookupDefault(std::stri
     }
 }
 bool dictionary::verificarOptions(std::string keyword, std::string value) const {
-    // busca si existe el keyword dentro de controlDictOptions
+    // checks whether the keyword exists in controlDictOptions
     auto it = controlDictOptions.find(keyword);
     if (it != controlDictOptions.end()) {
         const auto& options = it->second;
         if (!(std::find(options.begin(), options.end(), value) != options.end())) {
-            std::cout << "El keyword "<< keyword << " no tiene un valor válido." << std::endl;
-            std::cout << "Los valores posibles: ";
+            std::cout << "The keyword "<< keyword << " does not have a valid value." << std::endl;
+            std::cout << "Possible values: ";
             for (const auto& option : options) {
                 std::cout << option << " ";
             }       
@@ -152,7 +152,7 @@ bool dictionary::verificarOptions(std::string keyword, std::string value) const 
     return true;
 }
 bool dictionary::verificarType(std::string keyword, std::string value)  {
-    // busca en el typeControlDict el keyword solicitado y lo guarda en it
+    // looks up the requested keyword in typeControlDict and stores it in it
     std::map<std::string, std::string>::const_iterator it = typeControlDict.find(keyword);
     if (it != typeControlDict.end()) {
         std::string type = it->second;
@@ -178,7 +178,7 @@ bool dictionary::verificarType(std::string keyword, std::string value)  {
                 return true;
             }
             else {
-                std::cout << "El keyword "<< keyword << " no tiene un valor invalido." << std::endl;
+                std::cout << "The keyword "<< keyword << " has an invalid value." << std::endl;
                 return false;    
             }
         }

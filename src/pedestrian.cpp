@@ -36,7 +36,7 @@
 #include <iostream>
 #include <vector>
 #include "pedestrians.h"
-#include <limits> // Para std::numeric_limits
+#include <limits> // For std::numeric_limits
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // static member
@@ -185,26 +185,26 @@ stateMatrix *pedestrian::getStateMatrixCurrent() const {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// metodos
+// methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 bool pedestrian::operator==(const pedestrian& pedestrian2) const{
-    /* compara si dos pedestrian son iguales*/
-    // la comparacion es con id
+    /* compares whether two pedestrians are equal*/
+    // the comparison is by id
     return idPedestrian == pedestrian2.idPedestrian;
 }
 void pedestrian::caminar() {
-    /* formula de desplazamiento*/
+    /* displacement formula*/
     const vector2D velocidad = direccionPedestrian * velocidadPedestrian.getMagnitud();
     position += velocidad * tiempo::get()->getDeltaT();
 }
 double pedestrian::calcularIdSublink() {
-    /* Calcula la ubicacion de la persona en el array del subLink*/
-    // distancia de la persona al nodo 1 de la calle
+    /* Calculates the location of the person in the subLink array*/
+    // distance from the person to node 1 of the street
     const double anchoSubdivision = linkCurrentPtr->getAnchoSubdivisiones();
     const double index_x = position.getX() - linkCurrentPtr->getNode1Ptr()->getCoordenada().getX();
     const double index_y = position.getY() - linkCurrentPtr->getNode1Ptr()->getCoordenada().getY();
     int index_hipo = std::sqrt(std::pow(index_x,2) + pow(index_y, 2)) / anchoSubdivision;
-    // si encuentra en una subdivision mayor a lo que no tiene es porque ya a punto de entrar a una interseccion
+    // if it is in a subdivision beyond the ones that exist, it is about to enter an intersection
     if (index_hipo >= linkCurrentPtr->getCantidadSubdivisiones()) {
         interseccion = true;
         // index_hipo = linkCurrentPtr->getCantidadSubdivisiones() - 1;    
@@ -212,42 +212,42 @@ double pedestrian::calcularIdSublink() {
     return index_hipo;
 }
 bool pedestrian::verificarEndLink() const {
-    // Calcula la distancia euclidiana entre las coordenadas actuales y el punto objetivo
+    // Calculates the Euclidean distance between the current coordinates and the target point
     const double umbral = velocidadPedestrian.getMagnitud();
     const double distancia = std::sqrt(std::pow(position.getX() - nodeFinalPtr->getCoordenada().getX(), 2) + std::pow(position.getY() - nodeFinalPtr->getCoordenada().getY(), 2));
-    // Verifica si la distancia es menor o igual al umbral
+    // Checks whether the distance is less than or equal to the threshold
     return distancia <= umbral;
 }
 int pedestrian::calcularIdEndSublink() const {
-    /* Permite saber cual es el ultimo sublink*/
-    // averguio si estoy al final o al inicio
+    /* Determines which is the last sublink*/
+    // find out whether I am at the end or at the start
     if (nodeInicioPtr == linkCurrentPtr->getNode1Ptr()) {
-        // si estoy al inicio es el ultimo subdivione
+        // if at the start, it is the last subdivision
         return linkCurrentPtr->getSubdiviones().size() - 1; 
     } 
-    // esta al inicio
+    // it is at the start
     else {
         return 0;
     }
 }
 link* pedestrian::eleccionGeneralLink() const {
-    // la primera eleccion debe ser random
+    // the first choice must be random
     if (tiempo::get()->getValorTiempo() == tiempoInicial and std::get<std::string>(dictionary::get()->lookupDefault("process")) == "calibration") {
         return eleccionRandomLink();
     }
     if (estadoPedestrian == evacuado) {
         return nullptr;
     }
-    // Configurar el generador de números aleatorios
+    // Configure the random number generator
     else {
         static std::random_device rd;
         static std::mt19937 gen(rd());
         static std::uniform_real_distribution<double> dis(0.0, 1.0);
-        // Generar un número aleatorio en el rango [0.0, 1.0)
+        // Generate a random number in the range [0.0, 1.0)
         const double randomNumber = dis(gen);
-        // compara el numero aletorio con optima choice rate
-        // este ultimo debe ir descendiendo cuando halla mas simulaciones
-        // a mayor simulaciones mas uso de la elecion sarsa
+        // compares the random number with the optimal choice rate
+        // the latter must decrease as there are more simulations
+        // the more simulations, the more use of the sarsa choice
         switch (randomNumber <= tiempo::get()->getRandomChoiceRate() ? 1 : 2) {
             case 1:
                 return eleccionRandomLink();
@@ -258,50 +258,50 @@ link* pedestrian::eleccionGeneralLink() const {
     return nullptr;
 }
 link* pedestrian::eleccionRandomLink() const {
-    /* La persona esta en una interseccion y tiene multiples opciones para elegir una calle.
-        segun aletoriedad se decide cual sera la calle a tomar y se guardará en linkActual.*/
-    // Algoritmo Motor Mersenne Twister
+    /* The person is at an intersection and has multiple options for choosing a street.
+        the street to take is decided randomly and will be stored in linkActual.*/
+    // Mersenne Twister engine algorithm
     static std::random_device rd;
     static std::mt19937 generador(rd());
-    // linkConnection del nodo de inicio 
+    // linkConnection of the start node 
     const std::vector<link*> linkConnection = nodeInicioPtr->getLinkConnectionsPtr();
     const int limite_max = linkConnection.size() - 1 ;
-    // Crear una distribución uniforme usando el rango especificado
+    // Create a uniform distribution using the specified range
     std::uniform_int_distribution<size_t> distribucion(0, limite_max);
-    // eleccion de una calle de forma aletoria
+    // choice of a street at random
     const size_t numero_aleatorio = distribucion(generador);
-    // eleccion de la calle nueva, parte principal de la funcion
+    // choice of the new street, main part of the function
     return linkConnection.at(numero_aleatorio);
 }
 link* pedestrian::eleccionSarsaLink() const {
-    // busca el elemento mayor de Q del stateMatrix experimentado
+    // finds the largest Q element of the experienced stateMatrix
     const Q* Qmax = stateMatrixCurrentPtr->buscarQMax();
     return const_cast<link*>(Qmax->getCallePtr());
 }
 // void pedestrian::eleccionDosCallesContinuas() {
-//     // linkActual es la calle a punto de cambiar
+//     // linkActual is the street about to change
 //     if (!(nodeInicio->getLinkConnection().at(0)->getIdLink() == linkActual->getIdLink())) {
 //         // setLinkActual(&dbLinkTotal.at(getNodeInicio()->getIdLinkConnection().at(0)));
 //         // setLinkActual(links::get()->getDbLinkTotal().at(getNodeInicio()->getIdLinkConnection().at(0)).get());
 //         setLinkActual(nodeInicio->getLinkConnection().at(0));
-//         // enviando informacion de action al stateMatrix
+//         // sending action information to the stateMatrix
 //         stateMatrixPedestrian.getActionValue().setILinkConnection(0);
 //         stateMatrixPedestrian.getActionValue().setIdLink(linkActual->getIdLink());
-//         // sabiendo la calle defino el nodo final.
+//         // knowing the street, define the final node.
 //         calcularNodeFinal();
-//         // verificar si el nodo final es un nodo de evacucion.
+//         // check whether the final node is an evacuation node.
 //         verificarPedestrianEvacuation();
 //     }
 //     else {
 //         // setLinkActual(&dbLinkTotal.at(getNodeInicio()->getIdLinkConnection().at(1)));
 //         // setLinkActual(links::get()->getDbLinkTotal().at(getNodeInicio()->getIdLinkConnection().at(1)).get());
 //         setLinkActual(nodeInicio->getLinkConnection().at(0));
-//         // enviando informacion de action al stateMatrix
+//         // sending action information to the stateMatrix
 //         stateMatrixPedestrian.getActionValue().setILinkConnection(1);
 //         stateMatrixPedestrian.getActionValue().setIdLink(linkActual->getIdLink());
-//         // sabiendo la calle defino el nodo final.
+//         // knowing the street, define the final node.
 //         calcularNodeFinal();
-//         // verificar si el nodo final es un nodo de evacucion.
+//         // check whether the final node is an evacuation node.
 //         verificarPedestrianEvacuation();
 //     }
 // }
@@ -322,65 +322,65 @@ vector2D pedestrian::calcularSignoDireccion() {
     return vector2D(x,y);
 }
 int pedestrian::calcularReward() const {
-    /* calculo del reward por paso*/
+    /* calculation of the reward per step*/
     const int tiempoDesplazamiento = calcularTiempoDesplazamiento();
     const int pasos = tiempoDesplazamiento / tiempo::get()->getDeltaT();
     return pasos * stepReward;
 }
 int pedestrian::calcularTiempoDesplazamiento() const {
-   /* calcula el proximo tiempo donde el pedestrian estará en una interseccion*/
+   /* calculates the next time at which the pedestrian will be at an intersection*/
     const int tiempoDesplazado = tiempo::get()->getValorTiempo() - tiempoAnteriorInterseccion;
     return  tiempoDesplazado;
 }
 void pedestrian::modelamientoPedestrian() {
     if(!(estadoPedestrian == evacuado)){
         const int tiempoActual = tiempo::get()->getValorTiempo();
-        // cuando la persona esta en pasivo, cambia el estado a evacuado cuando llegue su tiempo de salida
+        // when the person is passive, the state changes to evacuated when their departure time arrives
         if (estadoPedestrian == pasivo && tiempoInicial == tiempoActual) {
             estadoPedestrian = evacuando;
         }
-        // realiza el movimiento solo cuando esta evacuando
+        // performs the movement only when evacuating
         if (estadoPedestrian == evacuando or estadoPedestrian==evacuado) {
-                // modelamiento cuando la persona esta en una interseccion
+                // modeling when the person is at an intersection
             if (interseccion) {
-                // si no ha evacuado realizar lo siguiente
-                // si fuera un tiempo diferente al inicial, guardar lo presente en lo pasado
+                // if not yet evacuated, do the following
+                // if it is a time different from the initial one, save the present into the past
                 if(!(tiempoInicial == tiempoActual)){
-                    // reinicia el valor del reward
+                    // resets the reward value
                     reward = 0;
-                    // guarda el Qcurents antes que sea cambiado
+                    // saves the QCurrent before it is changed
                     // stateMatrixPreviousPtr = stateMatrixCurrentPtr;
                     QPreviousPtr = QCurrentPtr;
-                    // ahora la interseccion final es la interseccion inicial.
+                    // now the final intersection is the initial intersection.
                     nodeInicioPtr = nodeFinalPtr;
-                    // correcion de la posicion cuando se llega cerca al nodo.
+                    // position correction when arriving close to the node.
                     position = {nodeInicioPtr->getCoordenada().getX(), nodeInicioPtr->getCoordenada().getY()};
-                    // verifico si estoy en un punto de evacuacion
+                    // check whether I am at an evacuation point
                 }
                 // nodeInicioPtr->mostrarNode();
                 estadoPedestrian = nodeInicioPtr->estadoPedestrianEnNodo();
-                // observa el estado del nodo o nodeEvacuation
+                // observes the state of the node or nodeEvacuation
                 const std::vector<int> stateObservado = nodeInicioPtr->stateObservado();
-                // obtener stateMatrix
+                // get stateMatrix
                 stateMatrixCurrentPtr = stateMatrix::creacionObtencionStateMatrix(nodeInicioPtr, stateObservado);
                // stateMatrixCurrentPtr->mostrarStateMatrix();
-                // eleccion de la calle
+                // choice of the street
                 linkCurrentPtr = eleccionGeneralLink();
                 if (estadoPedestrian == evacuando) {
-                    // // agrego a la personas en la calle
+                    // // add the people on the street
                     // linkCurrentPtr->agregarPedestrian(this);
-                    // obtener nodo final
+                    // get final node
                     nodeFinalPtr = const_cast<node*>(nodeInicioPtr->buscarNodoFinal(linkCurrentPtr));
-                    // direccion de la persona en la calle.
+                    // direction of the person on the street.
                     calcularDireccionPedestrian();
-                    // calcular idEndSublink
+                    // calculate idEndSublink
                     idEndSublink = calcularIdEndSublink();
                 }
-                // obtener Qcurrent
+                // get Qcurrent
                 QCurrentPtr = stateMatrixCurrentPtr->buscarQ(linkCurrentPtr);
-                // aumentar observacion
+                // increase observation
                 QCurrentPtr->aumentar1Observacion();
-                // excepto al iniciar
+                // except at the start
                 if (estadoPedestrian == evacuado) {
                     dynamic_cast<nodeDestino*>(nodeInicioPtr)->contabilizarPersona(this);
                 }
@@ -390,33 +390,33 @@ void pedestrian::modelamientoPedestrian() {
                         sarsa::sarsaActualizarQ(QPreviousPtr->getValor(), QCurrentPtr->getValor(), reward);
                     }
                 }
-                // guarda la anteror interseccion
+                // saves the previous intersection
                 tiempoAnteriorInterseccion = tiempoActual;
-                // paso a la calle
+                // move onto the street
                 interseccion=false;
             }
             else {
-                // modelamiento cuando la persona esta dentro de la calle
+                // modeling when the person is inside the street
                 if (estadoPedestrian == evacuando) {
-                    // solo agrega cuando no esta en la interseccion
+                    // only adds when not at the intersection
                     if (tiempo::get()->getPedestrianCountPeriod()) {
-                        // velocidad con random
+                        // speed with random
                         velocidadPedestrian.calcularAjusteRandom();
                     }
-                    // camina la persona
+                    // the person walks
                     caminar();    
-                   // calcula posicion en subdivion 
+                   // calculates position in subdivision 
                     const int idSublink = calcularIdSublink();
-                    // cuando esta en un sublink cercano a nodoFinal
+                    // when in a sublink close to nodoFinal
                     if (idSublink == idEndSublink and interseccion == false) {
-                        // verifica cuando esta cerca a una interseccion
+                        // checks when it is close to an intersection
                         interseccion = verificarEndLink();
                     }
-                    // verifica cada cuanto debe contar
+                    // checks how often it must count
                     if (tiempo::get()->getPedestrianCountPeriod()) {
-                        // solo agrega cuando no esta en la interseccion
+                        // only adds when not at the intersection
                         if (interseccion==false) {
-                            // agrega persona en sublink
+                            // adds person in sublink
                             linkCurrentPtr->agregarPedestrianSublink(this, idSublink);
                         }
                     }
@@ -426,7 +426,7 @@ void pedestrian::modelamientoPedestrian() {
     }
 }
 void pedestrian::reiniciar() {
-    /* reiniciar valores para proxima simulacion*/
+    /* reset values for next simulation*/
     nodeInicioPtr = const_cast<node*>(nodeArranque);
     position = nodeInicioPtr->getCoordenada();
     estadoPedestrian = pasivo;
@@ -434,13 +434,13 @@ void pedestrian::reiniciar() {
     // reward = 0;
 }
 void pedestrian::mostrarMovimientoPedestrian() const {
-    /* muestra la interseccion de partida y final de una calle, cuando
-        la persona.*/
+    /* shows the start and end intersection of a street, when
+        the person.*/
     if (estadoPedestrian == evacuando or estadoPedestrian== evacuado) {
         std::cout << idPedestrian << ' ';
         std::cout << std::setw(6) << nodeInicioPtr->getIdNode() << ' ';
         std::cout << "start: ";
-        // decimales para imprecion
+        // decimals for printing
         std::cout << std::fixed << std::setprecision(2);
         std::cout << std::setw(5) << nodeInicioPtr->getCoordenada().getX() << ' ';
         std::cout << std::setw(5) << nodeInicioPtr->getCoordenada().getY() << ' ';
@@ -462,7 +462,7 @@ void pedestrian::mostrarPedestrian() const {
 }
 void pedestrian::imprimirPedestrianPosition(fileIO* file) const {
     // if (getEvacuado()) {
-    // decimales para guardar en archivos.
+    // decimals for saving to files.
     file->getFileFstream() << std::fixed << std::setprecision(2);
     file->getFileFstream() << position.getX() << " ";
     file->getFileFstream() << position.getY() << " ";
@@ -480,41 +480,41 @@ const double pedestrian::calcularScaleRayleigh() {
     return static_cast<double>(meanRayleigh) * std::pow((2.0/M_PI), 0.5);
 }
 double generate_uniform_random(std::mt19937& gen) {
-    // Generar un número aleatorio uniforme en el rango (0, 1)
+    // Generate a uniform random number in the range (0, 1)
     return std::generate_canonical<double, std::numeric_limits<double>::digits>(gen);
 }
 double pedestrian::calcularRayleighDistribution(const double sigma) {
-    /* calcula un numero segun la distribucion rayliegh, como parametro necesita
-        la variable sigma que es la scaleRayleigh */
+    /* calculates a number according to the Rayleigh distribution, as a parameter it needs
+        the variable sigma, which is the scaleRayleigh */
     std::random_device rd;
     std::mt19937 gen(rd());
-    // Generar un número aleatorio uniforme
+    // Generate a uniform random number
     double u = generate_uniform_random(gen);
-    // Calcular el número aleatorio según la distribución Rayleigh
+    // Calculate the random number according to the Rayleigh distribution
     return sigma * std::sqrt(-2.0 * std::log(1.0 - u));
 }
 void pedestrian::plotearPedestrians(fileIO* const file) {
     
-    // Inicializa valores máximos y mínimos
+    // Initialize maximum and minimum values
     static double minX = std::numeric_limits<double>::max();
     static double maxX = std::numeric_limits<double>::lowest();
     static double minY = std::numeric_limits<double>::max();
     static double maxY = std::numeric_limits<double>::lowest();
-    // lo leo solo al incio 
+    // read it only at the start 
     if (tiempo::get()->getValorTiempo() == 1) {
         const auto& lineasCalles = links::get()->getDbLinkTotal();
         for (const auto lc : lineasCalles) {
-            // Obtener puntos de inicio y fin para la línea
+            // Get start and end points for the line
             const auto puntoInicial = lc->getNode1Ptr();
             const auto puntoFinal = lc->getNode2Ptr();
             
-            // Obtener las coordenadas
+            // Get the coordinates
             double x1 = puntoInicial->getCoordenada().getX();
             double y1 = puntoInicial->getCoordenada().getY();
             double x2 = puntoFinal->getCoordenada().getX();
             double y2 = puntoFinal->getCoordenada().getY();
             
-            // Actualiza los valores máximos y mínimos
+            // Update the maximum and minimum values
             minX = std::min(minX, std::min(x1, x2));
             maxX = std::max(maxX, std::max(x1, x2));
             minY = std::min(minY, std::min(y1, y2));
@@ -523,7 +523,7 @@ void pedestrian::plotearPedestrians(fileIO* const file) {
     }
     FILE* gnuplotPipe = popen("gnuplot -persistent", "w");
     if (gnuplotPipe) {
-        // Configurar Gnuplot
+        // Configure Gnuplot
         fprintf(gnuplotPipe, "set output '%s'\n", file->getFullPath().c_str());
         fprintf(gnuplotPipe, "set terminal png size 1920,1080\n");
         fprintf(gnuplotPipe, "set yrange [%lf:%lf]\n", minY, maxY);
@@ -531,17 +531,17 @@ void pedestrian::plotearPedestrians(fileIO* const file) {
         fprintf(gnuplotPipe, "unset border\n");
         fprintf(gnuplotPipe, "set palette rgbformulae 10,13,22\n");
         fprintf(gnuplotPipe, "set colorbox\n");
-        fprintf(gnuplotPipe, "set cbrange [0.2:1.2]\n"); // Reemplaza min y max con tus valores fijos
+        fprintf(gnuplotPipe, "set cbrange [0.2:1.2]\n"); // Replace min and max with your fixed values
         fprintf(gnuplotPipe, "set grid\n");
-        fprintf(gnuplotPipe, "set bmargin 3\n"); // Margen inferior aumentado
-        int minutos =  tiempo::get()->getValorTiempo() / 60; // Dividir para obtener minutos completos
-        int segundos =  tiempo::get()->getValorTiempo() % 60; // Resto para los segundos que sobran
+        fprintf(gnuplotPipe, "set bmargin 3\n"); // Increased bottom margin
+        int minutos =  tiempo::get()->getValorTiempo() / 60; // Divide to get whole minutes
+        int segundos =  tiempo::get()->getValorTiempo() % 60; // Remainder for the leftover seconds
         fprintf(gnuplotPipe, "set label 't = %d.%d min, evacuated: %d' at screen 0.5, 0.02 center\n", minutos, segundos, nodeDestino::totalPersonasEvacuadas);
 
-        // creacion de plot
+        // plot creation
         std::string plotCommand = "plot";
         plotCommand += " '-' with lines lc 'black' notitle,";
-        // verificar si hay peatones evacuando
+        // check whether there are pedestrians evacuating
         bool peatonesEvacuado = false;
         for (const pedestrian& ped : pedestrians::get()->getDbPedestrianTotal()) {
             if (ped.estadoPedestrian == evacuando) {
@@ -552,26 +552,26 @@ void pedestrian::plotearPedestrians(fileIO* const file) {
         if (peatonesEvacuado) {
             plotCommand += " '-' with points pt 7 palette notitle,";
         }
-        // agregar siempre los puntos de evacuacion
+        // always add the evacuation points
         plotCommand += " '-' with points pt 12 ps 3.0 lc 'red' notitle";
         fprintf(gnuplotPipe, "%s\n", plotCommand.c_str());
         const auto& dbPedestrianTotal = pedestrians::get()->getDbPedestrianTotal();
         const auto& puntosEvacuacion = nodes::get()->getDbNodeEvacuation();
         const auto& lineasCalles = links::get()->getDbLinkTotal();
-        // ploteo de lineas de calle
+        // plotting of street lines
         for (const auto lc : lineasCalles) {
-            // Obtener puntos de inicio y fin para la línea
+            // Get start and end points for the line
             const auto puntoInicial = lc->getNode1Ptr();
             const auto puntoFinal = lc->getNode2Ptr();
             fprintf(gnuplotPipe, "%lf %lf\n", puntoInicial->getCoordenada().getX(), puntoInicial->getCoordenada().getY());
             fprintf(gnuplotPipe, "%lf %lf\n", puntoFinal->getCoordenada().getX(), puntoFinal->getCoordenada().getY());
-            fprintf(gnuplotPipe, "\n");  // Espacio entre las líneas
+            fprintf(gnuplotPipe, "\n");  // Space between the lines
             // std::cout << puntoInicial->getCoordenada().getX() << " " << puntoInicial->getCoordenada().getY() << " ";
             // std::cout << puntoFinal->getCoordenada().getX() << " " << puntoFinal->getCoordenada().getY() << std::endl;
         }
         fprintf(gnuplotPipe, "e\n");
         // fprintf(gnuplotPipe, "e\n");
-        // Itera sobre el vector de peatones utilizando iteradores
+        // Iterate over the pedestrian vector using iterators
         if (peatonesEvacuado) {
             for (const pedestrian& ped : dbPedestrianTotal) {
                 if(ped.estadoPedestrian == evacuando){
@@ -581,7 +581,7 @@ void pedestrian::plotearPedestrians(fileIO* const file) {
             }
             fprintf(gnuplotPipe, "e\n");
         }
-        // Segunda serie de puntos (ejemplo: posición inicial)
+        // Second series of points (example: initial position)
         for (const nodeDestino* const pe : puntosEvacuacion) {
             fprintf(gnuplotPipe, "%lf %lf\n", pe->getCoordenada().getX() , pe->getCoordenada().getY());
         }

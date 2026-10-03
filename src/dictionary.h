@@ -23,10 +23,10 @@
 #ifndef dictionary_h
 #define dictionary_h
 /*---------------------------------------------------------------------------*\
-    mejorar interfaz usuario
+    improve user interface
 \*---------------------------------------------------------------------------*/
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header generales
+// general headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include <string>
 #include <fstream>
@@ -37,7 +37,7 @@
 #include <algorithm>
 #include <vector>
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header propios
+// own headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class dictionary {
@@ -48,7 +48,7 @@ private:
     static dictionary* dictionaryInstance;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // endTime               |-->| TIEMPO DE TERMINO DE LA SIMULACION
+    // endTime               |-->| END TIME OF THE SIMULATION
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     const std::string nameDictionary = "controlDict";
     const std::string systemCarpet = "system/";
@@ -145,7 +145,7 @@ public:
 
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // metodos
+    // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     void leerDictionary();
     std::variant<std::string, int, double, bool> lookup(std::string keyword);

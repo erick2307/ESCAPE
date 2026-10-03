@@ -53,28 +53,28 @@ double vector2D::getY() const{
     return Y;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// metodos
+// methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 vector2D vector2D::operator+(vector2D vector2) {
-    /* operacion suma de vectores*/
+    /* vector addition operation*/
     double x = this->getX() + vector2.getX();
     double y = this->getY() + vector2.getY();
     return vector2D(x, y);
 }
 vector2D vector2D::operator*(vector2D& vector2) {
-    /* operacion multiplicacion de vectores*/
+    /* vector multiplication operation*/
     double x = this->getX() * vector2.getX();
     double y = this->getY() * vector2.getY();
     return vector2D(x, y);
 }
 vector2D vector2D::operator*(const vector2D& vector2) const {
-    /* operacion multiplicacion de vectores*/
+    /* vector multiplication operation*/
     double x = this->getX() * vector2.getX();
     double y = this->getY() * vector2.getY();
     return vector2D(x, y);
 }
 vector2D vector2D::operator*(const double scalar) const {
-    // operacion multipliacion de vector y scalar
+    // multiplication operation of vector and scalar
     double x = this->getX() * scalar;
     double y = this->getY() * scalar;
     return vector2D(x,y);
@@ -85,13 +85,13 @@ vector2D vector2D::operator+=(vector2D vector2) {
     return *this;
 }
 double vector2D::distanciaA(const vector2D &coordenada2) const {
-    /* distancia entre dos coordenadas*/
+    /* distance between two coordinates*/
     double dx = X - coordenada2.getX();
     double dy = Y - coordenada2.getY();
     return std::sqrt(dx * dx + dy * dy);
 }
 void vector2D::mostrarVector() const {
-    /* Muestra en el terminal en formato vector*/
+    /* Shows in the terminal in vector format*/
     std::cout << "(" << std::setprecision(3) << X << ",";
     std::cout << std::setprecision(3) << Y << ")" << std::endl;
 }

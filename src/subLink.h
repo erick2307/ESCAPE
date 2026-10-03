@@ -23,15 +23,15 @@
 #ifndef subLink_h
 #define subLink_h
 /*---------------------------------------------------------------------------*\
-    Es la division de una calle o link.
+    It is the division of a street or link.
 \*---------------------------------------------------------------------------*/
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header generales
+// general headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include <vector>
 #include <iostream>
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// header propios
+// own headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "vector2D.h"
 class link;
@@ -41,9 +41,9 @@ class subLink  {
 
 private:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // idSubLink                 |-->| ID DEL SUBLINK 
-    // pedestrianIdsInSubLink    |-->| PERSONAS EN SUBLINK
-    // densidad                  |-->| DENSIDAD EN EL SUBLINK
+    // idSubLink                 |-->| ID OF THE SUBLINK 
+    // pedestrianIdsInSubLink    |-->| PEOPLE IN SUBLINK
+    // densidad                  |-->| DENSITY IN THE SUBLINK
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     const link* calle;
     std::vector<pedestrian*> pedestriansInSublink;
@@ -72,7 +72,7 @@ public:
     double getDensidadSublink() const;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // metodos
+    // methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     void actualizarVelocidadPedestrianInSublink(double& velocidad);
     double calcularDensidadSubdivision() const;
