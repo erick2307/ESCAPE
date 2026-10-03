@@ -47,8 +47,8 @@
 #include "stateMatrix.h"
 #include "subLink.h"
 #include "vector2D.h"
-#include "velocidad.h"
-#include "tiempo.h"
+#include "velocity.h"
+#include "simulationTime.h"
 
 class node;
 class link;

@@ -22,7 +22,7 @@
 
 #include "pedestrians.h"
 #include "pedestrian.h"
-#include "tiempo.h"
+#include "simulationTime.h"
 #include <vector>
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

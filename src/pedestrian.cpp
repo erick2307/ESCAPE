@@ -25,13 +25,13 @@
 #include "io.h"
 #include "node.h"
 #include "link.h"
-#include "nodeDestino.h"
+#include "nodeEvacuation.h"
 #include "sarsa.h"
 #include "stateMatrix.h"
 #include "stateMatrixs.h"
-#include "tiempo.h"
+#include "simulationTime.h"
 #include "vector2D.h"
-#include "velocidad.h"
+#include "velocity.h"
 #include <bits/types/FILE.h>
 #include <iostream>
 #include <vector>

@@ -36,7 +36,7 @@
 // own headers
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "dictionary.h"
-#include "tiempo.h"
+#include "simulationTime.h"
 
 class dirIO {
 private:

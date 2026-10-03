@@ -20,8 +20,6 @@ graphicPrintout no;
 
 graphicPrintoutPeriod 10;
 
-listingPrintoutPeriod 1;
-
 computationContinued  	no;
 
 previousComputationFile	sim_000000001.csv;
@@ -34,11 +32,7 @@ cantidadSubdivisiones 10;
 
 pedestrianCountPeriod 10;
 
-readPedestrianMassState no;
-
 endNumberSimulation 20;
-
-numberLinkDivision 10;
 
 evacuatedCount yes;
 
@@ -47,5 +41,4 @@ totalEvacuatedCount yes;
 pythonVersion no;
 
 pythonOption out;
-
 

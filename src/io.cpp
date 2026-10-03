@@ -22,10 +22,10 @@
 
 #include "io.h"
 #include "dictionary.h"
-#include "nodeDestino.h"
+#include "nodeEvacuation.h"
 #include "pedestrians.h"
 #include "subLink.h"
-#include "tiempo.h"
+#include "simulationTime.h"
 #include "stateMatrixs.h"
 #include <ios>
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

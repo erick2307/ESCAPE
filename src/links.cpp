@@ -24,7 +24,7 @@
 #include "dictionary.h"
 #include "nodes.h"
 #include "pedestrians.h"
-#include "tiempo.h"
+#include "simulationTime.h"
 #include <vector>
 #include "pedestrian.h"
 

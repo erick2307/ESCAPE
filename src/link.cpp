@@ -23,9 +23,9 @@
 #include "link.h"
 #include "pedestrian.h"
 #include "subLink.h"
-#include "tiempo.h"
+#include "simulationTime.h"
 #include "vector2D.h"
-#include "velocidad.h"
+#include "velocity.h"
 #include <iomanip>
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
