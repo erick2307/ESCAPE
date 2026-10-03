@@ -60,7 +60,8 @@
     stopSimulationAt,endNumberSimulation,process,meanRayleigh,
     opcionSubdivision,anchoSubdivision,cantidadSubdivisiones,
     figureTotalEvacuadosVsSimulacion,tableTotalEvacuadosVsSimulacion,
-    totalEvacuadosVsSimulacionPeriod,evacuadosVsTiempoAt},
+    totalEvacuadosVsSimulacionPeriod,evacuadosVsTiempoAt,
+    figureEvacuadosVsTiempo,tableEvacuadosVsTiempo},
   numbers=left,
   numberstyle=\tiny,
   numbersep=5pt,
@@ -254,13 +255,13 @@
 \begin{cmdtable}
   \rowType{String}{Defines the data type as a character string.}
   \rowDefault{endNumberSimulation}{The number of simulations at which to stop.}
-  \rowDescription{Options for ending the simulations. Two are implemented:
-    \cmd{endNumberSimulation} and \cmd{addNumberSimulation}.}
+  \rowDescription{Options for ending the simulations. Only one is implemented:
+    \cmd{endNumberSimulation}.}
 \end{cmdtable}
 
 \subsection{\texttt{endNumberSimulation}}
 \begin{cmdtable}
-  \rowType{Integer}{Defines the data type as a character string.}
+  \rowType{Integer}{Data type used for this command.}
   \rowDescription{Number of simulations that will be run; the last iteration of the simulation is
     entered. Note that it is mandatory to set this value.}
 \end{cmdtable}
@@ -268,23 +269,14 @@
 \subsection{\texttt{meanRayleigh}}
 \begin{cmdtable}
   \rowType{Integer}{Data type used for this command.}
-  \rowDefault{420}{Default value used for the mean of the Rayleigh distribution.}
   \rowDescription{Mean of the Rayleigh distribution (the only adjustable parameter of the
     distribution). It is used to compute the scale factor needed to obtain a number from that
-    distribution. The value must be entered in seconds.}
-\end{cmdtable}
-
-\subsection{\texttt{numberLinkDivision}}
-\begin{cmdtable}
-  \rowType{Integer}{Data type used for this command.}
-  \rowDefault{10}{Default value for the subdivision of a street.}
-  \rowDescription{Number of partitions applied to the streets in order to obtain a pedestrian
-    count.}
+    distribution. The value must be entered in seconds. This command is mandatory.}
 \end{cmdtable}
 
 \subsection{\texttt{exploration}}
 \begin{cmdtable}
-  \rowType{Integer}{Data type used for this command.}
+  \rowType{Double}{Data type used for this command.}
   \rowDefaultText{close to 0.2}{Default value used for the exploration percentage at the end of
     the simulation.}
   \rowDescription{Final exploration value. As the simulations proceed, the exploration rate changes
@@ -306,14 +298,6 @@
     can be greater than 1. It must be entered in seconds.}
 \end{cmdtable}
 
-\subsection{\texttt{listingPrintoutPeriod}}
-\begin{cmdtable}
-  \rowType{Integer}{Data type used for this command.}
-  \rowDefault{1}{Default value associated with the attribute.}
-  \rowDescription{Determines how often the results are shown in the terminal. It allows the run to
-    be followed at execution time.}
-\end{cmdtable}
-
 \subsection{\texttt{pedestrianCountPeriod}}
 \begin{cmdtable}
   \rowType{Integer}{Data type used for this command.}
@@ -331,9 +315,10 @@
 \subsection{\texttt{previousComputationFile}}
 \begin{cmdtable}
   \rowType{String}{Defines the data type as a character string.}
-  \rowDefault{population.csv}{Name of the default file used.}
-  \rowDescription{Name of the file that contains the results of a previous simulation of the same
-    city. That simulation provides experienced state values for the new simulation.}
+  \rowDescription{Name of the file, located in the \cmd{stateMatrices} folder, that contains the
+    results of a previous simulation of the same city. That simulation provides experienced state
+    values for the new simulation. It is required when \cmd{computationContinued} is enabled and
+    when \cmd{process} is \cmd{trained}.}
 \end{cmdtable}
 
 \subsection{\texttt{totalEvacuatedCount}}
@@ -451,10 +436,9 @@ The parameters used with Sarsa are shown below:
 \chapter{Program structure and algorithm}
 
 \section{Program structure}
-The \escape{} software runs according to the structure shown in the following figure. It shows the
-input information that the program needs, such as the streets (link), the intersections of the
-streets (node) and the people (pedestrian), each with its identifier. Once all the information has
-been entered, the data are processed, which consists of.
+The \escape{} software needs the following input information: the streets (link), the
+intersections of the streets (node) and the people (pedestrian), each with its identifier. Once all
+the information has been entered, the data are processed.
 
 After the data have been processed, the outputs are tables and/or figures showing the number of
 evacuees vs.\ time, the number of evacuees vs.\ evacuation points, and the total number of
@@ -465,13 +449,13 @@ evacuees vs.\ simulation number.
   \centering
   \begin{tabular}{@{}ll@{}}
     \toprule
-    File & Description\\
+    Class & Description\\
     \midrule
     \texttt{io}          & File input and output.\\
-    \texttt{directory}   & Command dictionary.\\
+    \texttt{dictionary}  & Command dictionary.\\
     \texttt{node}        & Definition of intersections in a city.\\
     \texttt{link}        & Definition of streets in a city.\\
-    \texttt{sublink}     & Definition of a subsection of a street.\\
+    \texttt{subLink}     & Definition of a subsection of a street.\\
     \texttt{pedestrian}  & Definition of pedestrians.\\
     \texttt{stateMatrix} & State matrix structure.\\
     \texttt{sarsa}       & Computation of the \texttt{Sarsa} algorithm.\\
@@ -495,11 +479,12 @@ whereas \texttt{linkConnectionsPtr} and \texttt{stateMatrixsExperimentadosPtr} a
 obtained as the software processes the data.
 
 \subsubsection*{Assignment of intersection values}
-To enter the intersection values, a csv file is needed that contains the street identification
-values, the position in x and the position in y.
+To enter the intersection values, a csv file is needed that contains the intersection identification
+values, the position in x, the position in y and the node type (the complete format is described in
+Section~\ref{sec:nodesfile}).
 
 The control file \texttt{controlDict} has the command \texttt{nodesFile} to specify the name of the
-file; by default this is \texttt{node.csv}.
+file; by default this is \texttt{nodes.csv}.
 
 An example of changing the name of the intersections file is shown below:
 \begin{lstlisting}[style=control]
@@ -528,7 +513,7 @@ The Link module has the following members:
 To enter the street values, a file is needed in which the following are given: an identifier number
 for the street, the two start and end points of the street, and the length and width of the street.
 The control file \texttt{controlDict} has the command \texttt{linksFile} to specify the name of the
-file, which by default is \texttt{link.csv}.
+file, which by default is \texttt{links.csv}.
 
 An example of changing the name of the streets file is shown below:
 \begin{lstlisting}[style=control]
@@ -592,29 +577,29 @@ The nodeDestino module has the following members:
 \subsubsection*{Printing the Evacuees vs.\ Time figure for different simulations}
 It shows a line with the information on the total number of people evacuated over the whole
 evacuation time for certain simulations. The desired simulation number is added with the command
-\texttt{totalEvacuadosVsSimulacionAt}, showing how the learning of the algorithm evolves. This
+\texttt{evacuadosVsTiempoAt}, showing how the learning of the algorithm evolves. This
 information is exported in png format.
 
 An example of enabling the figure is shown below:
 \begin{lstlisting}[style=control]
-figureTotalEvacuadosVsTiempo: yes
+figureEvacuadosVsTiempo: yes
 \end{lstlisting}
 
 \subsubsection*{Printing the Evacuees vs.\ Time table for different simulations}
 It prints a table with the values of the total number of evacuees over the whole evacuation time
 for certain simulations. The desired simulation number is added with the command
-\texttt{totalEvacuadosVsSimulacionAt}, showing how the learning of the algorithm evolves. This
+\texttt{evacuadosVsTiempoAt}, showing how the learning of the algorithm evolves. This
 information is exported in csv format.
 
 An example of enabling the table is shown below:
 \begin{lstlisting}[style=control]
-tableTotalEvacuadosVsTiempo: yes
+tableEvacuadosVsTiempo: yes
 \end{lstlisting}
 
 \subsubsection*{Evacuation vs.\ Time for specific simulations}
 The printing of the table and the figure of the total number of evacuees vs.\ time uses simulation
 numbers 1, 2 and 3 by default. To change these values, the command
-\texttt{totalEvacuadosVsTiempoAt} can be used, to which integer values separated by commas must be
+\texttt{evacuadosVsTiempoAt} can be used, to which integer values separated by commas must be
 assigned.
 
 An example of assigning simulations is shown below:
@@ -661,7 +646,7 @@ The Time module has the following members:
   \item \texttt{deltaT}: Time step value. By default, it is 1 second.
   \item \texttt{startNumberSimulation}: Value of the initial simulation. By default, it is 0.
   \item \texttt{endNumberSimulation}: Value of the last simulation. It must be entered in the
-    \texttt{control.l} file.
+    \texttt{controlDict} file.
   \item \texttt{graphicPrintoutPeriod}: Value that indicates how often the position, velocity and
     number of evacuated people variables should be exported.
   \item \texttt{pedestrianCountPeriod}: Value that indicates how often the density should be
@@ -712,7 +697,7 @@ pedestrianCountPeriod 6;
 \chapter{Installation}
 
 This guide details the installation, simulation and post-processing process for some application
-cases of the Sarsa code. The \texttt{run} directory contains demonstration cases of the use of the
+cases of the Sarsa code. The \texttt{tutorials} directory contains demonstration cases of the use of the
 algorithm and its utilities in different scenarios. Before trying to run the tutorials, the user
 must make sure that Sarsa is correctly installed.
 
@@ -723,7 +708,8 @@ To clone the repository, run the following:
 \end{lstlisting}
 
 \section{Loading the variables}
-The Sarsa environment variables are defined in the files of the Sarsa \texttt{/etc} directory.
+The Sarsa environment variables are defined in the \texttt{bashrc} file, located in the root
+directory of the repository.
 \begin{lstlisting}[style=shell]
 > cd cplus-version
 > source bashrc
@@ -766,7 +752,7 @@ Likewise, some of them are optional. The input files are the following:
     position.
 \end{itemize}
 
-\subsection{Intersections file}
+\subsection{Intersections file}\label{sec:nodesfile}
 The user can change the name of the file by modifying the \texttt{nodesFile} command. The file
 contains the following:
 \begin{itemize}
@@ -774,11 +760,16 @@ contains the following:
     intersection.
   \item x coordinate
   \item y coordinate
+  \item Type of node: 0 for a regular intersection, 1 for an evacuation point, and 2 for an
+    evacuation point with limited capacity, in which case the maximum number of evacuees for that
+    point follows.
+  \item An integer that must be present at the end of each line (it is read by the program but not
+    used).
 \end{itemize}
 \begin{csvblock}
 \begin{lstlisting}[style=csvfile]
 # Example of the nodes.csv file
-# id x y
+# id,x,y,type,unused
 0,0,0,0,1
 1,20,0,0,1
 2,40,0,0,1
@@ -796,11 +787,13 @@ contains the following:
   \item Id of the street, a unique number that cannot be equal to that of another street.
   \item Id of the start intersection.
   \item Id of the exit intersection.
+  \item Length of the street.
+  \item Width of the street.
 \end{itemize}
 \begin{csvblock}
 \begin{lstlisting}[style=csvfile]
-# Example of the nodes.csv file
-# id,node1,node2,width,
+# Example of the links.csv file
+# id,node1,node2,length,width
 0,0,1,20,3
 1,1,2,20,3
 2,2,3,20,3
@@ -840,7 +833,7 @@ Import of mandatory and optional input data, time control, export.
 
 The file represents a control panel of the \escape{} code. It contains a number of commands whose
 values can be assigned or used with their default values. All the commands are defined in the
-reference manual.
+list of commands in Part~I.
 \begin{lstlisting}[style=control]
 nodesFile           nodes.csv;
 
@@ -854,21 +847,17 @@ endTime         800;
 
 deltaT          1;
 
-graphicPrintoutPeriod 1;
+meanRayleigh    420;
 
-listingPrintoutPeriod 1;
+graphicPrintoutPeriod 1;
 
 computationContinued    no;
 
 previousComputationFile sim_000006000.csv;
 
-# stopSimulationAt          endNumberSimulation;
+stopSimulationAt          endNumberSimulation;
 
-# endNumberSimulation 6003;
-
-readPedestrianMassState no;
-
-stopSimulationAt          addNumberSimulation;
+endNumberSimulation 6003;
 \end{lstlisting}
 Lines that begin with \# are taken as comments.
 
@@ -886,19 +875,21 @@ The syntax of the command is the following:\nopagebreak
 \end{lstlisting}
 
 \section{Example cases}
-\escape{} includes three tutorial cases to show the functionalities of the code. These are available
-in the \texttt{tutorials} folder.
+\escape{} includes tutorial cases to show the functionalities of the code. They are available in the
+\texttt{tutorials} folder (\texttt{grid}, \texttt{camana} and \texttt{diagonal}). The grid and
+Camaná cases are described below, followed by the use of data from the Python version of the code.
 
 \subsection{Grid case}
-This tutorial will describe how to pre-process and post-process a case with an ideal city in the
-shape of a rectangle. The geometry is shown in the figure, where the lines are the streets. The
+This tutorial (folder \texttt{tutorials/grid}) will describe how to pre-process and post-process a
+case with an ideal city in the shape of a rectangle. The geometry is shown in
+Figure~\ref{fig:grid}, where the lines are the streets. The
 people are initially positioned at the intersection points of the streets. The initial movement
 speed of the people will be 1 m/s.
 
 This example will show the most optimal evacuation route when the people leave from the same
 starting point to their evacuation point. The configuration of the city has streets with a
 characteristic pattern, which are junctions of 4 streets that form a rectangle, with a total of 25
-blocks of the same shape, as shown in the following image.
+blocks of the same shape, as shown in Figure~\ref{fig:grid}.
 
 Likewise, a street has a length of 20 meters and a width of 3 meters. This configuration has a
 single evacuation point located at position (100, 100).
@@ -915,15 +906,17 @@ The user must enter certain information in the \texttt{controlDict}:
 The input data about time control, reading, printing and solution values will be read from the
 \texttt{controlDict} file. The user must modify it beforehand.
 
-For the present case, the following image shows the aforementioned file, as well as the values of
-the mandatory commands.
+For the present case, the \texttt{controlDict} file with the values of the mandatory commands is
+shown below.
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.85\textwidth]{figures/grid-city.png}
   \caption{Plan view of the city of the grid case.}
+  \label{fig:grid}
 \end{figure}
 
+\begin{csvblock}
 \begin{lstlisting}[style=control]
 populationsFile  populationAtPoint.csv;
 
@@ -935,6 +928,7 @@ meanRayleigh   420;
 
 endNumberSimulation 1000;
 \end{lstlisting}
+\end{csvblock}
 
 There are commands whose value does not need to be specified, because their default value will be
 used, which is listed in the commands section.
@@ -942,44 +936,46 @@ used, which is listed in the commands section.
 Once the \texttt{controlDict} has been defined, it is recommended to clean the working folder; for
 this there is an external script named \texttt{Allclean}.
 
-The program is run with the command \texttt{sarsa}. For the present case, the following image shows
-the aforementioned file, as well as the values of the mandatory commands.
+The program is run with the command \texttt{sarsa}. The information printed in the terminal during
+a run looks as follows.
 \begin{lstlisting}[style=shell]
-***** Simu : 410 *****
-epsilon greedy - exploration : 0.379363
-survived pedestrian : 6195
-Duration : 0 min / 3 s / 3018 ms
+***** Simu: 410 *****
+epsilon greedy - exploration: 0.379363
+survived pedestrian: 6195
+Duration: 0 min / 3 s / 3018 ms
 
-***** Simu : 411 *****
-epsilon greedy - exploration : 0.378788
-survived pedestrian : 6216
-Duration : 0 min / 3 s / 3040 ms
+***** Simu: 411 *****
+epsilon greedy - exploration: 0.378788
+survived pedestrian: 6216
+Duration: 0 min / 3 s / 3040 ms
 
-***** Simu : 412 *****
-epsilon greedy - exploration : 0.378215
-survived pedestrian : 6225
-Duration : 0 min / 2 s / 2899 ms
+***** Simu: 412 *****
+epsilon greedy - exploration: 0.378215
+survived pedestrian: 6225
+Duration: 0 min / 2 s / 2899 ms
 
-***** Simu : 413 *****
-epsilon greedy - exploration : 0.377644
-survived pedestrian : 6231
-Duration : 0 min / 2 s / 2972 ms
+***** Simu: 413 *****
+epsilon greedy - exploration: 0.377644
+survived pedestrian: 6231
+Duration: 0 min / 2 s / 2972 ms
 
-***** Simu : 414 *****
-epsilon greedy - exploration : 0.377074
-survived pedestrian : 6220
-Duration : 0 min / 3 s / 3005 ms
+***** Simu: 414 *****
+epsilon greedy - exploration: 0.377074
+survived pedestrian: 6220
+Duration: 0 min / 3 s / 3005 ms
 \end{lstlisting}
 
 Upon completion, the results of each variable, tables with information on the number of evacuees
 and validation images can be obtained.
 
 Finally, the export of the variables allows the user to post-process the information in any other
-program. The post-processing of the information with the Python language is shown below.
+program. Example post-processing scripts written in Python are provided in the
+\texttt{postprocessing} folder of each tutorial.
 
 \subsection{Camaná case}
-This example will show the evacuation of people in the district of Camaná with several evacuation
-point options, all far from the beach, as shown in the following figure. The configuration is an
+This example (folder \texttt{tutorials/camana}) will show the evacuation of people in the district of
+Camaná with several evacuation point options, all far from the beach, as shown in
+Figure~\ref{fig:camana}. The configuration is an
 idealization based on the street layout of the district of Camaná, with a maximum street length of
 600 meters and a width of 3 meters.
 
@@ -988,19 +984,21 @@ The configuration of this case is the following:
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.85\textwidth]{figures/camana-city.png}
-  \caption{Plan view of the city of the grid case.}
+  \caption{Plan view of the city of the Camaná case.}
+  \label{fig:camana}
 \end{figure}
 
 \begin{itemize}
-  \item \texttt{endTime}: Final evacuation time: 800 sec.
-  \item \texttt{endNumberSimulation}: Final number of simulations: 7000.
+  \item \texttt{endTime}: Final evacuation time: 1800 sec.
+  \item \texttt{endNumberSimulation}: Final number of simulations: 1000.
   \item \texttt{meanRayleigh}: The mean value for the Rayleigh distribution. Average departure time
     of a person of 420 sec.
 \end{itemize}
 
 The \texttt{controlDict} file is shown below.
+\begin{csvblock}
 \begin{lstlisting}[style=control]
-populationsFile  populationAtPoint.csv;
+populationsFile  population.csv;
 
 process calibration;
 
@@ -1010,16 +1008,16 @@ meanRayleigh   420;
 
 endNumberSimulation 1000;
 \end{lstlisting}
+\end{csvblock}
 
 Finally, in the \texttt{postprocessing} folder there are files to perform visualizations of the data
 externally to the main program. The file \texttt{snapshot.py} provides images at each time step. The
 file \texttt{zoom.py} makes it possible to create images of a wide area to observe the evacuation
-movement in detail, as shown in the following image.
+movement in detail.
 
 \subsection{Python case}
 If you want to use stateMatrix data from previous simulations, but from the Python version of the
-same code, the \texttt{pythonVersion} command must be enabled. The \texttt{controlDict} of the grid
-case using data exported from the Python code is shown below. This option must be enabled because
+same code, the \texttt{pythonVersion} command must be enabled. This option must be enabled because
 the order of the street connections at an intersection is different between the different
 languages.
 
