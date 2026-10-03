@@ -9,7 +9,7 @@ from os import path
 #files
 ruta_absoluta = path.abspath(__file__)
 directory_main = path.dirname(path.dirname(ruta_absoluta))
-directory_data = path.join(directory_main, "data/")
+directory_data = path.join(directory_main, "data/time/")
 directory_export = path.join(directory_main, "postprocessing/snapshot/")
 os.makedirs(directory_export, exist_ok=True)
 directory_mesh = path.join(directory_main, "mesh/poliLinks")

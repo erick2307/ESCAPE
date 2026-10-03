@@ -22,7 +22,7 @@ with open(pathMeshLink, 'r') as csv_file:
         y2_values.append(float(row[3]))
 
 
-directorio_principal = '../data/'
+directorio_principal = '../data/time/'
 elementos = os.listdir(directorio_principal)
 # locate folders
 carpetas_numericas = [elemento

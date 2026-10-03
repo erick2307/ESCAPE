@@ -11,7 +11,7 @@ from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes as zoom_inse
 ruta_absoluta = path.abspath(__file__)
 directory_main = path.dirname(path.dirname(ruta_absoluta))
 directory_mesh = path.join(directory_main, "mesh/poliLinks")
-directory_data = path.join(directory_main, "data/")
+directory_data = path.join(directory_main, "data/time/")
 directory_export = path.join(directory_main, "postprocessing/snapshot/")
 
 x1_values = []
