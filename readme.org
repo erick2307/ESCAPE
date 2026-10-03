@@ -20,6 +20,9 @@ source bashrc
 - Build tools: 
   - GNU Make 4.2.1 (Makefile)
   - Operating system: Ubuntu 20.04.6 LTS
+- Optional tools:
+  - gnuplot: used by the program to write the evacuation plots (without it the plots are skipped and the simulation still runs)
+  - Python 3 with matplotlib, progressbar2 and screeninfo, and ffmpeg: used by the post-processing scripts in each tutorial
 
 * License
 

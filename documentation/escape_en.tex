@@ -60,7 +60,7 @@
     stopSimulationAt,endNumberSimulation,process,meanRayleigh,
     opcionSubdivision,anchoSubdivision,cantidadSubdivisiones,
     figureTotalEvacuadosVsSimulacion,tableTotalEvacuadosVsSimulacion,
-    totalEvacuadosVsSimulacionPeriod,evacuadosVsTiempoAt,
+    totalEvacuadosVsSimulacionPeriod,evacuatedVsTimeAt,
     figureEvacuadosVsTiempo,tableEvacuadosVsTiempo},
   numbers=left,
   numberstyle=\tiny,
@@ -383,6 +383,13 @@ julio.ramirez@pucp.edu.pe
       \item GNU Make 4.2.1 (Makefile)
       \item Operating system: Ubuntu 20.04.6 LTS or macOS
     \end{itemize}
+  \item Optional tools:
+    \begin{itemize}
+      \item gnuplot: used by the program to write the evacuation plots (without it the plots are
+        skipped and the simulation still runs)
+      \item Python 3 with matplotlib, progressbar2 and screeninfo, and ffmpeg: used by the
+        post-processing scripts in each tutorial
+    \end{itemize}
 \end{itemize}
 
 % ---------------------------------------------------------------------------
@@ -577,34 +584,34 @@ The nodeDestino module has the following members:
 \subsubsection*{Printing the Evacuees vs.\ Time figure for different simulations}
 It shows a line with the information on the total number of people evacuated over the whole
 evacuation time for certain simulations. The desired simulation number is added with the command
-\texttt{evacuadosVsTiempoAt}, showing how the learning of the algorithm evolves. This
+\texttt{evacuatedVsTimeAt}, showing how the learning of the algorithm evolves. This
 information is exported in png format.
 
 An example of enabling the figure is shown below:
 \begin{lstlisting}[style=control]
-figureEvacuadosVsTiempo: yes
+figureTotalEvacuadosVsSimulacion: yes
 \end{lstlisting}
 
 \subsubsection*{Printing the Evacuees vs.\ Time table for different simulations}
 It prints a table with the values of the total number of evacuees over the whole evacuation time
 for certain simulations. The desired simulation number is added with the command
-\texttt{evacuadosVsTiempoAt}, showing how the learning of the algorithm evolves. This
+\texttt{evacuatedVsTimeAt}, showing how the learning of the algorithm evolves. This
 information is exported in csv format.
 
 An example of enabling the table is shown below:
 \begin{lstlisting}[style=control]
-tableEvacuadosVsTiempo: yes
+tableTotalEvacuadosVsSimulacion: yes
 \end{lstlisting}
 
 \subsubsection*{Evacuation vs.\ Time for specific simulations}
 The printing of the table and the figure of the total number of evacuees vs.\ time uses simulation
 numbers 1, 2 and 3 by default. To change these values, the command
-\texttt{evacuadosVsTiempoAt} can be used, to which integer values separated by commas must be
+\texttt{evacuatedVsTimeAt} can be used, to which integer values separated by commas must be
 assigned.
 
 An example of assigning simulations is shown below:
 \begin{lstlisting}[style=control]
-  evacuadosVsTiempoAt 1, 5, 8;
+  evacuatedVsTimeAt 1, 5, 8;
 \end{lstlisting}
 
 \subsubsection*{Printing the Total evacuees vs.\ Simulation figure}
@@ -614,7 +621,7 @@ exported in png format.
 
 An example of enabling the figure is shown below:
 \begin{lstlisting}[style=control]
-figureTotalEvacuadosVsSimulacion: yes
+figureEvacuadosVsTiempo: yes
 \end{lstlisting}
 
 \subsubsection*{Printing the Total evacuees vs.\ Simulation table}
@@ -624,7 +631,7 @@ csv format.
 
 An example of enabling the table is shown below:
 \begin{lstlisting}[style=control]
-  tableTotalEvacuadosVsSimulacion: yes
+  tableEvacuadosVsTiempo: yes
 \end{lstlisting}
 
 \subsubsection*{Simulation period of the Total evacuees vs.\ Simulation output}
