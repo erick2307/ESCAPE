@@ -58,10 +58,10 @@
   morekeywords={nodesFile,linksFile,populationsFile,stopAt,endTime,deltaT,
     graphicPrintoutPeriod,computationContinued,previousComputationFile,
     stopSimulationAt,endNumberSimulation,process,meanRayleigh,
-    opcionSubdivision,anchoSubdivision,cantidadSubdivisiones,
-    figureTotalEvacuadosVsSimulacion,tableTotalEvacuadosVsSimulacion,
-    totalEvacuadosVsSimulacionPeriod,evacuatedVsTimeAt,
-    figureEvacuadosVsTiempo,tableEvacuadosVsTiempo},
+    subdivisionOption,subdivisionWidth,subdivisionCount,
+    figureEvacuatedVsTime,tableEvacuatedVsTime,
+    totalEvacuatedVsSimulationPeriod,evacuatedVsTimeAt,
+    figureTotalEvacuatedVsSimulation,tableTotalEvacuatedVsSimulation},
   numbers=left,
   numberstyle=\tiny,
   numbersep=5pt,
@@ -159,11 +159,11 @@
   {\small By:\par}
   \vspace{1.0cm}
   {\large\bfseries Luis Moya\par}
-  {\large Department of Engineering, Pontificia Universidad Católica del Perú\par
+  {\large Department of Engineering, Pontifical Catholic University of Peru\par
    (PUCP), Peru\par}
   \vspace{0.9cm}
   {\large\bfseries Julio Ramírez\par}
-  {\large Department of Engineering, Pontificia Universidad Católica del Perú\par
+  {\large Department of Engineering, Pontifical Catholic University of Peru\par
    (PUCP), Peru\par}
   \vspace{0.9cm}
   {\large\bfseries Erick Mas\par}
@@ -477,12 +477,12 @@ evacuees vs.\ simulation number.
 The Node module has the following members:
 \begin{itemize}
   \item \texttt{idNode}: Unique identifiers of each intersection.
-  \item \texttt{coordenada}: Contains the location vector of the intersection.
+  \item \texttt{coordinate}: Contains the location vector of the intersection.
   \item \texttt{linkConnectionsPtr}: A vector of the interconnected streets.
-  \item \texttt{stateMatrixsExperimentadosPtr}: A vector of the experienced states.
+  \item \texttt{experiencedStateMatrixsPtr}: A vector of the experienced states.
 \end{itemize}
-The members \texttt{idNode} and \texttt{coordenada} are identified with the intersections file;
-whereas \texttt{linkConnectionsPtr} and \texttt{stateMatrixsExperimentadosPtr} are members that are
+The members \texttt{idNode} and \texttt{coordinate} are identified with the intersections file;
+whereas \texttt{linkConnectionsPtr} and \texttt{experiencedStateMatrixsPtr} are members that are
 obtained as the software processes the data.
 
 \subsubsection*{Assignment of intersection values}
@@ -506,13 +506,13 @@ The Link module has the following members:
   \item \texttt{node2Ptr}: Pointer to the second intersection of the same street.
   \item \texttt{length}: Length of the street.
   \item \texttt{width}: Width of the street.
-  \item \texttt{orientacionLink}: Orientation of the street.
-  \item \texttt{anchoSubdivision}: Width of each subdivision of the street.
-  \item \texttt{cantidadSubdivisiones}: Number of subdivisions of the street, used for the density
+  \item \texttt{linkOrientation}: Orientation of the street.
+  \item \texttt{subdivisionWidth}: Width of each subdivision of the street.
+  \item \texttt{subdivisionCount}: Number of subdivisions of the street, used for the density
     calculation.
   \item \texttt{densityLevel}: Density of the street, calculated as the maximum density among its
     subdivisions.
-  \item \texttt{subdivisiones}: Vector of the \texttt{subLink} class, which represents the divisions
+  \item \texttt{subdivisions}: Vector of the \texttt{subLink} class, which represents the divisions
     of the street.
 \end{itemize}
 
@@ -530,10 +530,10 @@ linksFile: streetsLima.csv
 \subsubsection*{Options for subdividing a street}
 There are two options for subdividing a street:
 \begin{enumerate}
-  \item \texttt{anchoSubdivision}
-  \item \texttt{cantidadSubdivisiones}
+  \item \texttt{subdivisionWidth}
+  \item \texttt{subdivisionCount}
 \end{enumerate}
-By default the \texttt{anchoSubdivision} option is enabled. This option divides the street
+By default the \texttt{subdivisionWidth} option is enabled. This option divides the street
 according to a fixed length for each subdivision, and from it the number of subdivisions is
 calculated. If the number of subdivisions is not an integer, it is rounded and a new width is
 calculated again, which is very close to the previous one; this is done because the number of
@@ -545,37 +545,37 @@ which a single width for each subdivision will be calculated.
 An example of the first option, which appears by default, for the subdivision of a street is shown
 below:
 \begin{lstlisting}[style=control]
-opcionSubdivision: anchoSubdivision
+subdivisionOption: subdivisionWidth
 \end{lstlisting}
 
 \subsubsection*{Subdivision width}
-To use this option it is not mandatory to choose \texttt{anchoSubdivision} in the
-\texttt{opcionSubdivision} command, because that option is already the default.
+To use this option it is not mandatory to choose \texttt{subdivisionWidth} in the
+\texttt{subdivisionOption} command, because that option is already the default.
 
 It allows setting the value of the length of the subdivisions. The values can be integers or
 decimals, but not fractions.
 
 An example for the subdivision of a street is shown below:
 \begin{lstlisting}[style=control]
-anchoSubdivision: 12.5
+subdivisionWidth: 12.5
 \end{lstlisting}
 
 \subsubsection*{Number of subdivisions}
-To use this option it is necessary to choose \texttt{cantidadSubdivisiones} in the
-\texttt{opcionSubdivision} command.
+{\sloppy To use this option it is necessary to choose \texttt{subdivisionCount} in the
+\texttt{subdivisionOption} command.\par}
 
-The \texttt{cantidadSubdivisiones} command allows dividing the street into an integer number of
+The \texttt{subdivisionCount} command allows dividing the street into an integer number of
 subdivisions.
 
 An example of using the command is shown below:
 \begin{lstlisting}[style=control]
-cantidadSubdivisiones: 20
+subdivisionCount: 20
 \end{lstlisting}
 
-\subsection{nodeDestino module (Evacuation points)}
-The nodeDestino module has the following members:
+\subsection{nodeEvacuation module (Evacuation points)}
+The nodeEvacuation module has the following members:
 \begin{itemize}
-  \item \texttt{maxPersonasEvacuadas}: The number of people who can evacuate at this site. By
+  \item \texttt{maxEvacuatedPeople}: The number of people who can evacuate at this site. By
     default, this option is disabled, so each evacuation point has infinite capacity. To enable
     this option and limit the capacity, the intersections file must be modified by entering the
     value 2, followed by the maximum number of evacuees for that point.
@@ -589,7 +589,7 @@ information is exported in png format.
 
 An example of enabling the figure is shown below:
 \begin{lstlisting}[style=control]
-figureTotalEvacuadosVsSimulacion: yes
+figureEvacuatedVsTime: yes
 \end{lstlisting}
 
 \subsubsection*{Printing the Evacuees vs.\ Time table for different simulations}
@@ -600,7 +600,7 @@ information is exported in csv format.
 
 An example of enabling the table is shown below:
 \begin{lstlisting}[style=control]
-tableTotalEvacuadosVsSimulacion: yes
+tableEvacuatedVsTime: yes
 \end{lstlisting}
 
 \subsubsection*{Evacuation vs.\ Time for specific simulations}
@@ -621,7 +621,7 @@ exported in png format.
 
 An example of enabling the figure is shown below:
 \begin{lstlisting}[style=control]
-figureEvacuadosVsTiempo: yes
+figureTotalEvacuatedVsSimulation: yes
 \end{lstlisting}
 
 \subsubsection*{Printing the Total evacuees vs.\ Simulation table}
@@ -631,24 +631,24 @@ csv format.
 
 An example of enabling the table is shown below:
 \begin{lstlisting}[style=control]
-  tableEvacuadosVsTiempo: yes
+  tableTotalEvacuatedVsSimulation: yes
 \end{lstlisting}
 
 \subsubsection*{Simulation period of the Total evacuees vs.\ Simulation output}
 The printing of the table and the figure of the total number of evacuees vs.\ simulation is done
 every simulation, which is a default value. To change this value, the command
-\texttt{totalEvacuadosVsSimulacionPeriod} can be used, to which the value of how often simulation
+\texttt{totalEvacuatedVsSimulationPeriod} can be used, to which the value of how often simulation
 values are wanted must be assigned.
 
 An example of assigning the simulation period is shown below:
 \begin{lstlisting}[style=control]
-  totalEvacuadosVsSimulacionPeriod 5;
+  totalEvacuatedVsSimulationPeriod 5;
 \end{lstlisting}
 
 \subsection{Time module}
 The Time module has the following members:
 \begin{itemize}
-  \item \texttt{valorTiempo}: Value of the simulated time, which increases according to
+  \item \texttt{timeValue}: Value of the simulated time, which increases according to
     \texttt{deltaT}.
   \item \texttt{deltaT}: Time step value. By default, it is 1 second.
   \item \texttt{startNumberSimulation}: Value of the initial simulation. By default, it is 0.
